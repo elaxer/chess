@@ -1,0 +1,61 @@
+{{ define "content" }}
+<div class="col-xl-7 d-flex">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col d-flex justify-content-center text-light">
+              <h3>{{ .PlayerBlack.Login }}<small>({{ .PlayerBlack.Rating }})</small></h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                {{ template "board" . }}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col d-flex justify-content-center text-light">
+                <h3>{{ .PlayerWhite.Login }}<small>({{ .PlayerWhite.Rating }})</small></h3>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col d-flex justify-content-center text-light">
+              <button id="first-move" class="btn text-light ">⇐</button>
+              <button id="prev-move" class="btn text-light ">←</button>
+              <span style="visibility: hidden;"></span>
+              <button id="next-move" class="btn text-light ">→</button>
+              <button id="last-move" class="btn text-light ">⇒</button>
+          </div>
+      </div>
+    </div>
+    
+</div>
+<div class="col-xl-3">
+    <div class="card moves" style="width: 18rem;">
+        <div class="card-body">
+          {{ range .Game.Moves }}
+            <span class="badge rounded-pill bg-light text-dark move">{{ . }}</span>
+          {{ end }}
+
+            <span style="display: none;" id="moves-json">{{ .MovesJSON }}</span>
+        </div>
+      </div>
+</div>
+
+<div class="modal" tabindex="-1" id="game-result">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Конец игры</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div id="game-result-text" class="modal-body">
+          <p></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+{{ end }}

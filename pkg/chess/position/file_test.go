@@ -1,0 +1,115 @@
+package position
+
+import (
+	"testing"
+)
+
+func TestNewFile(t *testing.T) {
+	type args struct {
+		str string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    File
+		wantErr bool
+	}{
+		{
+			"a",
+			args{"a"},
+			FileA,
+			false,
+		},
+		{
+			"e",
+			args{"e"},
+			FileE,
+			false,
+		},
+		{
+			"h",
+			args{"h"},
+			FileH,
+			false,
+		},
+		{
+			"x",
+			args{"x"},
+			File(0),
+			true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := NewFile(tt.args.str)
+			if err := got.Validate(); (err != nil) != tt.wantErr {
+				t.Fatalf("NewFile() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if got != tt.want {
+				t.Errorf("NewFile() got = %v, wantErr %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFile_Validate(t *testing.T) {
+	tests := []struct {
+		name    string
+		file    File
+		wantErr bool
+	}{
+		{
+			"valid",
+			FileE,
+			false,
+		},
+		{
+			"less_than_1",
+			File(0),
+			true,
+		},
+		{
+			"bigger_than_8",
+			File(9),
+			true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.file.Validate(); (err != nil) != tt.wantErr {
+				t.Errorf("File.Validate() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestFile_String(t *testing.T) {
+	tests := []struct {
+		name string
+		file File
+		want string
+	}{
+		{
+			"a",
+			FileA,
+			"a",
+		},
+		{
+			"h",
+			FileH,
+			"h",
+		},
+		{
+			"?",
+			File(9),
+			"?",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.file.String(); got != tt.want {
+				t.Errorf("File.String() = %v, wantErr %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -1,0 +1,38 @@
+{{ define "content" }}
+<div class="col-xl-7">
+    <h1 class="text-light d-flex justify-content-center">{{ .User }}</h1><br>
+    <table class="table">
+        <tr>
+            <th>Игрок 1</th>
+            <th>Игрок 2</th>
+            <th>Кол-во ходов</th>
+            <th>Дата</th>
+            <th>Действия</th>
+            <th>Результат</th>
+        </tr>
+        {{ range .Games }}
+            <tr class="{{ if or (and (.Result.IsWinWhite) (eq $.User.ID .PlayerWhite.ID)) (and (.Result.IsWinBlack) ($.User.ID .PlayerBlack.ID)) }}table-success{{ else }}table-danger{{ end }}">
+                <td>
+                    <a href="/users/{{ .PlayerWhite.ID }}">{{ .PlayerWhite }}</a>
+                </td>
+                <td> <a href="/users/{{ .PlayerBlack.ID }}">{{ .PlayerBlack }}</a></td>
+                <td>{{ len .Moves }}</td>
+                <td>{{ .CreatedAt.Format "02.01.2006" }}</td>
+                <td><a href="/games/{{ .ID }}">Смотреть</a></td>
+                <td>
+                    {{ if .Result.IsWinWhite }}
+                        Победа
+                    {{ else if .Result.IsWinBlack }}
+                        Поражение
+                    {{ else }}
+                        Ничья
+                    {{ end }}
+                </td>
+            </tr>
+        {{ end }}
+    </table>
+</div>
+
+
+
+{{ end }}
