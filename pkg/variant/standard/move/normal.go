@@ -65,7 +65,6 @@ func (m *Normal) Notation() string {
 func (m *Normal) Validate() error {
 	return validation.ValidateStruct(
 		m,
-		validation.Field(&m.From),
 		validation.Field(&m.To),
 	)
 }

@@ -28,11 +28,3 @@ func (m *Promotion) Make(move *move.Promotion, board chess.Board) (chess.Move, e
 
 	return move, nil
 }
-
-func (m *Promotion) Undo(move chess.Move, board chess.Board) error {
-	if err := move.Validate(); err != nil {
-		return err
-	}
-
-	return nil
-}

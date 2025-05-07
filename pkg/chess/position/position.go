@@ -25,13 +25,13 @@ func New(file File, rank Rank) Position {
 // Например, "e4" будет преобразовано в Position{FileE, Rank4}.
 // Нотация должна содержать ровно 2 символа: первый - буква от 'a' до 'h', второй - цифра от '1' до '8'.
 func FromNotation(notation string) Position {
-	if len(notation) != 2 {
+	if len(notation) == 0 {
 		return Position{}
 	}
 
-	rank, err := strconv.Atoi(notation[1:2])
-	if err != nil {
-		rank = 0
+	var rank int
+	if len(notation) > 1 {
+		rank, _ = strconv.Atoi(notation[1:2])
 	}
 
 	return Position{NewFile(notation[0:1]), Rank(rank)}
@@ -42,7 +42,7 @@ func (p Position) Validate() error {
 }
 
 func (p Position) String() string {
-	return fmt.Sprintf("%s%d", p.File, p.Rank)
+	return fmt.Sprintf("%s%s", p.File, p.Rank)
 }
 
 func (p *Position) UnmarshalJSON(data []byte) error {

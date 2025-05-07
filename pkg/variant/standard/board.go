@@ -75,20 +75,6 @@ func (b *board) MakeMove(move chess.Move) error {
 	return nil
 }
 
-func (b *board) UndoMove() (chess.Move, error) {
-	if len(b.movesHistory) == 0 {
-		return nil, nil
-	}
-
-	lastMove := b.movesHistory[len(b.movesHistory)-1]
-
-	if err := mover.Undo(lastMove, b); err != nil {
-		return nil, err
-	}
-
-	return lastMove, nil
-}
-
 func (b *board) NextTurn() {
 	b.turn = !b.turn
 }
@@ -129,10 +115,10 @@ func (b *board) isThreefoldRepetition() bool {
 func (b *board) castlings() []move.CastlingType {
 	castlings := make([]move.CastlingType, 0, 2)
 
-	if err := validator.ValidateCastling(move.CastlingShort, b); err == nil {
+	if validator.ValidateCastling(move.CastlingShort, b) == nil {
 		castlings = append(castlings, move.CastlingShort)
 	}
-	if err := validator.ValidateCastling(move.CastlingLong, b); err == nil {
+	if validator.ValidateCastling(move.CastlingLong, b) == nil {
 		castlings = append(castlings, move.CastlingLong)
 	}
 

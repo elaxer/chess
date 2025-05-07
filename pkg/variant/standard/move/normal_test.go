@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	. "github.com/elaxer/chess/pkg/chess"
-	. "github.com/elaxer/chess/pkg/chess/position"
+	"github.com/elaxer/chess/pkg/chess/position"
 )
 
 func TestNewNormal(t *testing.T) {
@@ -110,7 +110,7 @@ func TestNewNormal(t *testing.T) {
 
 func TestNormal_String(t *testing.T) {
 	type fields struct {
-		Position  Position
+		Position  position.Position
 		Piece     PieceNotation
 		IsCheck   bool
 		IsMate    bool
@@ -123,32 +123,32 @@ func TestNormal_String(t *testing.T) {
 	}{
 		{
 			"normal",
-			fields{FromNotation("a8"), NotationQueen, false, false, false},
+			fields{position.FromNotation("a8"), NotationQueen, false, false, false},
 			"Qa8",
 		},
 		{
 			"normal_pawn",
-			fields{FromNotation("e4"), NotationPawn, false, false, false},
+			fields{position.FromNotation("e4"), NotationPawn, false, false, false},
 			"e4",
 		},
 		{
 			"check",
-			fields{FromNotation("a1"), NotationRook, true, false, false},
+			fields{position.FromNotation("a1"), NotationRook, true, false, false},
 			"Ra1+",
 		},
 		{
 			"mate",
-			fields{FromNotation("a1"), NotationBishop, false, true, false},
+			fields{position.FromNotation("a1"), NotationBishop, false, true, false},
 			"Ba1#",
 		},
 		{
 			"check_capture",
-			fields{FromNotation("a1"), NotationKnight, true, false, true},
+			fields{position.FromNotation("a1"), NotationKnight, true, false, true},
 			"Nxa1+",
 		},
 		{
 			"mate_capture",
-			fields{FromNotation("c5"), NotationPawn, false, true, true},
+			fields{position.FromNotation("c5"), NotationPawn, false, true, true},
 			"xc5#",
 		},
 	}

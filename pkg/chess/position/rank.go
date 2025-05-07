@@ -1,6 +1,10 @@
 package position
 
-import validation "github.com/go-ozzo/ozzo-validation"
+import (
+	"strconv"
+
+	validation "github.com/go-ozzo/ozzo-validation"
+)
 
 const (
 	Rank1 Rank = iota + 1
@@ -21,4 +25,12 @@ func (r Rank) Validate() error {
 	return validation.Errors{
 		"rank": validation.Validate(int8(r), validation.Required, validation.Min(1), validation.Max(8)),
 	}.Filter()
+}
+
+func (r Rank) String() string {
+	if r.Validate() != nil {
+		return ""
+	}
+
+	return strconv.Itoa(int(r))
 }

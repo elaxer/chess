@@ -13,13 +13,13 @@ import (
 func TestNormal_FormatSameFile(t *testing.T) {
 	b := NewBoardFactory().CreateEmpty()
 	squares := b.Squares()
-	squares.AddPiece(NewQueen(SideWhite), position.New(position.FileD, position.Rank1))
-	squares.AddPiece(NewQueen(SideWhite), position.New(position.FileD, position.Rank8))
+	squares.AddPiece(NewQueen(SideWhite), position.FromNotation("d1"))
+	squares.AddPiece(NewQueen(SideWhite), position.FromNotation("d8"))
 
 	normalMove := &move.Normal{
 		CheckMate:     &move.CheckMate{IsCheck: true},
-		From:          position.New(position.FileD, position.Rank1),
-		To:            position.New(position.FileD, position.Rank4),
+		From:          position.FromNotation("d1"),
+		To:            position.FromNotation("d4"),
 		PieceNotation: NotationQueen,
 		IsCapture:     true,
 	}
@@ -39,13 +39,13 @@ func TestNormal_FormatSameFile(t *testing.T) {
 func TestNormal_FormatSameRank(t *testing.T) {
 	b := NewBoardFactory().CreateEmpty()
 	squares := b.Squares()
-	squares.AddPiece(NewRook(SideBlack), position.New(position.FileA, position.Rank1))
-	squares.AddPiece(NewRook(SideBlack), position.New(position.FileG, position.Rank1))
+	squares.AddPiece(NewRook(SideBlack), position.FromNotation("a1"))
+	squares.AddPiece(NewRook(SideBlack), position.FromNotation("g1"))
 
 	normalMove := &move.Normal{
 		CheckMate:     &move.CheckMate{IsMate: true},
-		From:          position.New(position.FileA, position.Rank1),
-		To:            position.New(position.FileD, position.Rank1),
+		From:          position.FromNotation("a1"),
+		To:            position.FromNotation("d1"),
 		PieceNotation: NotationRook,
 	}
 
@@ -64,14 +64,14 @@ func TestNormal_FormatSameRank(t *testing.T) {
 func TestNormal_FormatSameFileAndRank(t *testing.T) {
 	b := NewBoardFactory().CreateEmpty()
 	squares := b.Squares()
-	squares.AddPiece(NewBishop(SideWhite), position.New(position.FileB, position.Rank7))
-	squares.AddPiece(NewBishop(SideWhite), position.New(position.FileF, position.Rank7))
-	squares.AddPiece(NewBishop(SideWhite), position.New(position.FileB, position.Rank3))
+	squares.AddPiece(NewBishop(SideWhite), position.FromNotation("b7"))
+	squares.AddPiece(NewBishop(SideWhite), position.FromNotation("f7"))
+	squares.AddPiece(NewBishop(SideWhite), position.FromNotation("b3"))
 
 	normalMove := &move.Normal{
 		CheckMate:     &move.CheckMate{IsCheck: true},
-		From:          position.New(position.FileB, position.Rank7),
-		To:            position.New(position.FileD, position.Rank5),
+		From:          position.FromNotation("b7"),
+		To:            position.FromNotation("d5"),
 		PieceNotation: NotationBishop,
 	}
 

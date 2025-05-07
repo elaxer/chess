@@ -41,26 +41,6 @@ func (m *Castling) Make(castlingType move.CastlingType, board chess.Board) (ches
 	}, nil
 }
 
-func (m *Castling) Undo(move *move.Castling, board chess.Board) error {
-	// if err := move.Validate(); err != nil {
-	// 	return err
-	// }
-
-	// rank := board.EdgeRank(!board.Turn())
-
-	// kingNewPosition := position.New(position.FileG, rank)
-	// rookNewPosition := position.New(position.FileF, rank)
-	// if move.CastlingType.IsLong() {
-	// 	kingNewPosition = position.New(position.FileC, rank)
-	// 	rookNewPosition = position.New(position.FileD, rank)
-	// }
-
-	// board.MovePiece(kingNewPosition, position.New(position.FileE, rank))
-	// board.MovePiece(rookNewPosition, m.castlingRookPosition(move.CastlingType, board, !board.Turn()))
-
-	return nil
-}
-
 func (m *Castling) rookPosition(direction position.File, squares chess.Squares, kingPosition position.Position) (position.Position, error) {
 	for i := kingPosition.File + direction; i <= position.FileH && i >= 0; i += direction {
 		square := squares.GetByPosition(position.New(i, kingPosition.Rank))

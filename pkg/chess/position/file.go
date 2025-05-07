@@ -38,8 +38,8 @@ func (f File) Validate() error {
 }
 
 func (f File) String() string {
-	if err := f.Validate(); err != nil {
-		return "?"
+	if f.Validate() != nil {
+		return ""
 	}
 
 	return string(files[f-1])

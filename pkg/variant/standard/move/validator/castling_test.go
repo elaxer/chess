@@ -202,7 +202,7 @@ func TestCastling_ValidateKingWalked(t *testing.T) {
 	squares.AddPiece(piece.NewRook(SideWhite), FromNotation("h1"))
 
 	if err := validator.ValidateCastling(move.CastlingShort, b); err == nil {
-		t.Errorf("the white shouldn't be able castle")
+		t.Errorf("the white shouldn't be able castle, got error: %v", err)
 	}
 }
 
@@ -218,6 +218,6 @@ func TestCastling_ValidateRookWalked(t *testing.T) {
 	squares.AddPiece(rook, FromNotation("h1"))
 
 	if err := validator.ValidateCastling(move.CastlingShort, b); err == nil {
-		t.Errorf("the white shouldn't be able castle")
+		t.Errorf("the white shouldn't be able castle, got error: %v", err)
 	}
 }
