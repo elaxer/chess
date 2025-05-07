@@ -12,8 +12,8 @@ var ErrSquareNotFound = errors.New("не удалось найти клетку"
 type Squares []*Square
 
 // AddPiece добавляет фигуру на клетку по ее позиции.
-func (s Squares) AddPiece(piece Piece, pos position.Position) {
-	s.GetByPosition(pos).SetPiece(piece)
+func (s Squares) AddPiece(piece Piece, position position.Position) {
+	s.GetByPosition(position).SetPiece(piece)
 }
 
 // GetByPiece возвращает клетку по фигуре.
@@ -31,9 +31,9 @@ func (s Squares) GetByPiece(piece Piece) *Square {
 // GetByPosition возвращает клетку по ее позиции.
 // Если клетка не найдена, возвращает nil.
 // Позиция должна быть в пределах доски.
-func (s Squares) GetByPosition(pos position.Position) *Square {
+func (s Squares) GetByPosition(position position.Position) *Square {
 	for _, square := range s {
-		if square.Position == pos {
+		if square.Position == position {
 			return square
 		}
 	}

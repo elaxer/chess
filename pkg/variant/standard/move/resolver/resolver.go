@@ -8,7 +8,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 )
 
-var Err = errors.New("ошибка парсинга хода")
+var Err = errors.New("ошибка резолвинга")
 
 // ResolveFrom определяет стартовую позицию фигуры, которая будет ходить.
 // from - данные о стартовой позиции фигуры. Они могут быть заполнены не полностью.
@@ -45,4 +45,39 @@ func ResolveFrom(from, to position.Position, pieceNotation chess.PieceNotation, 
 	}
 
 	return from, nil
+}
+
+func UnresolveFrom(from, to position.Position, board chess.Board) (position.Position, error) {
+	if err := from.Validate(); err != nil {
+		return from, err
+	}
+
+	square := board.Squares().GetByPosition(from)
+	hasSameFile, hasSameRank := false, false
+
+	for _, samePiece := range board.Squares().GetPieces(square.Piece.Notation(), square.Piece.Side()) {
+		samePiecePosition := board.Squares().GetByPiece(samePiece).Position
+		if samePiecePosition == square.Position {
+			continue
+		}
+		if !samePiece.Moves(board).Has(to) {
+			continue
+		}
+
+		hasSameFile = hasSameFile || samePiecePosition.File == square.Position.File
+		hasSameRank = hasSameRank || samePiecePosition.Rank == square.Position.Rank
+		if hasSameFile && hasSameRank {
+			break
+		}
+	}
+
+	unresolvedFrom := position.Position{}
+	if hasSameRank {
+		unresolvedFrom.File = square.Position.File
+	}
+	if hasSameFile {
+		unresolvedFrom.Rank = square.Position.Rank
+	}
+
+	return unresolvedFrom, nil
 }

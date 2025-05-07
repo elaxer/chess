@@ -12,10 +12,20 @@ var (
 )
 
 func MakeMove(move chess.Move, board chess.Board) (chess.Move, error) {
-	return nil, nil
+	return makeMoveFromNotation(move.Notation(), board)
 }
 
-func MakeMoveFromNotation(notation string, board chess.Board) (chess.Move, error) {
+func makeMoveFromNotation(notation string, board chess.Board) (chess.Move, error) {
+	if move, err := mv.NewNormal(notation); err == nil {
+		return normalMover.Make(move, board)
+	}
+	if move, err := mv.NewPromotion(notation); err == nil {
+		return promotionMover.Make(move, board)
+	}
+	if move, err := mv.NewCastling(notation); err == nil {
+		return castlingMover.Make(move.CastlingType, board)
+	}
+
 	return nil, nil
 }
 

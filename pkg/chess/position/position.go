@@ -23,6 +23,7 @@ func New(file File, rank Rank) Position {
 
 // FromNotation создает новую позицию из шахматной нотации.
 // Например, "e4" будет преобразовано в Position{FileE, Rank4}.
+// todo:
 // Нотация должна содержать ровно 2 символа: первый - буква от 'a' до 'h', второй - цифра от '1' до '8'.
 func FromNotation(notation string) Position {
 	if len(notation) == 0 {

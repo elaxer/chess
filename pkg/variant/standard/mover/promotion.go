@@ -2,8 +2,8 @@ package mover
 
 import (
 	"github.com/elaxer/chess/pkg/chess"
-	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
+	"github.com/elaxer/chess/pkg/variant/standard/move/resolver"
 	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
@@ -14,11 +14,16 @@ type Promotion struct {
 }
 
 func (m *Promotion) Make(move *move.Promotion, board chess.Board) (chess.Move, error) {
-	if err := validator.ValidatePromotion(move, board); err != nil {
+	from, err := resolver.ResolveFrom(move.From, move.To, chess.NotationPawn, board)
+	if err != nil {
 		return nil, err
 	}
 
-	from := position.New(move.To.File, move.To.Rank-piece.PawnRankDirection(board.Turn()))
+	move.From = from
+
+	if err := validator.ValidatePromotion(move, board); err != nil {
+		return nil, err
+	}
 
 	board.MovePiece(from, move.To)
 
