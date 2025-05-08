@@ -14,18 +14,16 @@ type Promotion struct {
 }
 
 func (m *Promotion) Make(move *move.Promotion, board chess.Board) (chess.Move, error) {
-	from, err := resolver.ResolveFrom(move.From, move.To, chess.NotationPawn, board)
+	var err error
+	move.Normal, err = resolver.ResolveNormal(move.Normal, board)
 	if err != nil {
 		return nil, err
 	}
-
-	move.From = from
-
 	if err := validator.ValidatePromotion(move, board); err != nil {
 		return nil, err
 	}
 
-	board.MovePiece(from, move.To)
+	board.MovePiece(move.From, move.To)
 
 	board.Squares().GetByPosition(move.To).SetPiece(piece.New(move.NewPiece, board.Turn()))
 

@@ -1,6 +1,8 @@
 package mover
 
 import (
+	"errors"
+
 	"github.com/elaxer/chess/pkg/chess"
 	mv "github.com/elaxer/chess/pkg/variant/standard/move"
 )
@@ -15,6 +17,7 @@ func MakeMove(move chess.Move, board chess.Board) (chess.Move, error) {
 	return makeMoveFromNotation(move.Notation(), board)
 }
 
+// todo
 func makeMoveFromNotation(notation string, board chess.Board) (chess.Move, error) {
 	if move, err := mv.NewNormal(notation); err == nil {
 		return normalMover.Make(move, board)
@@ -26,7 +29,7 @@ func makeMoveFromNotation(notation string, board chess.Board) (chess.Move, error
 		return castlingMover.Make(move.CastlingType, board)
 	}
 
-	return nil, nil
+	return nil, errors.New("invalid move notation")
 }
 
 func modifyCheckMate(checkMate *mv.CheckMate, board chess.Board) {

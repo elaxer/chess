@@ -18,7 +18,7 @@ const (
 	FileH
 )
 
-const files = "abcdefgh"
+const files = "abcdefghhijklmnopqrstuvwxyz"
 
 // File представляет вертикаль на шахматной доске.
 // Принимает значения от 1 до 8, где 1 соответствует вертикали "a", а 8 - вертикали "h".

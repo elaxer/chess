@@ -1,6 +1,10 @@
-package move
+package move_test
 
-import "testing"
+import (
+	"testing"
+
+	. "github.com/elaxer/chess/pkg/variant/standard/move"
+)
 
 func TestNewCastling(t *testing.T) {
 	type args struct {
@@ -68,8 +72,7 @@ func TestNewCastling(t *testing.T) {
 
 func TestCastling_String(t *testing.T) {
 	type fields struct {
-		Base *CheckMate
-		Type CastlingType
+		move *Castling
 	}
 	tests := []struct {
 		name   string
@@ -78,32 +81,28 @@ func TestCastling_String(t *testing.T) {
 	}{
 		{
 			"castling_short",
-			fields{&CheckMate{false, false}, CastlingShort},
+			fields{&Castling{CheckMate: new(CheckMate), CastlingType: CastlingShort}},
 			"0-0",
 		},
 		{
 			"castling_long",
-			fields{&CheckMate{false, false}, CastlingLong},
+			fields{&Castling{CheckMate: new(CheckMate), CastlingType: CastlingLong}},
 			"0-0-0",
 		},
 		{
 			"castling_check",
-			fields{&CheckMate{true, false}, CastlingShort},
+			fields{&Castling{CheckMate: &CheckMate{IsCheck: true, IsMate: false}, CastlingType: CastlingShort}},
 			"0-0+",
 		},
 		{
 			"castling_mate",
-			fields{&CheckMate{false, true}, CastlingLong},
+			fields{&Castling{CheckMate: &CheckMate{IsCheck: false, IsMate: true}, CastlingType: CastlingLong}},
 			"0-0-0#",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &Castling{
-				CheckMate:    tt.fields.Base,
-				CastlingType: tt.fields.Type,
-			}
-			if got := m.String(); got != tt.want {
+			if got := tt.fields.move.String(); got != tt.want {
 				t.Errorf("Castling.String() = %v, want %v", got, tt.want)
 			}
 		})

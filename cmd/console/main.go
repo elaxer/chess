@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	squares := standard.NewBoardFactory().CreateFilled().Squares()
+	squares := standard.NewFactory().CreateFilled().Squares()
 
 	visualizer.Visualize(squares, os.Stdout)
 }

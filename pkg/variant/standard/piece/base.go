@@ -34,7 +34,7 @@ func (p *basePiece) legalMoves(board chess.Board, piece chess.Piece, moves *posi
 
 	fromSquare := board.Squares().GetByPiece(piece)
 
-	legalMoves := set.New[position.Position]()
+	legalMoves := set.FromSlice(make([]position.Position, 0, moves.Len()))
 	for move := range moves.Items() {
 		p.temporaryMoving(fromSquare, board.Squares().GetByPosition(move), func() {
 			_, kingPosition := board.Squares().GetPiece(chess.NotationKing, board.Turn())

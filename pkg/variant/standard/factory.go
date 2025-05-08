@@ -6,14 +6,14 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
-type boardFactory struct {
+type factory struct {
 }
 
-func NewBoardFactory() chess.BoardFactory {
-	return &boardFactory{}
+func NewFactory() chess.BoardFactory {
+	return &factory{}
 }
 
-func (f *boardFactory) CreateEmpty() chess.Board {
+func (f *factory) CreateEmpty() chess.Board {
 	squares := make(chess.Squares, 0, 64)
 	for i := position.FileA; i <= position.FileH; i++ {
 		for j := position.Rank1; j <= position.Rank8; j++ {
@@ -21,7 +21,7 @@ func (f *boardFactory) CreateEmpty() chess.Board {
 		}
 	}
 
-	return &board{
+	return &standard{
 		turn:           chess.SideWhite,
 		squares:        squares,
 		movesHistory:   make([]chess.Move, 0, 128),
@@ -29,7 +29,7 @@ func (f *boardFactory) CreateEmpty() chess.Board {
 	}
 }
 
-func (f *boardFactory) CreateFilled() chess.Board {
+func (f *factory) CreateFilled() chess.Board {
 	board := f.CreateEmpty()
 	notations := []chess.PieceNotation{
 		chess.NotationRook,
@@ -53,7 +53,7 @@ func (f *boardFactory) CreateFilled() chess.Board {
 	return board
 }
 
-func (f *boardFactory) CreateFromMoves(moves []chess.Move) (chess.Board, error) {
+func (f *factory) CreateFromMoves(moves []chess.Move) (chess.Board, error) {
 	board := f.CreateFilled()
 
 	for _, move := range moves {

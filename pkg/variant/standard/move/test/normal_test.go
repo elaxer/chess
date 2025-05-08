@@ -1,10 +1,11 @@
-package move
+package move_test
 
 import (
 	"testing"
 
 	. "github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
+	. "github.com/elaxer/chess/pkg/variant/standard/move"
 )
 
 func TestNewNormal(t *testing.T) {
@@ -109,59 +110,76 @@ func TestNewNormal(t *testing.T) {
 }
 
 func TestNormal_String(t *testing.T) {
-	type fields struct {
-		Position  position.Position
-		Piece     PieceNotation
-		IsCheck   bool
-		IsMate    bool
-		IsCapture bool
-	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		move *Normal
+		want string
 	}{
 		{
 			"normal",
-			fields{position.FromNotation("a8"), NotationQueen, false, false, false},
+			&Normal{
+				CheckMate:     new(CheckMate),
+				To:            position.FromNotation("a8"),
+				PieceNotation: NotationQueen,
+				IsCapture:     false,
+			},
 			"Qa8",
 		},
 		{
 			"normal_pawn",
-			fields{position.FromNotation("e4"), NotationPawn, false, false, false},
+			&Normal{
+				CheckMate:     new(CheckMate),
+				To:            position.FromNotation("e4"),
+				PieceNotation: NotationPawn,
+				IsCapture:     false,
+			},
 			"e4",
 		},
 		{
 			"check",
-			fields{position.FromNotation("a1"), NotationRook, true, false, false},
+			&Normal{
+				CheckMate:     &CheckMate{IsCheck: true, IsMate: false},
+				To:            position.FromNotation("a1"),
+				PieceNotation: NotationRook,
+				IsCapture:     false,
+			},
 			"Ra1+",
 		},
 		{
 			"mate",
-			fields{position.FromNotation("a1"), NotationBishop, false, true, false},
+			&Normal{
+				CheckMate:     &CheckMate{IsCheck: false, IsMate: true},
+				To:            position.FromNotation("a1"),
+				PieceNotation: NotationBishop,
+				IsCapture:     false,
+			},
 			"Ba1#",
 		},
 		{
 			"check_capture",
-			fields{position.FromNotation("a1"), NotationKnight, true, false, true},
+			&Normal{
+				CheckMate:     &CheckMate{IsCheck: true, IsMate: false},
+				To:            position.FromNotation("a1"),
+				PieceNotation: NotationKnight,
+				IsCapture:     true,
+			},
 			"Nxa1+",
 		},
 		{
 			"mate_capture",
-			fields{position.FromNotation("c5"), NotationPawn, false, true, true},
+			&Normal{
+				CheckMate:     &CheckMate{IsCheck: false, IsMate: true},
+				To:            position.FromNotation("c5"),
+				PieceNotation: NotationPawn,
+				IsCapture:     true,
+			},
 			"xc5#",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			move := Normal{
-				CheckMate:     &CheckMate{tt.fields.IsCheck, tt.fields.IsMate},
-				To:            tt.fields.Position,
-				PieceNotation: tt.fields.Piece,
-				IsCapture:     tt.fields.IsCapture,
-			}
-			if got := move.String(); got != tt.want {
-				t.Errorf("Normal.String() = %v, wantErr %v", got, tt.want)
+			if got := tt.move.String(); got != tt.want {
+				t.Errorf("Normal.String() = %v, want %v", got, tt.want)
 			}
 		})
 	}

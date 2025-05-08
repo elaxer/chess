@@ -11,12 +11,10 @@ type Normal struct {
 }
 
 func (m *Normal) Make(move *move.Normal, board chess.Board) (chess.Move, error) {
-	from, err := resolver.ResolveFrom(move.From, move.To, move.PieceNotation, board)
+	move, err := resolver.ResolveNormal(move, board)
 	if err != nil {
 		return nil, err
 	}
-
-	move.From = from
 
 	if err := validator.ValidateNormal(move, board); err != nil {
 		return nil, err

@@ -13,7 +13,7 @@ import (
 )
 
 func TestBoard_CastleShort(t *testing.T) {
-	b := standard.NewBoardFactory().CreateEmpty()
+	b := standard.NewFactory().CreateEmpty()
 	squares := b.Squares()
 
 	kingSquare := squares.GetByPosition(position.FromNotation("e1"))
@@ -45,7 +45,7 @@ func TestBoard_CastleShort(t *testing.T) {
 }
 
 func TestBoard_CastleLong(t *testing.T) {
-	b := standard.NewBoardFactory().CreateEmpty()
+	b := standard.NewFactory().CreateEmpty()
 	squares := b.Squares()
 
 	kingSquare := squares.GetByPosition(position.FromNotation("e1"))
@@ -74,7 +74,7 @@ func TestBoard_CastleLong(t *testing.T) {
 }
 
 func TestBoard_CastleBlack(t *testing.T) {
-	b := standard.NewBoardFactory().CreateEmpty()
+	b := standard.NewFactory().CreateEmpty()
 	b.NextTurn()
 
 	squares := b.Squares()

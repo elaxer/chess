@@ -13,22 +13,26 @@ import (
 // Promotion представляет ход с превращением пешки в другую фигуру.
 // В шахматной нотации он записывается как "e8=Q" или "e7=R+".
 type Promotion struct {
-	*CheckMate
-	From, To position.Position
+	*Normal
 	NewPiece chess.PieceNotation
 }
 
 func NewPromotion(notation string) (*Promotion, error) {
-	result, err := rgx.Group(regexp.MustCompile(`^(?P<from_file>[a-h])?(?P<to>[a-h][18])=(?P<piece>[QBNR])(?P<checkmate>[+#])?$`), notation)
+	result, err := rgx.Group(regexp.MustCompile(`^(?P<from_file>[a-h])?(?P<is_capture>x)?(?P<to>[a-h][18])=(?P<piece>[QBNR])(?P<checkmate>[+#])?$`), notation)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Promotion{
-		CheckMate: NewCheckMate(result["checkmate"]),
-		From:      position.FromNotation(result["from_file"]),
-		To:        position.FromNotation(result["to"]),
-		NewPiece:  chess.PieceNotation(result["piece"]),
+		&Normal{
+			NewCheckMate(result["checkmate"]),
+			chess.NotationPawn,
+			position.FromNotation(result["from_file"]),
+			position.FromNotation(result["to"]),
+			result["is_capture"] != "",
+			nil,
+		},
+		chess.PieceNotation(result["piece"]),
 	}, nil
 }
 

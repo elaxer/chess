@@ -43,7 +43,8 @@ func TestNewFile(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewFile(tt.args.str)
 			if err := got.Validate(); (err != nil) != tt.wantErr {
-				t.Fatalf("NewFile() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("NewFile() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
 			if got != tt.want {
 				t.Errorf("NewFile() got = %v, wantErr %v", got, tt.want)

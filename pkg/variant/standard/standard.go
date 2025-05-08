@@ -11,29 +11,29 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/mover"
 )
 
-// board структура описывает шахматную доску и ее состояние.
+// standard - эта структура описывает шахматную доску и ее состояние.
 // Реализует логику стандартных шахмат.
-// Реализует интерфейс board из пакета chess.
-type board struct {
+// Реализует интерфейс standard из пакета chess.
+type standard struct {
 	turn           chess.Side
 	squares        chess.Squares
 	movesHistory   []chess.Move
 	capturedPieces []chess.Piece
 }
 
-func (b *board) Squares() chess.Squares {
+func (b *standard) Squares() chess.Squares {
 	return b.squares
 }
 
-func (b *board) Turn() chess.Side {
+func (b *standard) Turn() chess.Side {
 	return b.turn
 }
 
-func (b *board) MovesHistory() []chess.Move {
+func (b *standard) MovesHistory() []chess.Move {
 	return b.movesHistory
 }
 
-func (b *board) Moves(side chess.Side) *position.Set {
+func (b *standard) Moves(side chess.Side) *position.Set {
 	moves := set.FromSlice(make([]position.Position, 0, 32))
 	for _, piece := range b.squares.GetAllPieces(side) {
 		moves = moves.Union(piece.Moves(b))
@@ -42,12 +42,12 @@ func (b *board) Moves(side chess.Side) *position.Set {
 	return moves
 }
 
-func (b *board) State() chess.State {
+func (b *standard) State() chess.State {
 	if b.isDraw() {
 		return chess.StateDraw
 	}
 
-	isCheck := b.isCheck(b.turn)
+	isCheck := b.isCheck()
 	availableMovesCount := b.Moves(b.turn).Len()
 
 	if isCheck && availableMovesCount == 0 {
@@ -63,7 +63,7 @@ func (b *board) State() chess.State {
 	return chess.StateClear
 }
 
-func (b *board) MakeMove(move chess.Move) error {
+func (b *standard) MakeMove(move chess.Move) error {
 	modifiedMove, err := mover.MakeMove(move, b)
 	if err != nil {
 		return err
@@ -75,11 +75,11 @@ func (b *board) MakeMove(move chess.Move) error {
 	return nil
 }
 
-func (b *board) NextTurn() {
+func (b *standard) NextTurn() {
 	b.turn = !b.turn
 }
 
-func (b *board) MovePiece(from, to position.Position) (capturedPiece chess.Piece) {
+func (b *standard) MovePiece(from, to position.Position) (capturedPiece chess.Piece) {
 	fromSquare := b.squares.GetByPosition(from)
 	fromSquare.Piece.SetMoved()
 	defer fromSquare.SetPiece(nil)
@@ -94,25 +94,25 @@ func (b *board) MovePiece(from, to position.Position) (capturedPiece chess.Piece
 	return
 }
 
-func (b *board) isCheck(side chess.Side) bool {
-	_, kingPosition := b.squares.GetPiece(chess.NotationKing, side)
+func (b *standard) isCheck() bool {
+	_, kingPosition := b.squares.GetPiece(chess.NotationKing, b.turn)
 
-	return b.Moves(!side).Has(kingPosition)
+	return b.Moves(!b.turn).Has(kingPosition)
 }
 
-func (b *board) isDraw() bool {
+func (b *standard) isDraw() bool {
 	return b.squares.GetAllPiecesCount(chess.SideWhite) == 1 &&
 		b.squares.GetAllPiecesCount(chess.SideBlack) == 1 &&
 		!b.isThreefoldRepetition()
 }
 
-func (b *board) isThreefoldRepetition() bool {
+func (b *standard) isThreefoldRepetition() bool {
 	return false
 }
 
 // castlings возвращает возможные рокировки для текущей стороны.
 // Если рокировка невозможна, то она не будет включена в список.
-func (b *board) castlings() []move.CastlingType {
+func (b *standard) castlings() []move.CastlingType {
 	castlings := make([]move.CastlingType, 0, 2)
 
 	if validator.ValidateCastling(move.CastlingShort, b) == nil {
@@ -125,7 +125,7 @@ func (b *board) castlings() []move.CastlingType {
 	return castlings
 }
 
-func (b *board) MarshalJSON() ([]byte, error) {
+func (b *standard) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]any{
 		"squares":         b.squares,
 		"state":           b.State(),

@@ -13,10 +13,10 @@ import (
 // Normal представляет обычный ход фигурой в шахматах.
 type Normal struct {
 	*CheckMate
-	// From, To означают начальную и конечную позиции хода.
-	From, To position.Position
 	// PieceNotation обозначает фигуру, которая делает ход.
 	PieceNotation chess.PieceNotation
+	// From, To означают начальную и конечную позиции хода.
+	From, To position.Position
 	// IsCapture означает, было ли взятие фигуры противника в результате хода.
 	IsCapture     bool
 	CapturedPiece chess.Piece
