@@ -4,10 +4,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"regexp"
 	"strconv"
 
+	"github.com/elaxer/chess/pkg/rgx"
 	validation "github.com/go-ozzo/ozzo-validation"
 )
+
+var (
+	RegexpFrom = fmt.Sprintf("(?P<from>%s?%s?)", RegexpFile, RegexpRank)
+	RegexpTo   = fmt.Sprintf("(?P<to>%s%s)", RegexpFile, RegexpRank)
+)
+
+var notationRegexp = regexp.MustCompile("^(?P<file>[a-p])?(?P<rank>1[0-6]|[1-9])?$")
 
 // Position представляет позицию на шахматной доске.
 // Он состоит из вертикали (File) и горизонтали (Rank).
@@ -23,19 +32,15 @@ func New(file File, rank Rank) Position {
 
 // FromNotation создает новую позицию из шахматной нотации.
 // Например, "e4" будет преобразовано в Position{FileE, Rank4}.
-// todo:
-// Нотация должна содержать ровно 2 символа: первый - буква от 'a' до 'h', второй - цифра от '1' до '8'.
 func FromNotation(notation string) Position {
-	if len(notation) == 0 {
+	result, err := rgx.Group(notationRegexp, notation)
+	if err != nil {
 		return Position{}
 	}
 
-	var rank int
-	if len(notation) > 1 {
-		rank, _ = strconv.Atoi(notation[1:2])
-	}
+	rank, _ := strconv.Atoi(result["rank"])
 
-	return Position{NewFile(notation[0:1]), Rank(rank)}
+	return Position{NewFile(result["file"]), Rank(rank)}
 }
 
 func (p Position) Validate() error {

@@ -1,10 +1,13 @@
 package move
 
 import (
+	"fmt"
 	"regexp"
 
 	"github.com/elaxer/chess/pkg/rgx"
 )
+
+var RegexpCastling = regexp.MustCompile(fmt.Sprintf("^0-0(?P<long>-0)?%s?$", RegexpCheckMate))
 
 type Castling struct {
 	*CheckMate
@@ -12,14 +15,14 @@ type Castling struct {
 }
 
 func NewCastling(notation string) (*Castling, error) {
-	result, err := rgx.Group(regexp.MustCompile("^0-0(?P<long_castling>-0)?(?P<checkmate>[+#])?$"), notation)
+	result, err := rgx.Group(RegexpCastling, notation)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Castling{
 		CheckMate:    NewCheckMate(result["checkmate"]),
-		CastlingType: result["long_castling"] == "",
+		CastlingType: result["long"] == "",
 	}, nil
 }
 

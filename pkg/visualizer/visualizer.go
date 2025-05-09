@@ -9,9 +9,9 @@ import (
 )
 
 func Visualize(squares chess.Squares, writer io.Writer) {
-	for i := 1; i <= 8; i++ {
-		for j := 1; j <= 8; j++ {
-			square := squares.GetByPosition(position.New(position.File(j), position.Rank(i)))
+	for rank := range squares.EdgePosition().Rank {
+		for file := range squares.EdgePosition().File {
+			square := squares.GetByPosition(position.New(file+1, rank+1))
 			if square.IsEmpty() {
 				fmt.Fprint(writer, ". ")
 

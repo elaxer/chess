@@ -12,6 +12,8 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 )
 
+//todo tests
+
 func TestBoard_CastleShort(t *testing.T) {
 	b := standard.NewFactory().CreateEmpty()
 	squares := b.Squares()

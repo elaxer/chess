@@ -19,8 +19,8 @@ func TestRank_Validate(t *testing.T) {
 			true,
 		},
 		{
-			"bigger_than_8",
-			Rank(9),
+			"bigger_than_max",
+			Rank(MaxRank + 1),
 			true,
 		},
 	}

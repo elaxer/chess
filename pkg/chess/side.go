@@ -18,8 +18,8 @@ func (s Side) IsBlack() bool {
 
 func (s Side) String() string {
 	if s.IsBlack() {
-		return "black"
+		return "b"
 	}
 
-	return "white"
+	return "w"
 }

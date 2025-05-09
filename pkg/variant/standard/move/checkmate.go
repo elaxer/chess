@@ -5,6 +5,8 @@ const (
 	notationMate  = "#"
 )
 
+const RegexpCheckMate = `(?P<checkmate>[+#])`
+
 type CheckMate struct {
 	IsCheck bool
 	IsMate  bool

@@ -10,6 +10,12 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
+var promotionRegexp = regexp.MustCompile(fmt.Sprintf(
+	`^(?P<from_file>[a-p])?(?P<is_capture>x)?%s=(?P<piece>[QBNR])%s?$`,
+	position.RegexpTo,
+	RegexpCheckMate,
+))
+
 // Promotion представляет ход с превращением пешки в другую фигуру.
 // В шахматной нотации он записывается как "e8=Q" или "e7=R+".
 type Promotion struct {
@@ -18,7 +24,7 @@ type Promotion struct {
 }
 
 func NewPromotion(notation string) (*Promotion, error) {
-	result, err := rgx.Group(regexp.MustCompile(`^(?P<from_file>[a-h])?(?P<is_capture>x)?(?P<to>[a-h][18])=(?P<piece>[QBNR])(?P<checkmate>[+#])?$`), notation)
+	result, err := rgx.Group(promotionRegexp, notation)
 	if err != nil {
 		return nil, err
 	}

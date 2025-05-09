@@ -15,15 +15,28 @@ const (
 	Rank6
 	Rank7
 	Rank8
+
+	Rank9
+	Rank10
+	Rank11
+	Rank12
+	Rank13
+	Rank14
+	Rank15
+	Rank16
 )
 
+const MaxRank = Rank16
+
+const RegexpRank = "(1[0-6]|[1-9])"
+
 // Rank представляет горизонталь на шахматной доске.
-// Принимает значения от 1 до 8.
+// Принимает значения от 1 до 16.
 type Rank int8
 
 func (r Rank) Validate() error {
 	return validation.Errors{
-		"rank": validation.Validate(int8(r), validation.Required, validation.Min(1), validation.Max(8)),
+		"rank": validation.Validate(int8(r), validation.Required, validation.Min(1), validation.Max(int8(MaxRank))),
 	}.Filter()
 }
 

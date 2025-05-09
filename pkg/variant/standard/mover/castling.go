@@ -1,7 +1,7 @@
 package mover
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
@@ -42,16 +42,17 @@ func (m *Castling) Make(castlingType move.CastlingType, board chess.Board) (ches
 }
 
 func (m *Castling) rookPosition(direction position.File, squares chess.Squares, kingPosition position.Position) (position.Position, error) {
-	for i := kingPosition.File + direction; i <= position.FileH && i >= 0; i += direction {
+	for i := kingPosition.File + direction; i <= squares.EdgePosition().File && i > 0; i += direction {
 		square := squares.GetByPosition(position.New(i, kingPosition.Rank))
 		if !square.IsEmpty() && square.Piece.Notation() == chess.NotationRook {
 			return square.Position, nil
 		}
 	}
 
-	return position.Position{}, errors.New("ладья не найдена")
+	return position.Position{}, fmt.Errorf("%w: ладья не найдена", validator.ErrCastling)
 }
 
+// todo
 func fileDirection(castlingType move.CastlingType) position.File {
 	return map[move.CastlingType]position.File{
 		move.CastlingShort: 1,

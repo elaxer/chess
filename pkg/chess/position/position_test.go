@@ -4,6 +4,35 @@ import (
 	"testing"
 )
 
+func TestFromNotation(t *testing.T) {
+	type args struct {
+		notation string
+	}
+	tests := []struct {
+		name string
+		args args
+		want Position
+	}{
+		{
+			"full",
+			args{"e4"},
+			Position{FileE, Rank4},
+		},
+		{
+			"file",
+			args{"c"},
+			Position{File: FileC},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := FromNotation(tt.args.notation); got != tt.want {
+				t.Errorf("FromNotation() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestPosition_UnmarshalJSON(t *testing.T) {
 	type fields struct {
 		File File

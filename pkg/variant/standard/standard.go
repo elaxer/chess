@@ -125,6 +125,10 @@ func (b *standard) castlings() []move.CastlingType {
 	return castlings
 }
 
+func (b *standard) String() string {
+	return "todo: return FEN"
+}
+
 func (b *standard) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]any{
 		"squares":         b.squares,

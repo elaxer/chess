@@ -1,4 +1,4 @@
-// Description: Пакет rgx предоставляет функции для работы с регулярными выражениями.
+// Package rgx provides functions for working with regular expressions.
 package rgx
 
 import (
@@ -6,14 +6,21 @@ import (
 	"regexp"
 )
 
-var ErrNotMatch = errors.New("строка не совпадает с регулярным выражением")
+var ErrMismatch = errors.New("string does not match regular expression")
 
-// Group возвращает именованные группы и их значения из регулярного выражения и строки.
-// Возвращает ошибку ErrNotMatch, если строка не совпадает с регулярным выражением.
+// Group matches the input string against the provided regular expression and returns
+// a map of named capture groups to their corresponding matched values.
+//
+// If the string does not match the regular expression, it returns ErrMismatch.
+//
+// Example:
+//
+//	r := regexp.MustCompile(`(?P<name>\w+)-(?P<id>\d+)`)
+//	Group(r, "alice-42") // returns: map["name":"alice", "id":"42"]
 func Group(r *regexp.Regexp, str string) (map[string]string, error) {
 	match := r.FindStringSubmatch(str)
 	if match == nil {
-		return nil, ErrNotMatch
+		return nil, ErrMismatch
 	}
 
 	result := make(map[string]string)

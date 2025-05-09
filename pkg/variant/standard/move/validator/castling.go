@@ -3,7 +3,6 @@ package validator
 import (
 	"fmt"
 
-	"github.com/elaxer/chess/pkg/abs"
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/set"
@@ -35,14 +34,14 @@ func ValidateCastling(castlingType move.CastlingType, board chess.Board) error {
 
 func castlingVerifyingPositions(direction position.File, squares chess.Squares, kingPosition position.Position) (*position.Set, error) {
 	positions := set.FromSlice(make([]position.Position, 0, 2))
-	for file := kingPosition.File + direction; file <= position.FileH && file >= 0; file += direction {
+	for file := kingPosition.File + direction; file <= squares.EdgePosition().File && file > 0; file += direction {
 		square := squares.GetByPosition(position.New(file, kingPosition.Rank))
 		if square == nil {
 			return nil, fmt.Errorf("%w: нет ладьи", ErrCastling)
 		}
 
 		if square.IsEmpty() {
-			if abs.Abs(file-kingPosition.File) <= 2 {
+			if diff := file - kingPosition.File; max(diff, -diff) <= 2 {
 				positions.Add(square.Position)
 			}
 

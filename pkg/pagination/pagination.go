@@ -1,10 +1,9 @@
-// Description: Пакет предоставляет код для работы с пагинацией объектов.
+// Package pagination представляет код для работы с пагинацией объектов.
 package pagination
 
 import "sync"
 
 // Pagination представляет пагинацию объектов.
-
 type Pagination struct {
 	// perPage - количество объектов на одной странице.
 	perPage int
@@ -15,9 +14,8 @@ type Pagination struct {
 	// pageButtonsCount - количество кнопок пагинации на одной странице.
 	pageButtonsCount int
 
-	pagesCount int
-	pageStart  int
-	pageEnd    int
+	pagesCount         int
+	pageStart, pageEnd int
 
 	onceCount, onceStart, oncePage sync.Once
 }

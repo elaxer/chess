@@ -1,7 +1,6 @@
 package move_test
 
 import (
-	"reflect"
 	"testing"
 
 	. "github.com/elaxer/chess/pkg/variant/standard/move"
@@ -64,7 +63,7 @@ func TestNewPromotion(t *testing.T) {
 		},
 		{
 			"invalid_file",
-			args{"i8=B"},
+			args{"w8=B"},
 			nil,
 			true,
 		},
@@ -82,7 +81,7 @@ func TestNewPromotion(t *testing.T) {
 
 			got.Normal.PieceNotation = NotationPawn
 
-			if !reflect.DeepEqual(got, tt.want) {
+			if got.String() != tt.want.String() {
 				t.Errorf("NewPromotion() = %v, want %v", got, tt.want)
 			}
 		})

@@ -1,14 +1,21 @@
 package move
 
 import (
+	"fmt"
 	"regexp"
-	"strconv"
 
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/rgx"
 	validation "github.com/go-ozzo/ozzo-validation"
 )
+
+var normalRegexp = regexp.MustCompile(fmt.Sprintf(
+	"^(?P<piece>[KQBNR])?%s?(?P<is_capture>x)?%s%s?$",
+	position.RegexpFrom,
+	position.RegexpTo,
+	RegexpCheckMate,
+))
 
 // Normal представляет обычный ход фигурой в шахматах.
 type Normal struct {
@@ -24,35 +31,24 @@ type Normal struct {
 
 // NewNormal создает новый ход из шахматной нотации.
 func NewNormal(notation string) (*Normal, error) {
-	const regexpStr = "^(?P<piece>[KQBNR])?(?P<file_from>[a-h])?(?P<rank_from>[1-8])?(?P<is_capture>x)?(?P<to>[a-h][1-8])(?P<checkmate>[+#])?$"
-	result, err := rgx.Group(regexp.MustCompile(regexpStr), notation)
+	result, err := rgx.Group(normalRegexp, notation)
 	if err != nil {
 		return nil, err
 	}
 
-	move := &Normal{
-		CheckMate:     NewCheckMate(result["checkmate"]),
-		To:            position.FromNotation(result["to"]),
-		PieceNotation: chess.PieceNotation(result["piece"]),
-		IsCapture:     result["is_capture"] != "",
-	}
-
-	if result["file_from"] != "" {
-		move.From.File = position.NewFile(result["file_from"])
-	}
-
-	if result["rank_from"] != "" {
-		rankFrom, _ := strconv.Atoi(result["rank_from"])
-		move.From.Rank = position.Rank(rankFrom)
-
-	}
-
-	return move, nil
+	return &Normal{
+		NewCheckMate(result["checkmate"]),
+		chess.PieceNotation(result["piece"]),
+		position.FromNotation(result["from"]),
+		position.FromNotation(result["to"]),
+		result["is_capture"] != "",
+		nil,
+	}, nil
 }
 
 func (m *Normal) Notation() string {
 	str := string(m.PieceNotation)
-	if m.From.File != 0 {
+	if m.From.Validate() == nil {
 		str += m.From.String()
 	}
 	if m.IsCapture {

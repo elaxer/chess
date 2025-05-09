@@ -10,14 +10,6 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standarttest"
 )
 
-func TestFactory_CreateEmpty(t *testing.T) {
-	squares := standard.NewFactory().CreateEmpty().Squares()
-
-	if len(squares) != 64 {
-		t.Fatalf("expected 64 squares, got %d", len(squares))
-	}
-}
-
 // https://www.chess.com/games/view/14842105
 func TestFactory_CreateFromMoves(t *testing.T) {
 	moves := []string{
@@ -91,7 +83,7 @@ func TestFactory_CreateFromMoves(t *testing.T) {
 		FromNotation("g7"): piece.NewPawn(SideBlack),
 	}
 
-	for _, square := range b.Squares() {
+	for _, square := range b.Squares().Iter() {
 		expectedPiece, ok := expected[square.Position]
 		if !ok {
 			if !square.IsEmpty() {

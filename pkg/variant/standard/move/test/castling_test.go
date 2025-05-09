@@ -57,7 +57,8 @@ func TestNewCastling(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := NewCastling(tt.args.str)
 			if (err != nil) != tt.wantErr {
-				t.Fatalf("NewCastling() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("NewCastling() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
 			if tt.wantErr {
 				return

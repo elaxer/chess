@@ -70,8 +70,8 @@ func TestFile_Validate(t *testing.T) {
 			true,
 		},
 		{
-			"bigger_than_8",
-			File(9),
+			"bigger_than_max",
+			MaxFile + 1,
 			true,
 		},
 	}
@@ -101,9 +101,9 @@ func TestFile_String(t *testing.T) {
 			"h",
 		},
 		{
-			"?",
-			File(9),
-			"?",
+			"bigger_than_max",
+			MaxFile + 1,
+			"",
 		},
 	}
 	for _, tt := range tests {

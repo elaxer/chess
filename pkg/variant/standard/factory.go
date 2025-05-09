@@ -1,10 +1,14 @@
 package standard
 
 import (
+	"fmt"
+
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
+
+var edgePosition = position.New(position.FileH, position.Rank8)
 
 type factory struct {
 }
@@ -14,16 +18,9 @@ func NewFactory() chess.BoardFactory {
 }
 
 func (f *factory) CreateEmpty() chess.Board {
-	squares := make(chess.Squares, 0, 64)
-	for i := position.FileA; i <= position.FileH; i++ {
-		for j := position.Rank1; j <= position.Rank8; j++ {
-			squares = append(squares, &chess.Square{Position: position.New(i, j)})
-		}
-	}
-
 	return &standard{
 		turn:           chess.SideWhite,
-		squares:        squares,
+		squares:        chess.NewSquares(edgePosition),
 		movesHistory:   make([]chess.Move, 0, 128),
 		capturedPieces: make([]chess.Piece, 0, 30),
 	}
@@ -42,12 +39,14 @@ func (f *factory) CreateFilled() chess.Board {
 		chess.NotationRook,
 	}
 
-	for i := position.FileA; i <= position.FileH; i++ {
-		board.Squares().AddPiece(piece.New(notations[i-1], chess.SideWhite), position.New(i, position.Rank1))
-		board.Squares().AddPiece(piece.NewPawn(chess.SideWhite), position.New(i, position.Rank2))
+	for i, notation := range notations {
+		file := position.File(i + 1)
 
-		board.Squares().AddPiece(piece.New(notations[i-1], chess.SideBlack), position.New(i, position.Rank8))
-		board.Squares().AddPiece(piece.NewPawn(chess.SideBlack), position.New(i, position.Rank7))
+		board.Squares().AddPiece(piece.New(notation, chess.SideWhite), position.New(file, position.Rank1))
+		board.Squares().AddPiece(piece.NewPawn(chess.SideWhite), position.New(file, position.Rank1+1))
+
+		board.Squares().AddPiece(piece.New(notation, chess.SideBlack), position.New(file, edgePosition.Rank))
+		board.Squares().AddPiece(piece.NewPawn(chess.SideBlack), position.New(file, edgePosition.Rank-1))
 	}
 
 	return board
@@ -55,10 +54,9 @@ func (f *factory) CreateFilled() chess.Board {
 
 func (f *factory) CreateFromMoves(moves []chess.Move) (chess.Board, error) {
 	board := f.CreateFilled()
-
-	for _, move := range moves {
+	for i, move := range moves {
 		if err := board.MakeMove(move); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s#%d: %w", move, i+1, err)
 		}
 	}
 

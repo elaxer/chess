@@ -96,7 +96,8 @@ func TestNewNormal(t *testing.T) {
 			got, err := NewNormal(tt.args.str)
 
 			if (err != nil) != tt.wantErr {
-				t.Fatalf("NewNormal() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("NewNormal() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
 			if tt.wantErr {
 				return

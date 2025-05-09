@@ -6,7 +6,6 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
-// todo уйти от фиксированных величин
 const (
 	FileA File = iota + 1
 	FileB
@@ -16,12 +15,25 @@ const (
 	FileF
 	FileG
 	FileH
+
+	FileI
+	FileJ
+	FileK
+	FileL
+	FileM
+	FileN
+	FileO
+	FileP
 )
 
-const files = "abcdefghhijklmnopqrstuvwxyz"
+const MaxFile = FileP
+
+const files = "abcdefghijklmnop"
+
+const RegexpFile = "[a-p]"
 
 // File представляет вертикаль на шахматной доске.
-// Принимает значения от 1 до 8, где 1 соответствует вертикали "a", а 8 - вертикали "h".
+// Принимает значения от 1 до 16, где 1 соответствует вертикали "a", а 16 - вертикали "p".
 type File int8
 
 // NewFile создает новый объект File из символа, представляющего вертикаль.
@@ -33,7 +45,7 @@ func NewFile(char string) File {
 
 func (f File) Validate() error {
 	return validation.Errors{
-		"file": validation.Validate(int8(f), validation.Required, validation.Min(1), validation.Max(8)),
+		"file": validation.Validate(int8(f), validation.Required, validation.Min(1), validation.Max(int8(MaxFile))),
 	}.Filter()
 }
 
