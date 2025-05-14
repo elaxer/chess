@@ -71,7 +71,7 @@ func Test_standard_State(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.fields.board.State(); got != tt.want {
+			if got := tt.fields.board.State(tt.fields.board.Turn()); got != tt.want {
 				t.Errorf("standard.State() = %v, want %v", got, tt.want)
 			}
 		})

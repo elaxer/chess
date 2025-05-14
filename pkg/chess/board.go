@@ -16,7 +16,7 @@ type Board interface {
 	Moves(side Side) position.Set
 	// State возвращает текущее состояние доски.
 	// Например, если на доске шах, то функция вернет StateCheck.
-	State() State
+	State(side Side) State
 
 	BoardMover
 }
@@ -27,11 +27,6 @@ type BoardMover interface {
 	// Возвращает ошибку в случае невозможности хода.
 	// Меняет очередь хода.
 	MakeMove(move Move) error
-	// NextTurn переключает ход на следующую сторону.
-	// Например, если текущая сторона - белые, то после вызова функции
-	// текущей стороной будут черные.
-	// todo: избавиться
-	NextTurn()
 	// MovePiece перемещает фигуру с одной клетки на другую.
 	// Возвращает съеденную фигуру. Если фигуры не было съедено - возвращает nil.
 	MovePiece(from, to position.Position) (capturedPiece Piece)

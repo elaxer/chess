@@ -42,13 +42,13 @@ func (b *standard) Moves(side chess.Side) position.Set {
 	return moves
 }
 
-func (b *standard) State() chess.State {
+func (b *standard) State(side chess.Side) chess.State {
 	if b.isDraw() {
 		return chess.StateDraw
 	}
 
-	isCheck := b.isCheck()
-	availableMovesCount := b.Moves(b.turn).Cardinality()
+	isCheck := b.isCheck(side)
+	availableMovesCount := b.Moves(side).Cardinality()
 
 	if isCheck && availableMovesCount == 0 {
 		return chess.StateMate
@@ -94,10 +94,10 @@ func (b *standard) MovePiece(from, to position.Position) (capturedPiece chess.Pi
 	return
 }
 
-func (b *standard) isCheck() bool {
-	_, kingPosition := b.squares.GetPiece(chess.NotationKing, b.turn)
+func (b *standard) isCheck(side chess.Side) bool {
+	_, kingPosition := b.squares.GetPiece(chess.NotationKing, side)
 
-	return b.Moves(!b.turn).ContainsOne(kingPosition)
+	return b.Moves(!side).ContainsOne(kingPosition)
 }
 
 func (b *standard) isDraw() bool {
@@ -132,7 +132,7 @@ func (b *standard) String() string {
 func (b *standard) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]any{
 		"squares":         b.squares,
-		"state":           b.State(),
+		"state":           b.State(b.turn),
 		"captured_pieces": b.capturedPieces,
 		"castlings":       b.castlings(),
 	})

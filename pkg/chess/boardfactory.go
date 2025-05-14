@@ -4,7 +4,7 @@ package chess
 type BoardFactory interface {
 	// CreateEmpty создает пустую шахматную доску.
 	// Должен возвращать пустую доску с пустыми клетками.
-	CreateEmpty() Board
+	CreateEmpty(turn Side) Board
 	// CreateFilled создает шахматную доску заполненную фигурами.
 	CreateFilled() Board
 	// CreateFromMoves создает шахматную доску из списка ходов.

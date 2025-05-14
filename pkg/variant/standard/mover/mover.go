@@ -34,12 +34,3 @@ func makeMoveFromNotation(notation string, board chess.Board) (chess.Move, error
 
 	return nil, fmt.Errorf("%w: invalid move", Err)
 }
-
-func modifyCheckMate(checkMate *mv.CheckMate, board chess.Board) {
-	board.NextTurn()
-	defer board.NextTurn()
-
-	state := board.State()
-	checkMate.IsCheck = state.IsCheck()
-	checkMate.IsMate = state.IsMate()
-}

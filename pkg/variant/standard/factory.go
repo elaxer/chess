@@ -17,9 +17,9 @@ func NewFactory() chess.BoardFactory {
 	return &factory{}
 }
 
-func (f *factory) CreateEmpty() chess.Board {
+func (f *factory) CreateEmpty(turn chess.Side) chess.Board {
 	return &standard{
-		turn:           chess.SideWhite,
+		turn:           turn,
 		squares:        chess.NewSquares(edgePosition),
 		movesHistory:   make([]chess.Move, 0, 128),
 		capturedPieces: make([]chess.Piece, 0, 30),
@@ -27,7 +27,7 @@ func (f *factory) CreateEmpty() chess.Board {
 }
 
 func (f *factory) CreateFilled() chess.Board {
-	board := f.CreateEmpty()
+	board := f.CreateEmpty(chess.SideWhite)
 	notations := []chess.PieceNotation{
 		chess.NotationRook,
 		chess.NotationKnight,

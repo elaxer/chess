@@ -29,13 +29,10 @@ func (m *Castling) Make(castlingType move.CastlingType, board chess.Board) (ches
 	board.MovePiece(kingPosition, position.New(kingPosition.File+direction*2, rank))
 	board.MovePiece(rookPosition, position.New(kingPosition.File+direction, rank))
 
-	board.NextTurn()
-	defer board.NextTurn()
-
 	return &move.Castling{
 		CheckMate: &move.CheckMate{
-			IsCheck: board.State().IsCheck(),
-			IsMate:  board.State().IsMate(),
+			IsCheck: board.State(!board.Turn()).IsCheck(),
+			IsMate:  board.State(!board.Turn()).IsMate(),
 		},
 		CastlingType: castlingType,
 	}, nil

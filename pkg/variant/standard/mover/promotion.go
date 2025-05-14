@@ -27,7 +27,8 @@ func (m *Promotion) Make(move *move.Promotion, board chess.Board) (chess.Move, e
 
 	board.Squares().GetByPosition(move.To).SetPiece(piece.New(move.NewPiece, board.Turn()))
 
-	modifyCheckMate(move.CheckMate, board)
+	move.CheckMate.IsCheck = board.State(!board.Turn()).IsCheck()
+	move.CheckMate.IsMate = board.State(!board.Turn()).IsMate()
 
 	return move, nil
 }

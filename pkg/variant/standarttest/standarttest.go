@@ -15,10 +15,7 @@ type Placement struct {
 }
 
 func NewEmpty(turn chess.Side, placements []Placement) chess.Board {
-	board := standard.NewFactory().CreateEmpty()
-	if turn.IsBlack() {
-		board.NextTurn()
-	}
+	board := standard.NewFactory().CreateEmpty(turn)
 	for _, placement := range placements {
 		board.Squares().AddPiece(placement.Piece, placement.Position)
 	}

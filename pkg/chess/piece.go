@@ -34,8 +34,10 @@ type Piece interface {
 	// IsMoved возвращает true, если фигура ходила.
 	IsMoved() bool
 	// SetMoved устанавливает, что фигура сделала ход.
+	// todo переименовать в MarkMoved
 	SetMoved()
 	// Moves возвращает все возможные ходы фигуры на доске.
+	// todo PseudoMoves(fromPosition)
 	Moves(board Board) position.Set
 	// Notation возвращает нотацию фигуры.
 	Notation() PieceNotation

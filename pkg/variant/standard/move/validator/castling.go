@@ -16,7 +16,7 @@ func ValidateCastling(castlingType move.CastlingType, board chess.Board) error {
 	if king.IsMoved() {
 		return fmt.Errorf("%w: король уже ходил", ErrCastling)
 	}
-	if !board.State().IsClear() {
+	if !board.State(board.Turn()).IsClear() {
 		return fmt.Errorf("%w: король под угрозой", ErrCastling)
 	}
 

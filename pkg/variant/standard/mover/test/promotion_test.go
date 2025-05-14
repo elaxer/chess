@@ -12,7 +12,7 @@ import (
 )
 
 func TestPromotion_Make(t *testing.T) {
-	b := standard.NewFactory().CreateEmpty()
+	b := standard.NewFactory().CreateEmpty(SideWhite)
 	squares := b.Squares()
 
 	squares.AddPiece(piece.NewPawn(SideWhite), position.FromNotation("d7"))

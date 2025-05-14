@@ -24,7 +24,8 @@ func (m *Normal) Make(move *move.Normal, board chess.Board) (chess.Move, error) 
 
 	move.CapturedPiece = capturedPiece
 	move.IsCapture = capturedPiece != nil
-	modifyCheckMate(move.CheckMate, board)
+	move.CheckMate.IsCheck = board.State(!board.Turn()).IsCheck()
+	move.CheckMate.IsMate = board.State(!board.Turn()).IsMate()
 
 	return move, nil
 }
