@@ -3,9 +3,9 @@ package piece
 import (
 	"encoding/json"
 
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
-	"github.com/elaxer/chess/pkg/set"
 )
 
 type Rook struct {
@@ -16,7 +16,7 @@ func NewRook(side chess.Side) *Rook {
 	return &Rook{&sliding{&basePiece{side, false}}}
 }
 
-func (r *Rook) Moves(board chess.Board) *position.Set {
+func (r *Rook) Moves(board chess.Board) position.Set {
 	pos := board.Squares().GetByPiece(r).Position
 	directions := [4]position.Position{
 		position.New(1, 0),  // Right
@@ -25,7 +25,7 @@ func (r *Rook) Moves(board chess.Board) *position.Set {
 		position.New(0, -1), // Down
 	}
 
-	moves := set.FromSlice(make([]position.Position, 0, 14))
+	moves := mapset.NewSetWithSize[position.Position](14)
 	for _, direction := range directions {
 		for i, j := pos.File+direction.File, pos.Rank+direction.Rank; r.isInRange(i, j); i, j = i+direction.File, j+direction.Rank {
 			move := position.New(i, j)

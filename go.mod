@@ -18,7 +18,10 @@ require (
 	golang.org/x/crypto v0.36.0
 )
 
-require github.com/oriser/regroup v0.0.0-20240925165441-f6bb0e08289e // indirect
+require (
+	github.com/deckarep/golang-set/v2 v2.8.0 // indirect
+	github.com/oriser/regroup v0.0.0-20240925165441-f6bb0e08289e // indirect
+)
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect

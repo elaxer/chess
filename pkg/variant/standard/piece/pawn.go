@@ -3,9 +3,9 @@ package piece
 import (
 	"encoding/json"
 
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
-	"github.com/elaxer/chess/pkg/set"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
 )
 
@@ -27,7 +27,7 @@ func NewPawn(side chess.Side) *Pawn {
 	return &Pawn{&basePiece{side, false}}
 }
 
-func (p *Pawn) Moves(board chess.Board) *position.Set {
+func (p *Pawn) Moves(board chess.Board) position.Set {
 	moves := p.movesForward(board).Union(p.movesDiagonal(board)).Union(p.movesEnPassant(board))
 
 	return p.legalMoves(board, p, moves)
@@ -43,11 +43,11 @@ func (p *Pawn) Weight() uint8 {
 
 // movesForward возвращает возможные ходы вперед для пешки.
 // Пешка может двигаться на одну или две клетки вперед, если она не была перемещена ранее.
-func (p *Pawn) movesForward(board chess.Board) *position.Set {
+func (p *Pawn) movesForward(board chess.Board) position.Set {
 	direction := PawnRankDirection(p.side)
 	pos := board.Squares().GetByPiece(p).Position
 
-	moves := set.FromSlice(make([]position.Position, 0, 2))
+	moves := mapset.NewSetWithSize[position.Position](2)
 	positions := [2]position.Position{
 		position.New(pos.File, pos.Rank+direction*1),
 		position.New(pos.File, pos.Rank+direction*2),
@@ -67,11 +67,11 @@ func (p *Pawn) movesForward(board chess.Board) *position.Set {
 // movesDiagonal возвращает возможные диагональные ходы для пешки.
 // Пешка может бить противника по диагонали на одну клетку вперед.
 // Если на диагонали нет противника, то возвращается пустой массив.
-func (p *Pawn) movesDiagonal(board chess.Board) *position.Set {
+func (p *Pawn) movesDiagonal(board chess.Board) position.Set {
 	direction := PawnRankDirection(p.side)
 	pos := board.Squares().GetByPiece(p).Position
 
-	moves := set.FromSlice(make([]position.Position, 0, 2))
+	moves := mapset.NewSetWithSize[position.Position](2)
 	positions := [2]position.Position{
 		position.New(pos.File+1, pos.Rank+direction),
 		position.New(pos.File-1, pos.Rank+direction),
@@ -87,8 +87,8 @@ func (p *Pawn) movesDiagonal(board chess.Board) *position.Set {
 }
 
 // todo descr and tests
-func (p *Pawn) movesEnPassant(board chess.Board) *position.Set {
-	moves := set.FromSlice(make([]position.Position, 0, 1))
+func (p *Pawn) movesEnPassant(board chess.Board) position.Set {
+	moves := mapset.NewSetWithSize[position.Position](1)
 	if p.side != board.Turn() {
 		return moves
 	}

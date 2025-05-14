@@ -23,7 +23,7 @@ func ResolveNormal(move *move.Normal, board chess.Board) (*move.Normal, error) {
 
 	pieces := make([]chess.Piece, 0, 8)
 	for _, piece := range board.Squares().GetPieces(move.PieceNotation, board.Turn()) {
-		if piece.Moves(board).Has(move.To) {
+		if piece.Moves(board).ContainsOne(move.To) {
 			pieces = append(pieces, piece)
 		}
 	}
@@ -63,7 +63,7 @@ func UnresolveFrom(from, to position.Position, board chess.Board) (position.Posi
 		if samePiecePosition == square.Position {
 			continue
 		}
-		if !samePiece.Moves(board).Has(to) {
+		if !samePiece.Moves(board).ContainsOne(to) {
 			continue
 		}
 

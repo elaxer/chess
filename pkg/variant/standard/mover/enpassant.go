@@ -27,7 +27,7 @@ func (m *EnPassant) MakeMove(move chess.Move, board chess.Board) (chess.Move, er
 		return nil, err
 	}
 
-	if !pawn.Moves(board).Has(epMove.To) {
+	if !pawn.Moves(board).ContainsOne(epMove.To) {
 		return nil, err
 	}
 

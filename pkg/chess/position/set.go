@@ -1,5 +1,5 @@
 package position
 
-import "github.com/elaxer/chess/pkg/set"
+import mapset "github.com/deckarep/golang-set/v2"
 
-type Set = set.Set[Position]
+type Set = mapset.Set[Position]

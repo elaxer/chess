@@ -3,9 +3,9 @@ package standard
 import (
 	"encoding/json"
 
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
-	"github.com/elaxer/chess/pkg/set"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
 	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
 	"github.com/elaxer/chess/pkg/variant/standard/mover"
@@ -33,8 +33,8 @@ func (b *standard) MovesHistory() []chess.Move {
 	return b.movesHistory
 }
 
-func (b *standard) Moves(side chess.Side) *position.Set {
-	moves := set.FromSlice(make([]position.Position, 0, 32))
+func (b *standard) Moves(side chess.Side) position.Set {
+	moves := mapset.NewSetWithSize[position.Position](32)
 	for _, piece := range b.squares.GetAllPieces(side) {
 		moves = moves.Union(piece.Moves(b))
 	}
@@ -48,7 +48,7 @@ func (b *standard) State() chess.State {
 	}
 
 	isCheck := b.isCheck()
-	availableMovesCount := b.Moves(b.turn).Len()
+	availableMovesCount := b.Moves(b.turn).Cardinality()
 
 	if isCheck && availableMovesCount == 0 {
 		return chess.StateMate
@@ -97,7 +97,7 @@ func (b *standard) MovePiece(from, to position.Position) (capturedPiece chess.Pi
 func (b *standard) isCheck() bool {
 	_, kingPosition := b.squares.GetPiece(chess.NotationKing, b.turn)
 
-	return b.Moves(!b.turn).Has(kingPosition)
+	return b.Moves(!b.turn).ContainsOne(kingPosition)
 }
 
 func (b *standard) isDraw() bool {

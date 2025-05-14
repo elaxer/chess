@@ -21,7 +21,7 @@ func (q *Queen) Side() chess.Side {
 	return q.side
 }
 
-func (q *Queen) Moves(board chess.Board) *position.Set {
+func (q *Queen) Moves(board chess.Board) position.Set {
 	square := board.Squares().GetByPiece(q)
 
 	square.SetPiece(q.Rook)

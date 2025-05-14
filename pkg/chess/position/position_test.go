@@ -86,8 +86,28 @@ func TestPosition_String(t *testing.T) {
 	}{
 		{
 			"valid",
-			fields{File(5), Rank(4)},
+			fields{FileE, Rank4},
 			"e4",
+		},
+		{
+			"invalid",
+			fields{File(0), Rank(0)},
+			"",
+		},
+		{
+			"bigger_than_max_values",
+			fields{File(MaxFile + 1), Rank(MaxRank + 1)},
+			"",
+		},
+		{
+			"invalid_file",
+			fields{File(0), Rank4},
+			"4",
+		},
+		{
+			"invalid_rank",
+			fields{FileD, Rank(0)},
+			"d",
 		},
 	}
 	for _, tt := range tests {
@@ -115,7 +135,7 @@ func TestPosition_Validate(t *testing.T) {
 	}{
 		{
 			"valid",
-			fields{FileA, Rank1},
+			fields{1, Rank1},
 			false,
 		},
 		{

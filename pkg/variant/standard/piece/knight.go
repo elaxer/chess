@@ -3,9 +3,9 @@ package piece
 import (
 	"encoding/json"
 
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
-	"github.com/elaxer/chess/pkg/set"
 )
 
 type Knight struct {
@@ -16,7 +16,7 @@ func NewKnight(side chess.Side) *Knight {
 	return &Knight{&basePiece{side, false}}
 }
 
-func (k *Knight) Moves(board chess.Board) *position.Set {
+func (k *Knight) Moves(board chess.Board) position.Set {
 	pos := board.Squares().GetByPiece(k).Position
 	positions := [8]position.Position{
 		position.New(pos.File+1, pos.Rank+2),
@@ -29,7 +29,7 @@ func (k *Knight) Moves(board chess.Board) *position.Set {
 		position.New(pos.File+1, pos.Rank-2),
 	}
 
-	moves := set.FromSlice(make([]position.Position, 0, 8))
+	moves := mapset.NewSetWithSize[position.Position](8)
 	for _, move := range positions {
 		if square := board.Squares().GetByPosition(move); k.canMove(square, k.side) {
 			moves.Add(move)

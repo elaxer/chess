@@ -21,6 +21,7 @@ func (s *sliding) slide(pos position.Position, board chess.Board) (canMove bool,
 	return s.canMove(square, s.side), square != nil && square.IsEmpty()
 }
 
+// todo
 func (s *sliding) isInRange(file position.File, rank position.Rank) bool {
 	return position.New(file, rank).Validate() == nil
 }

@@ -36,7 +36,7 @@ type Piece interface {
 	// SetMoved устанавливает, что фигура сделала ход.
 	SetMoved()
 	// Moves возвращает все возможные ходы фигуры на доске.
-	Moves(board Board) *position.Set
+	Moves(board Board) position.Set
 	// Notation возвращает нотацию фигуры.
 	Notation() PieceNotation
 	// Weight возвращает вес фигуры.

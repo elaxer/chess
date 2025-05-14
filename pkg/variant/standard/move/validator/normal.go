@@ -21,7 +21,7 @@ func ValidateNormal(move *move.Normal, board chess.Board) error {
 
 	if piece := fromSquare.Piece; piece.Side() != board.Turn() {
 		return fmt.Errorf("%w: неверная сторона хода", ErrNormal)
-	} else if !piece.Moves(board).Has(move.To) {
+	} else if !piece.Moves(board).ContainsOne(move.To) {
 		return fmt.Errorf("%w: фигура не имеет такого хода", ErrNormal)
 	}
 

@@ -1,9 +1,9 @@
 package piece
 
 import (
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
-	"github.com/elaxer/chess/pkg/set"
 )
 
 // basePiece это базовая структура для шахматной фигуры.
@@ -27,18 +27,18 @@ func (p *basePiece) SetMoved() {
 
 // legalMoves фильтрует возможные ходы фигуры, исключая те, которые ставят короля под шах.
 // Если фигура не принадлежит текущей стороне хода, то фильтрации происходить не будет.
-func (p *basePiece) legalMoves(board chess.Board, piece chess.Piece, moves *position.Set) *position.Set {
+func (p *basePiece) legalMoves(board chess.Board, piece chess.Piece, moves position.Set) position.Set {
 	if piece.Side() != board.Turn() {
 		return moves
 	}
 
 	fromSquare := board.Squares().GetByPiece(piece)
 
-	legalMoves := set.FromSlice(make([]position.Position, 0, moves.Len()))
-	for move := range moves.Items() {
+	legalMoves := mapset.NewSetWithSize[position.Position](moves.Cardinality())
+	for move := range moves.Iter() {
 		p.temporaryMoving(fromSquare, board.Squares().GetByPosition(move), func() {
 			_, kingPosition := board.Squares().GetPiece(chess.NotationKing, board.Turn())
-			if !board.Moves(!board.Turn()).Has(kingPosition) {
+			if !board.Moves(!board.Turn()).ContainsOne(kingPosition) {
 				legalMoves.Add(move)
 			}
 		})
