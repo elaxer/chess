@@ -9,6 +9,8 @@ import (
 
 	"github.com/elaxer/chess/pkg/rgx"
 	validation "github.com/go-ozzo/ozzo-validation"
+
+	mapset "github.com/deckarep/golang-set/v2"
 )
 
 var (
@@ -17,6 +19,8 @@ var (
 )
 
 var notationRegexp = regexp.MustCompile("^(?P<file>[a-p])?(?P<rank>1[0-6]|[1-9])?$")
+
+type Set = mapset.Set[Position]
 
 // Position представляет позицию на шахматной доске.
 // Он состоит из вертикали (File) и горизонтали (Rank).

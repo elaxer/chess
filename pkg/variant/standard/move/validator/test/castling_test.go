@@ -11,6 +11,7 @@ import (
 	. "github.com/elaxer/chess/pkg/chess/position"
 )
 
+// todo добавить тесты с новым параметром Side
 func TestValidateCastling(t *testing.T) {
 	type fields struct {
 		board Board
@@ -131,7 +132,7 @@ func TestValidateCastling(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := validator.ValidateCastling(tt.args.castling, tt.fields.board); (err != nil) != tt.wantErr {
+			if err := validator.ValidateCastling(tt.args.castling, tt.fields.board.Turn(), tt.fields.board); (err != nil) != tt.wantErr {
 				t.Errorf("ValidateCastling() = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

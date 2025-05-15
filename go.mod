@@ -21,6 +21,7 @@ require (
 require (
 	github.com/deckarep/golang-set/v2 v2.8.0 // indirect
 	github.com/oriser/regroup v0.0.0-20240925165441-f6bb0e08289e // indirect
+	github.com/samber/lo v1.50.0 // indirect
 )
 
 require (

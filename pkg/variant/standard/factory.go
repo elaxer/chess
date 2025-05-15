@@ -6,6 +6,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
+	"github.com/elaxer/chess/pkg/variant/standard/staterule"
 )
 
 var edgePosition = position.New(position.FileH, position.Rank8)
@@ -23,6 +24,15 @@ func (f *factory) CreateEmpty(turn chess.Side) chess.Board {
 		squares:        chess.NewSquares(edgePosition),
 		movesHistory:   make([]chess.Move, 0, 128),
 		capturedPieces: make([]chess.Piece, 0, 30),
+
+		stateRules: []staterule.Rule{
+			staterule.Mate,
+			staterule.Stalemate,
+			staterule.Check,
+
+			staterule.ThreefoldRepetition,
+			staterule.FiftyMove,
+		},
 	}
 }
 

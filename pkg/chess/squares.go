@@ -11,6 +11,7 @@ import (
 
 var ErrSquareNotFound = errors.New("не удалось найти клетку")
 
+// сделать двумерным todo
 type Squares struct {
 	squares      []*Square
 	edgePosition position.Position

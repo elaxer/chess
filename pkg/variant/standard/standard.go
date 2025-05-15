@@ -9,6 +9,7 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/move"
 	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
 	"github.com/elaxer/chess/pkg/variant/standard/mover"
+	"github.com/elaxer/chess/pkg/variant/standard/staterule"
 )
 
 // standard - эта структура описывает шахматную доску и ее состояние.
@@ -19,6 +20,8 @@ type standard struct {
 	squares        chess.Squares
 	movesHistory   []chess.Move
 	capturedPieces []chess.Piece
+
+	stateRules []staterule.Rule
 }
 
 func (b *standard) Squares() chess.Squares {
@@ -43,21 +46,10 @@ func (b *standard) Moves(side chess.Side) position.Set {
 }
 
 func (b *standard) State(side chess.Side) chess.State {
-	if b.isDraw() {
-		return chess.StateDraw
-	}
-
-	isCheck := b.isCheck(side)
-	availableMovesCount := b.Moves(side).Cardinality()
-
-	if isCheck && availableMovesCount == 0 {
-		return chess.StateMate
-	}
-	if isCheck {
-		return chess.StateCheck
-	}
-	if availableMovesCount == 0 {
-		return chess.StateStalemate
+	for _, rule := range b.stateRules {
+		if state := rule(b, side); state != chess.StateClear {
+			return state
+		}
 	}
 
 	return chess.StateClear
@@ -70,13 +62,9 @@ func (b *standard) MakeMove(move chess.Move) error {
 	}
 
 	b.movesHistory = append(b.movesHistory, modifiedMove)
-	b.NextTurn()
+	b.turn = !b.turn
 
 	return nil
-}
-
-func (b *standard) NextTurn() {
-	b.turn = !b.turn
 }
 
 func (b *standard) MovePiece(from, to position.Position) (capturedPiece chess.Piece) {
@@ -94,39 +82,19 @@ func (b *standard) MovePiece(from, to position.Position) (capturedPiece chess.Pi
 	return
 }
 
-func (b *standard) isCheck(side chess.Side) bool {
-	_, kingPosition := b.squares.GetPiece(chess.NotationKing, side)
-
-	return b.Moves(!side).ContainsOne(kingPosition)
-}
-
-func (b *standard) isDraw() bool {
-	return b.squares.GetAllPiecesCount(chess.SideWhite) == 1 &&
-		b.squares.GetAllPiecesCount(chess.SideBlack) == 1 &&
-		!b.isThreefoldRepetition()
-}
-
-func (b *standard) isThreefoldRepetition() bool {
-	return false
-}
-
 // castlings возвращает возможные рокировки для текущей стороны.
 // Если рокировка невозможна, то она не будет включена в список.
 func (b *standard) castlings() []move.CastlingType {
 	castlings := make([]move.CastlingType, 0, 2)
 
-	if validator.ValidateCastling(move.CastlingShort, b) == nil {
+	if validator.ValidateCastling(move.CastlingShort, b.turn, b) == nil {
 		castlings = append(castlings, move.CastlingShort)
 	}
-	if validator.ValidateCastling(move.CastlingLong, b) == nil {
+	if validator.ValidateCastling(move.CastlingLong, b.turn, b) == nil {
 		castlings = append(castlings, move.CastlingLong)
 	}
 
 	return castlings
-}
-
-func (b *standard) String() string {
-	return "todo: return FEN"
 }
 
 func (b *standard) MarshalJSON() ([]byte, error) {

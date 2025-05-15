@@ -11,12 +11,12 @@ import (
 
 var ErrCastling = fmt.Errorf("%w: ошибка валидации рокировки", Err)
 
-func ValidateCastling(castlingType move.CastlingType, board chess.Board) error {
-	king, kingPosition := board.Squares().GetPiece(chess.NotationKing, board.Turn())
+func ValidateCastling(castlingType move.CastlingType, side chess.Side, board chess.Board) error {
+	king, kingPosition := board.Squares().GetPiece(chess.NotationKing, side)
 	if king.IsMoved() {
 		return fmt.Errorf("%w: король уже ходил", ErrCastling)
 	}
-	if !board.State(board.Turn()).IsClear() {
+	if !board.State(side).IsClear() {
 		return fmt.Errorf("%w: король под угрозой", ErrCastling)
 	}
 
@@ -25,7 +25,7 @@ func ValidateCastling(castlingType move.CastlingType, board chess.Board) error {
 		return err
 	}
 
-	if board.Moves(!board.Turn()).Intersect(positions).Cardinality() > 0 {
+	if board.Moves(!side).Intersect(positions).Cardinality() > 0 {
 		return fmt.Errorf("%w: поле для рокировки под боем", ErrCastling)
 	}
 

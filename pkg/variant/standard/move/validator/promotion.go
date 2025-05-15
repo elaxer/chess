@@ -18,6 +18,9 @@ func ValidatePromotion(move *move.Promotion, board chess.Board) error {
 	}
 
 	fromSquare := board.Squares().GetByPosition(move.From)
+	if fromSquare == nil {
+		return fmt.Errorf("%w: %w", ErrPromotion, chess.ErrSquareNotFound)
+	}
 	if fromSquare.Piece.Notation() != chess.NotationPawn {
 		return fmt.Errorf("%w: превращение возможно только из пешки", ErrPromotion)
 	}

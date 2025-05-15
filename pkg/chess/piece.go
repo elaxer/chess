@@ -2,6 +2,7 @@ package chess
 
 import "github.com/elaxer/chess/pkg/chess/position"
 
+// todo перенести
 const (
 	NotationPawn   PieceNotation = ""
 	NotationKnight PieceNotation = "N"
