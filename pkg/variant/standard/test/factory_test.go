@@ -83,23 +83,23 @@ func TestFactory_CreateFromMoves(t *testing.T) {
 		FromNotation("g7"): piece.NewPawn(SideBlack),
 	}
 
-	for _, square := range b.Squares().Iter() {
-		expectedPiece, ok := expected[square.Position]
+	for position, piece := range b.Squares().Iter() {
+		expectedPiece, ok := expected[position]
 		if !ok {
-			if !square.IsEmpty() {
-				t.Fatalf("unexpected piece %s at %s", square.Piece, square.Position)
+			if piece != nil {
+				t.Fatalf("unexpected piece %s at %s", piece, position)
 			}
 
 			continue
 		}
 
-		if square.IsEmpty() {
-			t.Fatalf("expected piece at %s, got empty", square.Position)
+		if piece == nil {
+			t.Fatalf("expected piece at %s, got empty", position)
 		}
-		if square.Piece.Notation() != expectedPiece.Notation() || square.Piece.Side() != expectedPiece.Side() {
+		if piece.Notation() != expectedPiece.Notation() || piece.Side() != expectedPiece.Side() {
 			t.Fatalf("expected %s%s at %s, got %s%s",
-				expectedPiece.Side(), expectedPiece.Notation(), square.Position,
-				square.Piece.Side(), square.Piece.Notation())
+				expectedPiece.Side(), expectedPiece.Notation(), position,
+				piece.Side(), piece.Notation())
 		}
 	}
 }

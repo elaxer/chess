@@ -8,6 +8,11 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 )
 
+const (
+	NotationRook = "R"
+	WeightRook   = 5
+)
+
 type Rook struct {
 	*sliding
 }
@@ -17,7 +22,7 @@ func NewRook(side chess.Side) *Rook {
 }
 
 func (r *Rook) Moves(board chess.Board) position.Set {
-	pos := board.Squares().GetByPiece(r).Position
+	pos := board.Squares().GetByPiece(r)
 	directions := [4]position.Position{
 		position.New(1, 0),  // Right
 		position.New(-1, 0), // Left
@@ -42,16 +47,20 @@ func (r *Rook) Moves(board chess.Board) position.Set {
 	return r.legalMoves(board, r, moves)
 }
 
-func (r *Rook) Notation() chess.PieceNotation {
-	return chess.NotationRook
+func (r *Rook) Notation() string {
+	if r.side == chess.SideBlack {
+		return "r"
+	}
+
+	return "R"
 }
 
 func (r *Rook) Weight() uint8 {
-	return chess.WeightRook
+	return WeightRook
 }
 
 func (r *Rook) String() string {
-	return string(r.Notation())
+	return r.Notation()
 }
 
 func (r *Rook) MarshalJSON() ([]byte, error) {

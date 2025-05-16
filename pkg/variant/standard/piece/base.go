@@ -21,7 +21,7 @@ func (p *basePiece) IsMoved() bool {
 	return p.isMoved
 }
 
-func (p *basePiece) SetMoved() {
+func (p *basePiece) MarkMoved() {
 	p.isMoved = true
 }
 
@@ -32,12 +32,12 @@ func (p *basePiece) legalMoves(board chess.Board, piece chess.Piece, moves posit
 		return moves
 	}
 
-	fromSquare := board.Squares().GetByPiece(piece)
+	fromPosition := board.Squares().GetByPiece(piece)
 
 	legalMoves := mapset.NewSetWithSize[position.Position](moves.Cardinality())
 	for move := range moves.Iter() {
-		p.temporaryMoving(fromSquare, board.Squares().GetByPosition(move), func() {
-			_, kingPosition := board.Squares().GetPiece(chess.NotationKing, board.Turn())
+		p.temporaryMoving(fromPosition, move, board.Squares(), func() {
+			_, kingPosition := board.Squares().GetPiece(NotationKing, board.Turn())
 			if !board.Moves(!board.Turn()).ContainsOne(kingPosition) {
 				legalMoves.Add(move)
 			}
@@ -50,14 +50,14 @@ func (p *basePiece) legalMoves(board chess.Board, piece chess.Piece, moves posit
 // temporaryMoving временно перемещает фигуру с одной клетки на другую и в контексте этого вызывает функцию.
 // После выполнения функции, фигура возвращается на исходную позицию.
 // Это используется для проверки возможности движения фигуры без изменения состояния доски.
-func (b *basePiece) temporaryMoving(fromSquare, toSquare *chess.Square, callback func()) {
-	fromSquarePiece := fromSquare.Piece
-	toSquarePiece := toSquare.Piece
+func (b *basePiece) temporaryMoving(fromPosition, toPosition position.Position, squares chess.Squares, callback func()) {
+	movingPiece, _ := squares.GetByPosition(fromPosition)
+	toSquare, _ := squares.GetByPosition(toPosition)
 
-	fromSquare.SetPiece(nil)
-	toSquare.SetPiece(fromSquarePiece)
-	defer toSquare.SetPiece(toSquarePiece)
-	defer fromSquare.SetPiece(fromSquarePiece)
+	toSquare, movingPiece = movingPiece, nil
+	defer func() {
+		toSquare, movingPiece = movingPiece, toSquare
+	}()
 
 	callback()
 }
@@ -65,6 +65,6 @@ func (b *basePiece) temporaryMoving(fromSquare, toSquare *chess.Square, callback
 // canMove проверяет, может ли фигура переместиться на указанную клетку.
 // Если клетка существует и пуста или занята фигурой противника, то перемещение возможно.
 // Метод не должен использоваться для проверки ходов пешек.
-func (p *basePiece) canMove(square *chess.Square, pieceSide chess.Side) bool {
-	return square != nil && (square.IsEmpty() || pieceSide != square.Piece.Side())
+func (p *basePiece) canMove(piece chess.Piece, pieceSide chess.Side) bool {
+	return piece == nil || pieceSide != piece.Side()
 }

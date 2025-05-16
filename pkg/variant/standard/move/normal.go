@@ -21,7 +21,7 @@ var normalRegexp = regexp.MustCompile(fmt.Sprintf(
 type Normal struct {
 	*CheckMate
 	// PieceNotation обозначает фигуру, которая делает ход.
-	PieceNotation chess.PieceNotation
+	PieceNotation string
 	// From, To означают начальную и конечную позиции хода.
 	From, To position.Position
 	// IsCapture означает, было ли взятие фигуры противника в результате хода.
@@ -38,7 +38,7 @@ func NewNormal(notation string) (*Normal, error) {
 
 	return &Normal{
 		NewCheckMate(result["checkmate"]),
-		chess.PieceNotation(result["piece"]),
+		result["piece"],
 		position.FromNotation(result["from"]),
 		position.FromNotation(result["to"]),
 		result["is_capture"] != "",

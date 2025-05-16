@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	. "github.com/elaxer/chess/pkg/variant/standard/move"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
 
-	. "github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 )
 
@@ -23,8 +23,8 @@ func TestNewPromotion(t *testing.T) {
 			"valid",
 			args{"e8=Q"},
 			&Promotion{
-				Normal:   &Normal{CheckMate: new(CheckMate), To: position.FromNotation("e8")},
-				NewPiece: NotationQueen,
+				Normal:           &Normal{CheckMate: new(CheckMate), To: position.FromNotation("e8")},
+				NewPieceNotation: piece.NotationQueen,
 			},
 			false,
 		},
@@ -32,8 +32,8 @@ func TestNewPromotion(t *testing.T) {
 			"from_file",
 			args{"fe8=R"},
 			&Promotion{
-				Normal:   &Normal{CheckMate: new(CheckMate), From: position.FromNotation("f"), To: position.FromNotation("e8")},
-				NewPiece: NotationRook,
+				Normal:           &Normal{CheckMate: new(CheckMate), From: position.FromNotation("f"), To: position.FromNotation("e8")},
+				NewPieceNotation: piece.NotationRook,
 			},
 			false,
 		},
@@ -41,8 +41,8 @@ func TestNewPromotion(t *testing.T) {
 			"check",
 			args{"d1=N+"},
 			&Promotion{
-				Normal:   &Normal{CheckMate: &CheckMate{IsCheck: true}, To: position.FromNotation("d1")},
-				NewPiece: NotationKnight,
+				Normal:           &Normal{CheckMate: &CheckMate{IsCheck: true}, To: position.FromNotation("d1")},
+				NewPieceNotation: piece.NotationKnight,
 			},
 			false,
 		},
@@ -50,8 +50,8 @@ func TestNewPromotion(t *testing.T) {
 			"mate",
 			args{"a8=R#"},
 			&Promotion{
-				Normal:   &Normal{CheckMate: &CheckMate{IsMate: true}, To: position.FromNotation("a8")},
-				NewPiece: NotationRook,
+				Normal:           &Normal{CheckMate: &CheckMate{IsMate: true}, To: position.FromNotation("a8")},
+				NewPieceNotation: piece.NotationRook,
 			},
 			false,
 		},
@@ -79,7 +79,7 @@ func TestNewPromotion(t *testing.T) {
 				return
 			}
 
-			got.Normal.PieceNotation = NotationPawn
+			got.Normal.PieceNotation = piece.NotationPawn
 
 			if got.String() != tt.want.String() {
 				t.Errorf("NewPromotion() = %v, want %v", got, tt.want)
@@ -100,8 +100,8 @@ func TestPromotion_Notation(t *testing.T) {
 		{
 			"valid",
 			fields{&Promotion{
-				Normal:   &Normal{CheckMate: new(CheckMate), To: position.FromNotation("a1")},
-				NewPiece: NotationRook,
+				Normal:           &Normal{CheckMate: new(CheckMate), To: position.FromNotation("a1")},
+				NewPieceNotation: piece.NotationRook,
 			}},
 			"a1=R",
 		},
@@ -109,8 +109,8 @@ func TestPromotion_Notation(t *testing.T) {
 			"from_file",
 			fields{
 				&Promotion{
-					Normal:   &Normal{CheckMate: new(CheckMate), From: position.FromNotation("f"), To: position.FromNotation("e8")},
-					NewPiece: NotationRook,
+					Normal:           &Normal{CheckMate: new(CheckMate), From: position.FromNotation("f"), To: position.FromNotation("e8")},
+					NewPieceNotation: piece.NotationRook,
 				},
 			},
 			"fe8=R",
@@ -118,8 +118,8 @@ func TestPromotion_Notation(t *testing.T) {
 		{
 			"full_from",
 			fields{&Promotion{
-				Normal:   &Normal{CheckMate: new(CheckMate), From: position.FromNotation("b2"), To: position.FromNotation("b1")},
-				NewPiece: NotationKnight,
+				Normal:           &Normal{CheckMate: new(CheckMate), From: position.FromNotation("b2"), To: position.FromNotation("b1")},
+				NewPieceNotation: piece.NotationKnight,
 			}},
 			"b2b1=N",
 		},

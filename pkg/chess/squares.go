@@ -2,34 +2,42 @@ package chess
 
 import (
 	"errors"
+	"fmt"
 	"iter"
-
-	"slices"
 
 	"github.com/elaxer/chess/pkg/chess/position"
 )
 
-var ErrSquareNotFound = errors.New("не удалось найти клетку")
+var ErrSquareOutOfRange = errors.New("square position is out of board bounds")
 
-// сделать двумерным todo
 type Squares struct {
-	squares      []*Square
+	squares      [][]Piece
 	edgePosition position.Position
 }
 
 func NewSquares(edgePosition position.Position) Squares {
-	squares := make([]*Square, 0, int(edgePosition.File)*int(edgePosition.Rank))
-	for rank := range edgePosition.Rank {
-		for file := range edgePosition.File {
-			squares = append(squares, &Square{Position: position.New(file+1, rank+1)})
-		}
+	squares := make([][]Piece, edgePosition.Rank)
+	for i := range squares {
+		squares[i] = make([]Piece, edgePosition.File)
 	}
 
 	return Squares{squares, edgePosition}
 }
 
-func (s Squares) Iter() iter.Seq2[int, *Square] {
-	return slices.All(s.squares)
+func (s Squares) Items() [][]Piece {
+	return s.squares
+}
+
+func (s Squares) Iter() iter.Seq2[position.Position, Piece] {
+	return func(yield func(pos position.Position, piece Piece) bool) {
+		for rank, row := range s.squares {
+			for file, piece := range row {
+				if !yield(position.New(position.File(file+1), position.Rank(rank+1)), piece) {
+					return
+				}
+			}
+		}
+	}
 }
 
 func (s Squares) EdgePosition() position.Position {
@@ -39,26 +47,26 @@ func (s Squares) EdgePosition() position.Position {
 // GetByPosition возвращает клетку по ее позиции.
 // Если клетка не найдена, возвращает nil.
 // Позиция должна быть в пределах доски.
-func (s Squares) GetByPosition(position position.Position) *Square {
-	for _, square := range s.squares {
-		if square.Position == position {
-			return square
-		}
+func (s Squares) GetByPosition(position position.Position) (Piece, error) {
+	if !position.IsInRange(s.edgePosition) {
+		return nil, fmt.Errorf("%w (%s)", ErrSquareOutOfRange, position)
 	}
 
-	return nil
+	return s.squares[position.Rank-1][position.File-1], nil
 }
 
 // GetByPiece возвращает клетку по фигуре.
 // Если клетка не найдена, возвращает nil.
-func (s Squares) GetByPiece(piece Piece) *Square {
-	for _, square := range s.squares {
-		if square.Piece == piece {
-			return square
+func (s Squares) GetByPiece(piece Piece) position.Position {
+	for rank, row := range s.squares {
+		for file := range row {
+			if row[file] == piece {
+				return position.New(position.File(file+1), position.Rank(rank+1))
+			}
 		}
 	}
 
-	return nil
+	return position.Position{}
 }
 
 // GetAllPiecesCount возвращает количество фигур для данной стороны.
@@ -69,9 +77,11 @@ func (s Squares) GetAllPiecesCount(side Side) int {
 // GetAllPieces возвращает все фигуры для данной стороны.
 func (s Squares) GetAllPieces(side Side) []Piece {
 	pieces := make([]Piece, 0, 16)
-	for _, square := range s.squares {
-		if !square.IsEmpty() && square.Piece.Side() == side {
-			pieces = append(pieces, square.Piece)
+	for _, row := range s.squares {
+		for _, piece := range row {
+			if piece != nil && piece.Side() == side {
+				pieces = append(pieces, piece)
+			}
 		}
 	}
 
@@ -81,11 +91,13 @@ func (s Squares) GetAllPieces(side Side) []Piece {
 // GetPieces возвращает все фигуры определенного типа для указанной стороны.
 // Например, GetPieces(KnightNotation, SideWhite) вернет всех белых коней.
 // Если фигуры не найдены, вернет пустой массив.
-func (s Squares) GetPieces(notation PieceNotation, side Side) []Piece {
+func (s Squares) GetPieces(notation string, side Side) []Piece {
 	pieces := make([]Piece, 0, 8)
-	for _, square := range s.squares {
-		if !square.IsEmpty() && square.Piece.Side() == side && square.Piece.Notation() == notation {
-			pieces = append(pieces, square.Piece)
+	for _, row := range s.squares {
+		for _, piece := range row {
+			if piece != nil && piece.Side() == side && piece.Notation() == notation {
+				pieces = append(pieces, piece)
+			}
 		}
 	}
 
@@ -94,34 +106,22 @@ func (s Squares) GetPieces(notation PieceNotation, side Side) []Piece {
 
 // GetPiece возвращает одну фигуру определенного типа для указанной стороны и его позицию.
 // Если фигура не найдена, вернет nil.
-func (s Squares) GetPiece(notation PieceNotation, side Side) (Piece, position.Position) {
+func (s Squares) GetPiece(notation string, side Side) (Piece, position.Position) {
 	pieces := s.GetPieces(notation, side)
 	if len(pieces) == 0 {
 		return nil, position.Position{}
 	}
 
-	return pieces[0], s.GetByPiece(pieces[0]).Position
+	return pieces[0], s.GetByPiece(pieces[0])
 }
 
 // AddPiece добавляет фигуру на клетку по ее позиции.
-func (s Squares) AddPiece(piece Piece, position position.Position) {
-	s.GetByPosition(position).SetPiece(piece)
-}
-
-// GetAdvantage возвращает материальное преимущество стороны.
-func (s Squares) GetAdvantage(side Side) uint8 {
-	var advantage uint8
-	for _, piece := range s.GetAllPieces(side) {
-		advantage += piece.Weight()
+func (s Squares) AddPiece(piece Piece, position position.Position) error {
+	if !position.IsInRange(s.edgePosition) {
+		return ErrSquareOutOfRange
 	}
 
-	return advantage - WeightKing
-}
+	s.squares[position.Rank-1][position.File-1] = piece
 
-// GetAdvantageDifference возвращает разницу в материальном преимуществе между сторонами.
-// Положительное значение означает преимущество белых.
-// Отрицательное значение означает преимущество черных.
-// Нулевое значение означает равенство.
-func (s Squares) GetAdvantageDifference() int8 {
-	return int8(s.GetAdvantage(SideWhite)) - int8(s.GetAdvantage(SideBlack))
+	return nil
 }

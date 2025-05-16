@@ -25,8 +25,8 @@ func TestValidatePromotion(t *testing.T) {
 			"valid",
 			args{
 				&move.Promotion{
-					Normal:   &move.Normal{CheckMate: new(move.CheckMate), To: FromNotation("d8")},
-					NewPiece: NotationQueen,
+					Normal:           &move.Normal{CheckMate: new(move.CheckMate), To: FromNotation("d8")},
+					NewPieceNotation: piece.NotationQueen,
 				},
 				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
 					{Piece: piece.NewPawn(SideWhite), Position: FromNotation("d7")},
@@ -38,8 +38,8 @@ func TestValidatePromotion(t *testing.T) {
 			"concurrent_pawns",
 			args{
 				&move.Promotion{
-					Normal:   &move.Normal{CheckMate: new(move.CheckMate), From: Position{File: FileA}, To: FromNotation("b1")},
-					NewPiece: NotationQueen,
+					Normal:           &move.Normal{CheckMate: new(move.CheckMate), From: Position{File: FileA}, To: FromNotation("b1")},
+					NewPieceNotation: piece.NotationQueen,
 				},
 				standarttest.NewEmpty(SideBlack, []standarttest.Placement{
 					{Piece: piece.NewPawn(SideBlack), Position: FromNotation("a2")},

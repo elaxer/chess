@@ -14,12 +14,12 @@ func ValidateNormal(move *move.Normal, board chess.Board) error {
 		return err
 	}
 
-	fromSquare := board.Squares().GetByPosition(move.From)
-	if fromSquare == nil || fromSquare.IsEmpty() {
+	piece, err := board.Squares().GetByPosition(move.From)
+	if err != nil || piece == nil {
 		return ErrEmptySquare
 	}
 
-	if piece := fromSquare.Piece; piece.Side() != board.Turn() {
+	if piece.Side() != board.Turn() {
 		return fmt.Errorf("%w: неверная сторона хода", ErrNormal)
 	} else if !piece.Moves(board).ContainsOne(move.To) {
 		return fmt.Errorf("%w: фигура не имеет такого хода", ErrNormal)

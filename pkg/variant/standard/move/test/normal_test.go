@@ -3,9 +3,9 @@ package move_test
 import (
 	"testing"
 
-	. "github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	. "github.com/elaxer/chess/pkg/variant/standard/move"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
 func TestNewNormal(t *testing.T) {
@@ -121,7 +121,7 @@ func TestNormal_String(t *testing.T) {
 			&Normal{
 				CheckMate:     new(CheckMate),
 				To:            position.FromNotation("a8"),
-				PieceNotation: NotationQueen,
+				PieceNotation: piece.NotationQueen,
 				IsCapture:     false,
 			},
 			"Qa8",
@@ -131,7 +131,7 @@ func TestNormal_String(t *testing.T) {
 			&Normal{
 				CheckMate:     new(CheckMate),
 				To:            position.FromNotation("e4"),
-				PieceNotation: NotationPawn,
+				PieceNotation: piece.NotationPawn,
 				IsCapture:     false,
 			},
 			"e4",
@@ -141,7 +141,7 @@ func TestNormal_String(t *testing.T) {
 			&Normal{
 				CheckMate:     &CheckMate{IsCheck: true, IsMate: false},
 				To:            position.FromNotation("a1"),
-				PieceNotation: NotationRook,
+				PieceNotation: piece.NotationRook,
 				IsCapture:     false,
 			},
 			"Ra1+",
@@ -151,7 +151,7 @@ func TestNormal_String(t *testing.T) {
 			&Normal{
 				CheckMate:     &CheckMate{IsCheck: false, IsMate: true},
 				To:            position.FromNotation("a1"),
-				PieceNotation: NotationBishop,
+				PieceNotation: piece.NotationBishop,
 				IsCapture:     false,
 			},
 			"Ba1#",
@@ -161,7 +161,7 @@ func TestNormal_String(t *testing.T) {
 			&Normal{
 				CheckMate:     &CheckMate{IsCheck: true, IsMate: false},
 				To:            position.FromNotation("a1"),
-				PieceNotation: NotationKnight,
+				PieceNotation: piece.NotationKnight,
 				IsCapture:     true,
 			},
 			"Nxa1+",
@@ -171,7 +171,7 @@ func TestNormal_String(t *testing.T) {
 			&Normal{
 				CheckMate:     &CheckMate{IsCheck: false, IsMate: true},
 				To:            position.FromNotation("c5"),
-				PieceNotation: NotationPawn,
+				PieceNotation: piece.NotationPawn,
 				IsCapture:     true,
 			},
 			"xc5#",

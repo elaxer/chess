@@ -24,9 +24,9 @@ func NewEmpty(turn chess.Side, placements []Placement) chess.Board {
 }
 
 func NewPiece(notation string, side chess.Side, isMoved bool) chess.Piece {
-	p := piece.New(chess.PieceNotation(notation), side)
+	p := piece.New(notation, side)
 	if isMoved {
-		p.SetMoved()
+		p.MarkMoved()
 	}
 
 	return p
@@ -52,7 +52,7 @@ func ResolveNormal(move *move.Normal, board chess.Board) *move.Normal {
 }
 
 func ResolvePromotion(move *move.Promotion, board chess.Board) *move.Promotion {
-	move.Normal.PieceNotation = chess.NotationPawn
+	move.Normal.PieceNotation = piece.NotationPawn
 	normal, err := resolver.ResolveNormal(move.Normal, board)
 	if err != nil {
 		panic(err)

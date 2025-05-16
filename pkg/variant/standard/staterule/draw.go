@@ -5,6 +5,7 @@ import (
 
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
 func Stalemate(board chess.Board, side chess.Side) chess.State {
@@ -27,7 +28,7 @@ func FiftyMove(board chess.Board, side chess.Side) chess.State {
 	count := 0
 	for _, m := range moves {
 		normalMove, ok := m.(*move.Normal)
-		if !ok || normalMove.PieceNotation == chess.NotationPawn || normalMove.IsCapture {
+		if !ok || normalMove.PieceNotation == piece.NotationPawn || normalMove.IsCapture {
 			count = 0
 
 			continue

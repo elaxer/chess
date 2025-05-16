@@ -2,10 +2,16 @@ package piece
 
 import (
 	"encoding/json"
+	"math"
 
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
+)
+
+const (
+	NotationKing = "K"
+	WeightKing   = math.MaxUint8
 )
 
 type King struct {
@@ -17,7 +23,7 @@ func NewKing(side chess.Side) *King {
 }
 
 func (k *King) Moves(board chess.Board) position.Set {
-	pos := board.Squares().GetByPiece(k).Position
+	pos := board.Squares().GetByPiece(k)
 	positions := [8]position.Position{
 		position.New(pos.File, pos.Rank+1),
 		position.New(pos.File, pos.Rank-1),
@@ -35,7 +41,7 @@ func (k *King) Moves(board chess.Board) position.Set {
 			continue
 		}
 
-		if square := board.Squares().GetByPosition(move); k.canMove(square, k.side) {
+		if piece, err := board.Squares().GetByPosition(move); err != nil && k.canMove(piece, k.side) {
 			moves.Add(move)
 		}
 	}
@@ -43,16 +49,20 @@ func (k *King) Moves(board chess.Board) position.Set {
 	return k.legalMoves(board, k, moves)
 }
 
-func (k *King) Notation() chess.PieceNotation {
-	return chess.NotationKing
+func (k *King) Notation() string {
+	return NotationKing
 }
 
 func (k *King) Weight() uint8 {
-	return chess.WeightKing
+	return WeightKing
 }
 
 func (k *King) String() string {
-	return string(k.Notation())
+	if k.side == chess.SideBlack {
+		return "k"
+	}
+
+	return "K"
 }
 
 func (k *King) MarshalJSON() ([]byte, error) {

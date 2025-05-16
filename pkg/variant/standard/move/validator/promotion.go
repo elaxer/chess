@@ -5,6 +5,7 @@ import (
 
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
 var ErrPromotion = fmt.Errorf("%w: ошибка валидации хода с превращением пешки", Err)
@@ -17,11 +18,11 @@ func ValidatePromotion(move *move.Promotion, board chess.Board) error {
 		return err
 	}
 
-	fromSquare := board.Squares().GetByPosition(move.From)
-	if fromSquare == nil {
-		return fmt.Errorf("%w: %w", ErrPromotion, chess.ErrSquareNotFound)
+	p, err := board.Squares().GetByPosition(move.From)
+	if err != nil {
+		return fmt.Errorf("%w: %w", ErrPromotion, err)
 	}
-	if fromSquare.Piece.Notation() != chess.NotationPawn {
+	if p.Notation() != piece.NotationPawn {
 		return fmt.Errorf("%w: превращение возможно только из пешки", ErrPromotion)
 	}
 

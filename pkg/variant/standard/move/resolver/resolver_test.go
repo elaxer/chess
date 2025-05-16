@@ -27,7 +27,7 @@ func TestResolveNormal_From(t *testing.T) {
 			args{
 				move: &move.Normal{
 					To:            position.FromNotation("e4"),
-					PieceNotation: NotationPawn,
+					PieceNotation: piece.NotationPawn,
 				},
 				board: standarttest.NewEmpty(SideWhite, []standarttest.Placement{
 					{Piece: piece.NewPawn(SideWhite), Position: position.FromNotation("d2")},
@@ -44,7 +44,7 @@ func TestResolveNormal_From(t *testing.T) {
 				move: &move.Normal{
 					From:          position.Position{File: position.FileA},
 					To:            position.FromNotation("b8"),
-					PieceNotation: NotationRook,
+					PieceNotation: piece.NotationRook,
 				},
 				board: standarttest.NewEmpty(SideBlack, []standarttest.Placement{
 					{Piece: piece.NewRook(SideBlack), Position: position.FromNotation("f8")},
@@ -60,7 +60,7 @@ func TestResolveNormal_From(t *testing.T) {
 				move: &move.Normal{
 					From:          position.Position{File: position.FileG},
 					To:            position.FromNotation("e2"),
-					PieceNotation: NotationKnight,
+					PieceNotation: piece.NotationKnight,
 				},
 				board: standarttest.NewEmpty(SideWhite, []standarttest.Placement{
 					{Piece: piece.NewKnight(SideWhite), Position: position.FromNotation("g1")},
@@ -76,7 +76,7 @@ func TestResolveNormal_From(t *testing.T) {
 				move: &move.Normal{
 					From:          position.Position{Rank: 1},
 					To:            position.FromNotation("a5"),
-					PieceNotation: NotationRook,
+					PieceNotation: piece.NotationRook,
 				},
 				board: standarttest.NewEmpty(SideWhite, []standarttest.Placement{
 					{Piece: piece.NewRook(SideWhite), Position: position.FromNotation("a1")},
@@ -92,7 +92,7 @@ func TestResolveNormal_From(t *testing.T) {
 				move: &move.Normal{
 					From:          position.FromNotation("f2"),
 					To:            position.FromNotation("d4"),
-					PieceNotation: NotationBishop,
+					PieceNotation: piece.NotationBishop,
 				},
 				board: standarttest.NewEmpty(SideBlack, []standarttest.Placement{
 					{Piece: piece.NewBishop(SideBlack), Position: position.FromNotation("b2")},

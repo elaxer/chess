@@ -20,19 +20,22 @@ func TestPromotion_Make(t *testing.T) {
 	squares.AddPiece(piece.NewKing(SideBlack), position.FromNotation("a8"))
 
 	promotion := &move.Promotion{
-		Normal:   &move.Normal{CheckMate: new(move.CheckMate), To: position.FromNotation("d8")},
-		NewPiece: NotationQueen,
+		Normal:           &move.Normal{CheckMate: new(move.CheckMate), To: position.FromNotation("d8")},
+		NewPieceNotation: piece.NotationQueen,
 	}
 	_, err := new(mover.Promotion).Make(promotion, b)
 	if err != nil {
 		t.Fatalf("promotion failed: %v", err)
 	}
 
-	queen := squares.GetByPosition(position.FromNotation("d8"))
-	if queen.IsEmpty() {
+	queen, err := squares.GetByPosition(position.FromNotation("d8"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if queen == nil {
 		t.Fatalf("the queen didn't appear on the board")
 	}
-	if queen.Piece.Notation() != NotationQueen {
+	if queen.Notation() != piece.NotationQueen {
 		t.Errorf("the piece should be a queen")
 	}
 }

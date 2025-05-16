@@ -15,10 +15,10 @@ type sliding struct {
 // slide - метод, который проверяет возможность движения фигуры по диагонали или вертикали/горизонтали.
 // canMove определяет, может ли фигура переместиться на указанную позицию,
 // canContinue определяет, может ли фигура продолжать движение в том же направлении.
-func (s *sliding) slide(pos position.Position, board chess.Board) (canMove bool, canContinue bool) {
-	square := board.Squares().GetByPosition(pos)
+func (s *sliding) slide(position position.Position, board chess.Board) (canMove bool, canContinue bool) {
+	piece, err := board.Squares().GetByPosition(position)
 
-	return s.canMove(square, s.side), square != nil && square.IsEmpty()
+	return s.canMove(piece, s.side), err == nil && piece == nil
 }
 
 // todo

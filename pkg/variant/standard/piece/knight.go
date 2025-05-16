@@ -8,6 +8,11 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 )
 
+const (
+	NotationKnight = "N"
+	WeightKnight   = 3
+)
+
 type Knight struct {
 	*basePiece
 }
@@ -17,7 +22,7 @@ func NewKnight(side chess.Side) *Knight {
 }
 
 func (k *Knight) Moves(board chess.Board) position.Set {
-	pos := board.Squares().GetByPiece(k).Position
+	pos := board.Squares().GetByPiece(k)
 	positions := [8]position.Position{
 		position.New(pos.File+1, pos.Rank+2),
 		position.New(pos.File-1, pos.Rank+2),
@@ -31,23 +36,27 @@ func (k *Knight) Moves(board chess.Board) position.Set {
 
 	moves := mapset.NewSetWithSize[position.Position](8)
 	for _, move := range positions {
-		if square := board.Squares().GetByPosition(move); k.canMove(square, k.side) {
+		if piece, err := board.Squares().GetByPosition(move); err != nil && k.canMove(piece, k.side) {
 			moves.Add(move)
 		}
 	}
 
 	return k.legalMoves(board, k, moves)
 }
-func (k *Knight) Notation() chess.PieceNotation {
-	return chess.NotationKnight
+func (k *Knight) Notation() string {
+	return NotationKnight
 }
 
 func (k *Knight) Weight() uint8 {
-	return chess.WeightKnight
+	return WeightKnight
 }
 
 func (k *Knight) String() string {
-	return string(k.Notation())
+	if k.side == chess.SideBlack {
+		return "n"
+	}
+
+	return "N"
 }
 
 func (k *Knight) MarshalJSON() ([]byte, error) {

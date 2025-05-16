@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/rgx"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
@@ -20,7 +20,7 @@ var promotionRegexp = regexp.MustCompile(fmt.Sprintf(
 // В шахматной нотации он записывается как "e8=Q" или "e7=R+".
 type Promotion struct {
 	*Normal
-	NewPiece chess.PieceNotation
+	NewPieceNotation string
 }
 
 func NewPromotion(notation string) (*Promotion, error) {
@@ -32,18 +32,18 @@ func NewPromotion(notation string) (*Promotion, error) {
 	return &Promotion{
 		&Normal{
 			NewCheckMate(result["checkmate"]),
-			chess.NotationPawn,
+			"",
 			position.FromNotation(result["from_file"]),
 			position.FromNotation(result["to"]),
 			result["is_capture"] != "",
 			nil,
 		},
-		chess.PieceNotation(result["piece"]),
+		result["piece"],
 	}, nil
 }
 
 func (m *Promotion) Notation() string {
-	return fmt.Sprintf("%s%s=%s%s", m.From, m.To, m.NewPiece, m.CheckMate)
+	return fmt.Sprintf("%s%s=%s%s", m.From, m.To, m.NewPieceNotation, m.CheckMate)
 }
 
 func (m *Promotion) Validate() error {
@@ -51,9 +51,9 @@ func (m *Promotion) Validate() error {
 		m,
 		validation.Field(&m.To, validation.Required),
 		validation.Field(
-			&m.NewPiece,
+			&m.NewPieceNotation,
 			validation.Required,
-			validation.In(chess.NotationQueen, chess.NotationRook, chess.NotationBishop, chess.NotationKnight),
+			validation.In(piece.NotationQueen, piece.NotationRook, piece.NotationBishop, piece.NotationKnight),
 		),
 	)
 }

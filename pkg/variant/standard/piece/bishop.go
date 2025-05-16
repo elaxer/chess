@@ -8,6 +8,11 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 )
 
+const (
+	NotationBishop = "B"
+	WeightBishop   = 3
+)
+
 type Bishop struct {
 	*sliding
 }
@@ -17,7 +22,7 @@ func NewBishop(side chess.Side) *Bishop {
 }
 
 func (b *Bishop) Moves(board chess.Board) position.Set {
-	pos := board.Squares().GetByPiece(b).Position
+	pos := board.Squares().GetByPiece(b)
 	directions := [4]position.Position{
 		position.New(1, 1),   // Diagonal up-right
 		position.New(-1, -1), // Diagonal down-left
@@ -42,16 +47,20 @@ func (b *Bishop) Moves(board chess.Board) position.Set {
 	return b.legalMoves(board, b, moves)
 }
 
-func (b *Bishop) Notation() chess.PieceNotation {
-	return chess.NotationBishop
+func (b *Bishop) Notation() string {
+	return NotationBishop
 }
 
 func (b *Bishop) Weight() uint8 {
-	return chess.WeightBishop
+	return WeightBishop
 }
 
 func (b *Bishop) String() string {
-	return string(b.Notation())
+	if b.side == chess.SideBlack {
+		return "b"
+	}
+
+	return "B"
 }
 
 func (b *Bishop) MarshalJSON() ([]byte, error) {

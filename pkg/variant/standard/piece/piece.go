@@ -5,19 +5,19 @@ import "github.com/elaxer/chess/pkg/chess"
 // New создает новую фигуру по ее нотации и стороне.
 // Если нотация не поддерживается, возвращает nil.
 // Например, для создания ферзя нужно передать QueenNotation и сторону игрока.
-func New(notation chess.PieceNotation, side chess.Side) chess.Piece {
+func New(notation string, side chess.Side) chess.Piece {
 	switch notation {
-	case chess.NotationPawn:
+	case NotationPawn:
 		return NewPawn(side)
-	case chess.NotationKing:
+	case NotationKing:
 		return NewKing(side)
-	case chess.NotationQueen:
+	case NotationQueen:
 		return NewQueen(side)
-	case chess.NotationBishop:
+	case NotationBishop:
 		return NewBishop(side)
-	case chess.NotationKnight:
+	case NotationKnight:
 		return NewKnight(side)
-	case chess.NotationRook:
+	case NotationRook:
 		return NewRook(side)
 	}
 

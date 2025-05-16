@@ -7,12 +7,16 @@ import (
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
 var ErrCastling = fmt.Errorf("%w: ошибка валидации рокировки", Err)
 
 func ValidateCastling(castlingType move.CastlingType, side chess.Side, board chess.Board) error {
-	king, kingPosition := board.Squares().GetPiece(chess.NotationKing, side)
+	king, kingPosition := board.Squares().GetPiece(piece.NotationKing, side)
+	if king == nil {
+		return fmt.Errorf("%w: король не найден", ErrCastling)
+	}
 	if king.IsMoved() {
 		return fmt.Errorf("%w: король уже ходил", ErrCastling)
 	}
@@ -35,23 +39,25 @@ func ValidateCastling(castlingType move.CastlingType, side chess.Side, board che
 func castlingVerifyingPositions(direction position.File, squares chess.Squares, kingPosition position.Position) (position.Set, error) {
 	positions := mapset.NewSetWithSize[position.Position](2)
 	for file := kingPosition.File + direction; file <= squares.EdgePosition().File && file > 0; file += direction {
-		square := squares.GetByPosition(position.New(file, kingPosition.Rank))
-		if square == nil {
+		pos := position.New(file, kingPosition.Rank)
+
+		p, err := squares.GetByPosition(pos)
+		if err != nil {
 			return nil, fmt.Errorf("%w: нет ладьи", ErrCastling)
 		}
 
-		if square.IsEmpty() {
+		if p == nil {
 			if diff := file - kingPosition.File; max(diff, -diff) <= 2 {
-				positions.Add(square.Position)
+				positions.Add(pos)
 			}
 
 			continue
 		}
 
-		if square.Piece.Notation() != chess.NotationRook {
+		if p.Notation() != piece.NotationRook {
 			return nil, fmt.Errorf("%w: помеха для рокировки", ErrCastling)
 		}
-		if square.Piece.IsMoved() {
+		if p.IsMoved() {
 			return nil, fmt.Errorf("%w: ладья уже ходила", ErrCastling)
 		}
 

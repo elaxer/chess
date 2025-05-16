@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"slices"
 	"strconv"
-	"strings"
 
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
@@ -40,29 +39,19 @@ func fenPosition(squares chess.Squares) string {
 		row := ""
 		emptySquares := 0
 		for j := range squares.EdgePosition().File {
-			square := squares.GetByPosition(position.New(j+1, i+1))
-
-			if !square.IsEmpty() {
-				if emptySquares > 0 {
-					row += strconv.Itoa(emptySquares)
-				}
-				emptySquares = 0
-
-				piece := string(square.Piece.Notation())
-				if square.Piece.Notation() == chess.NotationPawn {
-					piece = "P"
-				}
-
-				if square.Piece.Side().IsBlack() {
-					piece = strings.ToLower(piece)
-				}
-
-				row += piece
-			}
-
-			if square.IsEmpty() {
+			p, _ := squares.GetByPosition(position.New(j+1, i+1))
+			if p == nil {
 				emptySquares++
+
+				continue
 			}
+
+			if emptySquares > 0 {
+				row += strconv.Itoa(emptySquares)
+			}
+			emptySquares = 0
+
+			row += fmt.Sprintf("%s", p)
 		}
 
 		if emptySquares > 0 {
@@ -104,7 +93,7 @@ func fenEnPassantPosition(board chess.Board) string {
 
 	lastMove := board.MovesHistory()[len(board.MovesHistory())-1]
 	normalMove, ok := lastMove.(*mv.Normal)
-	if !ok || normalMove.PieceNotation != chess.NotationPawn {
+	if !ok || normalMove.PieceNotation != piece.NotationPawn {
 		return "-"
 	}
 
@@ -127,7 +116,7 @@ func fenHalfmoveClock(board chess.Board) string {
 	count := 0
 	for _, move := range moves {
 		normalMove, ok := move.(*mv.Normal)
-		if !ok || normalMove.PieceNotation == chess.NotationPawn || normalMove.IsCapture {
+		if !ok || normalMove.PieceNotation == piece.NotationPawn || normalMove.IsCapture {
 			count = 0
 
 			continue

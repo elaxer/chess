@@ -7,6 +7,11 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 )
 
+const (
+	NotationQueen = "Q"
+	WeightQueen   = 9
+)
+
 type Queen struct {
 	*basePiece
 	*Rook
@@ -22,29 +27,33 @@ func (q *Queen) Side() chess.Side {
 }
 
 func (q *Queen) Moves(board chess.Board) position.Set {
-	square := board.Squares().GetByPiece(q)
+	pos := board.Squares().GetByPiece(q)
 
-	square.SetPiece(q.Rook)
+	board.Squares().AddPiece(q.Rook, pos)
 	moves := q.Rook.Moves(board)
 
-	square.SetPiece(q.Bishop)
+	board.Squares().AddPiece(q.Bishop, pos)
 	moves = moves.Union(q.Bishop.Moves(board))
 
-	square.SetPiece(q)
+	board.Squares().AddPiece(q, pos)
 
 	return q.legalMoves(board, q, moves)
 }
 
-func (q *Queen) Notation() chess.PieceNotation {
-	return chess.NotationQueen
+func (q *Queen) Notation() string {
+	return NotationQueen
 }
 
 func (q *Queen) Weight() uint8 {
-	return chess.WeightQueen
+	return WeightQueen
 }
 
 func (q *Queen) String() string {
-	return string(q.Notation())
+	if q.side == chess.SideBlack {
+		return "q"
+	}
+
+	return "Q"
 }
 
 func (q *Queen) MarshalJSON() ([]byte, error) {

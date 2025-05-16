@@ -7,6 +7,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
 	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
 // Castling это структура, реализующая интерфейс Mover для рокировки.
@@ -21,7 +22,7 @@ func (m *Castling) Make(castlingType move.CastlingType, board chess.Board) (ches
 
 	direction := fileDirection(castlingType)
 
-	_, kingPosition := board.Squares().GetPiece(chess.NotationKing, board.Turn())
+	_, kingPosition := board.Squares().GetPiece(piece.NotationKing, board.Turn())
 	rookPosition, _ := m.rookPosition(direction, board.Squares(), kingPosition)
 
 	rank := kingPosition.Rank
@@ -40,9 +41,11 @@ func (m *Castling) Make(castlingType move.CastlingType, board chess.Board) (ches
 
 func (m *Castling) rookPosition(direction position.File, squares chess.Squares, kingPosition position.Position) (position.Position, error) {
 	for i := kingPosition.File + direction; i <= squares.EdgePosition().File && i > 0; i += direction {
-		square := squares.GetByPosition(position.New(i, kingPosition.Rank))
-		if !square.IsEmpty() && square.Piece.Notation() == chess.NotationRook {
-			return square.Position, nil
+		pos := position.New(i, kingPosition.Rank)
+
+		p, _ := squares.GetByPosition(pos)
+		if p != nil && p.Notation() == piece.NotationRook {
+			return pos, nil
 		}
 	}
 

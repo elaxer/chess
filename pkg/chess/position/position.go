@@ -47,6 +47,10 @@ func FromNotation(notation string) Position {
 	return Position{NewFile(result["file"]), Rank(rank)}
 }
 
+func (p Position) IsInRange(edgePosition Position) bool {
+	return p.File <= edgePosition.File && p.File >= FileA && p.Rank <= edgePosition.Rank && p.Rank >= Rank1
+}
+
 func (p Position) Validate() error {
 	return validation.ValidateStruct(&p, validation.Field(&p.File), validation.Field(&p.Rank))
 }
@@ -55,6 +59,7 @@ func (p Position) String() string {
 	return fmt.Sprintf("%s%s", p.File, p.Rank)
 }
 
+// todo pointer?
 func (p *Position) UnmarshalJSON(data []byte) error {
 	position := make(map[string]any, 2)
 	err := json.Unmarshal(data, &position)

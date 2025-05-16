@@ -2,9 +2,11 @@ package standard
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
+	"github.com/elaxer/chess/pkg/chess/visualizer"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 	"github.com/elaxer/chess/pkg/variant/standard/staterule"
 )
@@ -38,15 +40,15 @@ func (f *factory) CreateEmpty(turn chess.Side) chess.Board {
 
 func (f *factory) CreateFilled() chess.Board {
 	board := f.CreateEmpty(chess.SideWhite)
-	notations := []chess.PieceNotation{
-		chess.NotationRook,
-		chess.NotationKnight,
-		chess.NotationBishop,
-		chess.NotationQueen,
-		chess.NotationKing,
-		chess.NotationBishop,
-		chess.NotationKnight,
-		chess.NotationRook,
+	notations := []string{
+		piece.NotationRook,
+		piece.NotationKnight,
+		piece.NotationBishop,
+		piece.NotationQueen,
+		piece.NotationKing,
+		piece.NotationBishop,
+		piece.NotationKnight,
+		piece.NotationRook,
 	}
 
 	for i, notation := range notations {
@@ -68,6 +70,9 @@ func (f *factory) CreateFromMoves(moves []chess.Move) (chess.Board, error) {
 		if err := board.MakeMove(move); err != nil {
 			return nil, fmt.Errorf("%s#%d: %w", move, i+1, err)
 		}
+
+		(&visualizer.Visualizer{visualizer.Options{Orientation: visualizer.OptionOrientationByTurn, Positions: true}}).Visualize(board, os.Stdout)
+		fmt.Fprintln(os.Stdout)
 	}
 
 	return board, nil

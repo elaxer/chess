@@ -6,8 +6,7 @@ import (
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
-	"github.com/elaxer/chess/pkg/variant/standard/move"
-	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
+	"github.com/elaxer/chess/pkg/variant/standard/metric"
 	"github.com/elaxer/chess/pkg/variant/standard/mover"
 	"github.com/elaxer/chess/pkg/variant/standard/staterule"
 )
@@ -68,33 +67,22 @@ func (b *standard) MakeMove(move chess.Move) error {
 }
 
 func (b *standard) MovePiece(from, to position.Position) (capturedPiece chess.Piece) {
-	fromSquare := b.squares.GetByPosition(from)
-	fromSquare.Piece.SetMoved()
-	defer fromSquare.SetPiece(nil)
+	piece, _ := b.squares.GetByPosition(from)
+	piece.MarkMoved()
+	defer func() {
+		piece = nil
+	}()
 
-	toSquare := b.squares.GetByPosition(to)
-	defer toSquare.SetPiece(fromSquare.Piece)
+	capturedPiece, _ = b.squares.GetByPosition(to)
+	defer func() {
+		capturedPiece = piece
+	}()
 
-	if capturedPiece = toSquare.Piece; capturedPiece != nil {
+	if capturedPiece != nil {
 		b.capturedPieces = append(b.capturedPieces, capturedPiece)
 	}
 
 	return
-}
-
-// castlings возвращает возможные рокировки для текущей стороны.
-// Если рокировка невозможна, то она не будет включена в список.
-func (b *standard) castlings() []move.CastlingType {
-	castlings := make([]move.CastlingType, 0, 2)
-
-	if validator.ValidateCastling(move.CastlingShort, b.turn, b) == nil {
-		castlings = append(castlings, move.CastlingShort)
-	}
-	if validator.ValidateCastling(move.CastlingLong, b.turn, b) == nil {
-		castlings = append(castlings, move.CastlingLong)
-	}
-
-	return castlings
 }
 
 func (b *standard) MarshalJSON() ([]byte, error) {
@@ -102,6 +90,6 @@ func (b *standard) MarshalJSON() ([]byte, error) {
 		"squares":         b.squares,
 		"state":           b.State(b.turn),
 		"captured_pieces": b.capturedPieces,
-		"castlings":       b.castlings(),
+		"castlings":       metric.Castlings(b).Value(),
 	})
 }

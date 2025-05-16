@@ -17,12 +17,12 @@ func (m *EnPassant) MakeMove(move chess.Move, board chess.Board) (chess.Move, er
 	}
 
 	/* валидация todo return err */
-	fromSquare := board.Squares().GetByPosition(epMove.From)
-	if fromSquare == nil {
-		return nil, chess.ErrSquareNotFound
+	p, err := board.Squares().GetByPosition(epMove.From)
+	if err != nil {
+		return nil, err
 	}
 
-	pawn, ok := fromSquare.Piece.(*piece.Pawn)
+	pawn, ok := p.(*piece.Pawn)
 	if !ok {
 		return nil, err
 	}
@@ -31,9 +31,9 @@ func (m *EnPassant) MakeMove(move chess.Move, board chess.Board) (chess.Move, er
 		return nil, err
 	}
 
-	toSquare := board.Squares().GetByPosition(epMove.To)
-	if toSquare == nil {
-		return nil, chess.ErrSquareNotFound
+	_, err = board.Squares().GetByPosition(epMove.To)
+	if err != nil {
+		return nil, err
 	}
 
 	return nil, nil
