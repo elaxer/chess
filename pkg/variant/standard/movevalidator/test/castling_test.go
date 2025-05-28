@@ -5,8 +5,8 @@ import (
 
 	. "github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
-	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
-	"github.com/elaxer/chess/pkg/variant/standarttest"
+	validator "github.com/elaxer/chess/pkg/variant/standard/movevalidator"
+	"github.com/elaxer/chess/pkg/variant/standardtest"
 
 	. "github.com/elaxer/chess/pkg/chess/position"
 )
@@ -28,12 +28,12 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"short",
 			fields{
-				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
-					{Piece: standarttest.NewPiece("K", SideWhite, false), Position: FromNotation("e1")},
-					{Piece: standarttest.NewPiece("Q", SideWhite, false), Position: FromNotation("g8")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("a1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("h1")},
-					{Piece: standarttest.NewPiece("R", SideBlack, false), Position: FromNotation("b6")},
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
+					{Piece: standardtest.NewPiece("K", false), Position: FromNotation("e1")},
+					{Piece: standardtest.NewPiece("Q", false), Position: FromNotation("g8")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("a1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("h1")},
+					{Piece: standardtest.NewPiece("r", false), Position: FromNotation("b6")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -42,11 +42,11 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"long",
 			fields{
-				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
-					{Piece: standarttest.NewPiece("K", SideWhite, false), Position: FromNotation("e1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("a1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("h1")},
-					{Piece: standarttest.NewPiece("R", SideBlack, false), Position: FromNotation("g6")},
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
+					{Piece: standardtest.NewPiece("K", false), Position: FromNotation("e1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("a1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("h1")},
+					{Piece: standardtest.NewPiece("r", false), Position: FromNotation("g6")},
 				}),
 			},
 			args{move.CastlingLong},
@@ -55,10 +55,10 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"king_is_walked",
 			fields{
-				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
-					{Piece: standarttest.NewPiece("K", SideWhite, true), Position: FromNotation("e1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("a1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("h1")},
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
+					{Piece: standardtest.NewPiece("K", true), Position: FromNotation("e1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("a1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("h1")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -67,10 +67,10 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"rook_is_walked",
 			fields{
-				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
-					{Piece: standarttest.NewPiece("K", SideWhite, false), Position: FromNotation("e1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("a1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, true), Position: FromNotation("h1")},
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
+					{Piece: standardtest.NewPiece("K", false), Position: FromNotation("e1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("a1")},
+					{Piece: standardtest.NewPiece("R", true), Position: FromNotation("h1")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -79,11 +79,11 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"let",
 			fields{
-				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
-					{Piece: standarttest.NewPiece("K", SideWhite, false), Position: FromNotation("e1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("a1")},
-					{Piece: standarttest.NewPiece("N", SideWhite, false), Position: FromNotation("g1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("h1")},
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
+					{Piece: standardtest.NewPiece("K", false), Position: FromNotation("e1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("a1")},
+					{Piece: standardtest.NewPiece("N", false), Position: FromNotation("g1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("h1")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -92,11 +92,11 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"obstacle",
 			fields{
-				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
-					{Piece: standarttest.NewPiece("K", SideWhite, false), Position: FromNotation("e1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("a1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("h1")},
-					{Piece: standarttest.NewPiece("N", SideBlack, false), Position: FromNotation("g1")},
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
+					{Piece: standardtest.NewPiece("K", false), Position: FromNotation("e1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("a1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("h1")},
+					{Piece: standardtest.NewPiece("n", false), Position: FromNotation("g1")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -105,11 +105,11 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"future_check",
 			fields{
-				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
-					{Piece: standarttest.NewPiece("K", SideWhite, false), Position: FromNotation("e1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("a1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("h1")},
-					{Piece: standarttest.NewPiece("R", SideBlack, false), Position: FromNotation("g8")},
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
+					{Piece: standardtest.NewPiece("K", false), Position: FromNotation("e1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("a1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("h1")},
+					{Piece: standardtest.NewPiece("r", false), Position: FromNotation("g8")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -118,11 +118,11 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"attacked_castling_square",
 			fields{
-				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
-					{Piece: standarttest.NewPiece("K", SideWhite, false), Position: FromNotation("e1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("a1")},
-					{Piece: standarttest.NewPiece("R", SideWhite, false), Position: FromNotation("h1")},
-					{Piece: standarttest.NewPiece("R", SideBlack, false), Position: FromNotation("f8")},
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
+					{Piece: standardtest.NewPiece("K", false), Position: FromNotation("e1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("a1")},
+					{Piece: standardtest.NewPiece("R", false), Position: FromNotation("h1")},
+					{Piece: standardtest.NewPiece("r", false), Position: FromNotation("f8")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -132,7 +132,7 @@ func TestValidateCastling(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := validator.ValidateCastling(tt.args.castling, tt.fields.board.Turn(), tt.fields.board); (err != nil) != tt.wantErr {
+			if err := validator.ValidateCastling(tt.args.castling, tt.fields.board.Turn(), tt.fields.board, true); (err != nil) != tt.wantErr {
 				t.Errorf("ValidateCastling() = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

@@ -7,7 +7,7 @@ import (
 	. "github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 	"github.com/elaxer/chess/pkg/variant/standard/state"
-	"github.com/elaxer/chess/pkg/variant/standarttest"
+	"github.com/elaxer/chess/pkg/variant/standardtest"
 )
 
 func Test_standard_State(t *testing.T) {
@@ -21,7 +21,7 @@ func Test_standard_State(t *testing.T) {
 	}{
 		{
 			"check",
-			fields{standarttest.NewEmpty(chess.SideWhite, []standarttest.Placement{
+			fields{standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
 				{Piece: piece.NewKing(chess.SideWhite), Position: FromNotation("a1")},
 				{Piece: piece.NewKing(chess.SideBlack), Position: FromNotation("h8")},
 				{Piece: piece.NewRook(chess.SideBlack), Position: FromNotation("a8")},
@@ -30,7 +30,7 @@ func Test_standard_State(t *testing.T) {
 		},
 		{
 			"check_bishop",
-			fields{standarttest.NewEmpty(chess.SideBlack, []standarttest.Placement{
+			fields{standardtest.NewEmpty(chess.SideBlack, []standardtest.Placement{
 				{Piece: piece.NewKing(chess.SideBlack), Position: FromNotation("e1")},
 				{Piece: piece.NewKing(chess.SideWhite), Position: FromNotation("h8")},
 				{Piece: piece.NewBishop(chess.SideWhite), Position: FromNotation("b4")},
@@ -40,7 +40,7 @@ func Test_standard_State(t *testing.T) {
 
 		{
 			"mate",
-			fields{standarttest.NewEmpty(chess.SideWhite, []standarttest.Placement{
+			fields{standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
 				{Piece: piece.NewKing(chess.SideWhite), Position: FromNotation("a1")},
 				{Piece: piece.NewKing(chess.SideBlack), Position: FromNotation("h8")},
 				{Piece: piece.NewRook(chess.SideBlack), Position: FromNotation("a8")},
@@ -51,7 +51,7 @@ func Test_standard_State(t *testing.T) {
 		{
 			// no mate because the black king can capture the threatening rook
 			"no_mate",
-			fields{standarttest.NewEmpty(chess.SideWhite, []standarttest.Placement{
+			fields{standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
 				{Piece: piece.NewKing(chess.SideWhite), Position: FromNotation("a1")},
 				{Piece: piece.NewKing(chess.SideBlack), Position: FromNotation("h8")},
 				{Piece: piece.NewRook(chess.SideBlack), Position: FromNotation("a2")},
@@ -62,7 +62,7 @@ func Test_standard_State(t *testing.T) {
 
 		{
 			"stalemate",
-			fields{standarttest.NewEmpty(chess.SideWhite, []standarttest.Placement{
+			fields{standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
 				{Piece: piece.NewKing(chess.SideWhite), Position: FromNotation("a8")},
 				{Piece: piece.NewKing(chess.SideBlack), Position: FromNotation("b6")},
 				{Piece: piece.NewQueen(chess.SideBlack), Position: FromNotation("c7")},

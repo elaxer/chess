@@ -8,7 +8,7 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/move"
 	resolver "github.com/elaxer/chess/pkg/variant/standard/moveresolver"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
-	"github.com/elaxer/chess/pkg/variant/standarttest"
+	"github.com/elaxer/chess/pkg/variant/standardtest"
 )
 
 func TestResolveNormal_From(t *testing.T) {
@@ -29,7 +29,7 @@ func TestResolveNormal_From(t *testing.T) {
 					To:            position.FromNotation("e4"),
 					PieceNotation: piece.NotationPawn,
 				},
-				board: standarttest.NewEmpty(SideWhite, []standarttest.Placement{
+				board: standardtest.NewEmpty(SideWhite, []standardtest.Placement{
 					{Piece: piece.NewPawn(SideWhite), Position: position.FromNotation("d2")},
 					{Piece: piece.NewPawn(SideWhite), Position: position.FromNotation("e2")},
 					{Piece: piece.NewPawn(SideWhite), Position: position.FromNotation("f2")},
@@ -46,7 +46,7 @@ func TestResolveNormal_From(t *testing.T) {
 					To:            position.FromNotation("b8"),
 					PieceNotation: piece.NotationRook,
 				},
-				board: standarttest.NewEmpty(SideBlack, []standarttest.Placement{
+				board: standardtest.NewEmpty(SideBlack, []standardtest.Placement{
 					{Piece: piece.NewRook(SideBlack), Position: position.FromNotation("f8")},
 					{Piece: piece.NewRook(SideBlack), Position: position.FromNotation("a8")},
 				}),
@@ -62,7 +62,7 @@ func TestResolveNormal_From(t *testing.T) {
 					To:            position.FromNotation("e2"),
 					PieceNotation: piece.NotationKnight,
 				},
-				board: standarttest.NewEmpty(SideWhite, []standarttest.Placement{
+				board: standardtest.NewEmpty(SideWhite, []standardtest.Placement{
 					{Piece: piece.NewKnight(SideWhite), Position: position.FromNotation("g1")},
 					{Piece: piece.NewKnight(SideWhite), Position: position.FromNotation("c3")},
 				}),
@@ -78,7 +78,7 @@ func TestResolveNormal_From(t *testing.T) {
 					To:            position.FromNotation("a5"),
 					PieceNotation: piece.NotationRook,
 				},
-				board: standarttest.NewEmpty(SideWhite, []standarttest.Placement{
+				board: standardtest.NewEmpty(SideWhite, []standardtest.Placement{
 					{Piece: piece.NewRook(SideWhite), Position: position.FromNotation("a1")},
 					{Piece: piece.NewRook(SideWhite), Position: position.FromNotation("a8")},
 				}),
@@ -94,7 +94,7 @@ func TestResolveNormal_From(t *testing.T) {
 					To:            position.FromNotation("d4"),
 					PieceNotation: piece.NotationBishop,
 				},
-				board: standarttest.NewEmpty(SideBlack, []standarttest.Placement{
+				board: standardtest.NewEmpty(SideBlack, []standardtest.Placement{
 					{Piece: piece.NewBishop(SideBlack), Position: position.FromNotation("b2")},
 					{Piece: piece.NewBishop(SideBlack), Position: position.FromNotation("f2")},
 					{Piece: piece.NewBishop(SideBlack), Position: position.FromNotation("b6")},
@@ -135,7 +135,7 @@ func TestUnresolveFrom(t *testing.T) {
 			args{
 				position.FromNotation("d1"),
 				position.FromNotation("d4"),
-				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
 					{Piece: piece.NewQueen(SideWhite), Position: position.FromNotation("d1")},
 					{Piece: piece.NewQueen(SideWhite), Position: position.FromNotation("d8")},
 				}),
@@ -148,7 +148,7 @@ func TestUnresolveFrom(t *testing.T) {
 			args{
 				position.FromNotation("a1"),
 				position.FromNotation("d1"),
-				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
 					{Piece: piece.NewRook(SideBlack), Position: position.FromNotation("a1")},
 					{Piece: piece.NewRook(SideBlack), Position: position.FromNotation("g1")},
 				}),
@@ -161,7 +161,7 @@ func TestUnresolveFrom(t *testing.T) {
 			args{
 				position.FromNotation("b7"),
 				position.FromNotation("d5"),
-				standarttest.NewEmpty(SideWhite, []standarttest.Placement{
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
 					{Piece: piece.NewBishop(SideWhite), Position: position.FromNotation("b7")},
 					{Piece: piece.NewBishop(SideWhite), Position: position.FromNotation("f7")},
 					{Piece: piece.NewBishop(SideWhite), Position: position.FromNotation("b3")},

@@ -2,14 +2,11 @@ package standard
 
 import (
 	"fmt"
-	"slices"
 	"strconv"
 
 	"github.com/elaxer/chess/pkg/chess"
-	"github.com/elaxer/chess/pkg/chess/position"
-	"github.com/elaxer/chess/pkg/variant/standard/metric"
-	mv "github.com/elaxer/chess/pkg/variant/standard/move"
-	"github.com/elaxer/chess/pkg/variant/standard/piece"
+	"github.com/elaxer/chess/pkg/chess/metric"
+	standardmetric "github.com/elaxer/chess/pkg/variant/standard/metric"
 )
 
 // EncodeFEN encodes the board position in FEN format.
@@ -23,62 +20,51 @@ import (
 // 6. Fullmove number
 func EncodeFEN(board chess.Board) string {
 	return fmt.Sprintf(
-		"%s %s %s %s %s %d",
+		"%s %s %v %v %v %d",
 		fenPosition(board.Squares()),
 		board.Turn(),
-		metric.CastlingsString(board).Value(),
-		metric.EnPassantPosition(board).Value(),
-		fenHalfmoveClock(board),
+		callMetric(standardmetric.CastlingsString, board),
+		callMetric(standardmetric.EnPassantPosition, board),
+		callMetric(standardmetric.FiftyMovesClock, board),
 		len(board.MovesHistory())/2+1,
 	)
 }
 
 func fenPosition(squares *chess.Squares) string {
 	fen := ""
-	for rank := range squares.EdgePosition().Rank {
-		row := ""
+	for _, row := range squares.IterByRows(true) {
+		rowStr := ""
 		emptySquares := 0
-		for file := range squares.EdgePosition().File {
-			position, _ := squares.GetByPosition(position.New(file+1, rank+1))
-			if position == nil {
+		for _, piece := range row {
+			if piece == nil {
 				emptySquares++
 
 				continue
 			}
 
 			if emptySquares > 0 {
-				row += strconv.Itoa(emptySquares)
+				rowStr += strconv.Itoa(emptySquares)
 			}
 			emptySquares = 0
 
-			row += fmt.Sprintf("%s", position)
+			rowStr += fmt.Sprintf("%s", piece)
 		}
 
 		if emptySquares > 0 {
-			row += strconv.Itoa(emptySquares)
+			rowStr += strconv.Itoa(emptySquares)
 		}
 
-		fen += row + "/"
+		fen += rowStr + "/"
 	}
 
 	return fen[:len(fen)-1]
 }
 
-func fenHalfmoveClock(board chess.Board) string {
-	moves := slices.Clone(board.MovesHistory())
-	slices.Reverse(moves)
-
-	count := 0
-	for _, move := range moves {
-		normalMove, ok := move.(*mv.Normal)
-		if !ok || normalMove.PieceNotation == piece.NotationPawn || normalMove.IsCapture {
-			count = 0
-
-			continue
-		}
-
-		count++
+func callMetric(metricFunc metric.MetricFunc, board chess.Board) any {
+	metric := metricFunc(board)
+	if metric == nil {
+		return "-"
 	}
 
-	return strconv.Itoa(count/2 + 1)
+	return metric.Value()
 }

@@ -1,6 +1,9 @@
-package standarttest
+package standardtest
 
 import (
+	"strings"
+	"unicode"
+
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard"
@@ -23,13 +26,13 @@ func NewEmpty(turn chess.Side, placements []Placement) chess.Board {
 	return board
 }
 
-func NewPiece(notation string, side chess.Side, isMoved bool) chess.Piece {
-	p := piece.New(notation, side)
-	if isMoved {
-		p.MarkMoved()
+func NewFromMoves(notations []string) chess.Board {
+	board, err := standard.NewFactory().CreateFromMoves(NotationsToMoves(notations))
+	if err != nil {
+		panic(err)
 	}
 
-	return p
+	return board
 }
 
 func NotationsToMoves(notations []string) []chess.Move {
@@ -55,4 +58,23 @@ func ResolvePromotion(move *move.Promotion, board chess.Board) *move.Promotion {
 	move.Normal = ResolveNormal(move.Normal, board)
 
 	return move
+}
+
+func NewPiece(notation string, isMoved bool) chess.Piece {
+	side := chess.SideWhite
+	if unicode.IsLower([]rune(notation)[0]) {
+		side = chess.SideBlack
+	}
+
+	notationUpper := strings.ToUpper(notation)
+	if notationUpper == "P" {
+		notationUpper = ""
+	}
+
+	newPiece := piece.New(notationUpper, side)
+	if isMoved {
+		newPiece.MarkMoved()
+	}
+
+	return newPiece
 }

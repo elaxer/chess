@@ -3,11 +3,8 @@ package standard_test
 import (
 	"testing"
 
-	. "github.com/elaxer/chess/pkg/chess"
-	. "github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard"
-	"github.com/elaxer/chess/pkg/variant/standard/piece"
-	"github.com/elaxer/chess/pkg/variant/standarttest"
+	"github.com/elaxer/chess/pkg/variant/standardtest"
 )
 
 // https://www.chess.com/games/view/14842105
@@ -65,41 +62,14 @@ func TestFactory_CreateFromMoves(t *testing.T) {
 		"Qxc6", "Rd6",
 	}
 
-	b, err := standard.NewFactory().CreateFromMoves(standarttest.NotationsToMoves(moves))
+	b, err := standard.NewFactory().CreateFromMoves(standardtest.NotationsToMoves(moves))
 	if err != nil {
 		t.Fatalf("failed to create board from moves: %v", err)
 	}
 
-	expected := map[Position]Piece{
-		FromNotation("a2"): piece.NewPawn(SideWhite),
-		FromNotation("b6"): piece.NewKing(SideWhite),
-		FromNotation("c6"): piece.NewQueen(SideWhite),
-		FromNotation("d6"): piece.NewRook(SideBlack),
-		FromNotation("e6"): piece.NewPawn(SideWhite),
-		FromNotation("e7"): piece.NewKing(SideBlack),
-		FromNotation("f4"): piece.NewPawn(SideBlack),
-		FromNotation("f7"): piece.NewPawn(SideBlack),
-		FromNotation("g5"): piece.NewPawn(SideWhite),
-		FromNotation("g7"): piece.NewPawn(SideBlack),
-	}
-
-	for position, piece := range b.Squares().Iter() {
-		expectedPiece, ok := expected[position]
-		if !ok {
-			if piece != nil {
-				t.Fatalf("unexpected piece %s at %s", piece, position)
-			}
-
-			continue
-		}
-
-		if piece == nil {
-			t.Fatalf("expected piece at %s, got empty", position)
-		}
-		if piece.Notation() != expectedPiece.Notation() || piece.Side() != expectedPiece.Side() {
-			t.Fatalf("expected %s%s at %s, got %s%s",
-				expectedPiece.Side(), expectedPiece.Notation(), position,
-				piece.Side(), piece.Notation())
-		}
+	fen := standard.EncodeFEN(b)
+	const expectedFEN = "8/4kpp1/1KQrP3/6P1/5p2/8/P7/8 w - - 1 51"
+	if fen != expectedFEN {
+		t.Errorf("Expected position \"%s\", got - %s", expectedFEN, fen)
 	}
 }

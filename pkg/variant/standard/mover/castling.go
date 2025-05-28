@@ -17,7 +17,7 @@ type Castling struct {
 }
 
 func (m *Castling) Make(castlingType move.CastlingType, board chess.Board) (chess.Move, error) {
-	if err := validator.ValidateCastling(castlingType, board.Turn(), board); err != nil {
+	if err := validator.ValidateCastling(castlingType, board.Turn(), board, true); err != nil {
 		return nil, err
 	}
 

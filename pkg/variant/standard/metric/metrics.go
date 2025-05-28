@@ -16,10 +16,10 @@ var AllFuncs = []metric.MetricFunc{
 
 func Castlings(board chess.Board) metric.Metric {
 	castlings := make([]move.CastlingType, 0, 2)
-	if validator.ValidateCastling(move.CastlingShort, board.Turn(), board) == nil {
+	if validator.ValidateCastling(move.CastlingShort, board.Turn(), board, true) == nil {
 		castlings = append(castlings, move.CastlingShort)
 	}
-	if validator.ValidateCastling(move.CastlingLong, board.Turn(), board) == nil {
+	if validator.ValidateCastling(move.CastlingLong, board.Turn(), board, true) == nil {
 		castlings = append(castlings, move.CastlingLong)
 	}
 
@@ -27,16 +27,17 @@ func Castlings(board chess.Board) metric.Metric {
 }
 
 func CastlingsString(board chess.Board) metric.Metric {
+	keys := []string{"K", "Q", "k", "q"}
 	castlings := map[string]bool{
-		"K": validator.ValidateCastling(move.CastlingShort, chess.SideWhite, board) == nil,
-		"Q": validator.ValidateCastling(move.CastlingLong, chess.SideWhite, board) == nil,
-		"k": validator.ValidateCastling(move.CastlingShort, chess.SideBlack, board) == nil,
-		"q": validator.ValidateCastling(move.CastlingLong, chess.SideBlack, board) == nil,
+		"K": validator.ValidateCastling(move.CastlingShort, chess.SideWhite, board, false) == nil,
+		"Q": validator.ValidateCastling(move.CastlingLong, chess.SideWhite, board, false) == nil,
+		"k": validator.ValidateCastling(move.CastlingShort, chess.SideBlack, board, false) == nil,
+		"q": validator.ValidateCastling(move.CastlingLong, chess.SideBlack, board, false) == nil,
 	}
 
 	str := ""
-	for castling, isValid := range castlings {
-		if isValid {
+	for _, castling := range keys {
+		if castlings[castling] {
 			str += castling
 		}
 	}
@@ -69,4 +70,20 @@ func EnPassantPosition(board chess.Board) metric.Metric {
 	)
 
 	return metric.New("En passant position", passant)
+}
+
+func FiftyMovesClock(board chess.Board) metric.Metric {
+	clock := 0
+	for _, m := range board.MovesHistory() {
+		normalMove, ok := m.(*move.Normal)
+		if !ok || normalMove.PieceNotation == piece.NotationPawn || normalMove.IsCapture {
+			clock = 0
+
+			continue
+		}
+
+		clock++
+	}
+
+	return metric.New("Fifty moves clock", clock)
 }

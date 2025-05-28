@@ -40,11 +40,11 @@ func (m *mockPiece) String() string {
 
 func TestNewSquares(t *testing.T) {
 	squares := NewSquares(position.New(position.FileH, position.Rank8))
-	if len(squares.squares) != 8 {
-		t.Errorf("expected 8 rows, got %d", len(squares.squares))
+	if len(squares.rows) != 8 {
+		t.Errorf("expected 8 rows, got %d", len(squares.rows))
 	}
-	for _, row := range squares.squares {
-		if len(squares.squares) != 8 {
+	for _, row := range squares.rows {
+		if len(squares.rows) != 8 {
 			t.Errorf("expected 8 squares, got %d", len(row))
 		}
 	}
@@ -54,7 +54,7 @@ func TestSquares_GetByPosition(t *testing.T) {
 	squares := NewSquares(position.New(position.FileH, position.Rank8))
 	king := &mockPiece{"K", SideWhite}
 
-	squares.squares[3][0] = king
+	squares.rows[3][0] = king
 	p, err := squares.GetByPosition(position.FromNotation("a4"))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

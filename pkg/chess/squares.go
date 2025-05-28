@@ -14,7 +14,7 @@ var MaxEdgePosition = position.New(position.FileMax, position.RankMax)
 var ErrSquareOutOfRange = errors.New("square position is out of range")
 
 type Squares struct {
-	squares      [][]Piece
+	rows         [][]Piece
 	edgePosition position.Position
 }
 
@@ -37,7 +37,7 @@ func (s *Squares) EdgePosition() position.Position {
 
 func (s *Squares) Iter() iter.Seq2[position.Position, Piece] {
 	return func(yield func(position position.Position, piece Piece) bool) {
-		for rank, row := range s.squares {
+		for rank, row := range s.rows {
 			for file, piece := range row {
 				if !yield(position.New(position.File(file+1), position.Rank(rank+1)), piece) {
 					return
@@ -48,8 +48,7 @@ func (s *Squares) Iter() iter.Seq2[position.Position, Piece] {
 }
 
 func (s *Squares) IterByRows(backward bool) iter.Seq2[position.Rank, iter.Seq2[position.File, Piece]] {
-	rows := make([][]Piece, len(s.squares))
-	copy(rows, s.squares)
+	rows := slices.Clone(s.rows)
 	if backward {
 		slices.Reverse(rows)
 	}
@@ -75,7 +74,7 @@ func (s *Squares) IterByDirection(from, direction position.Position) iter.Seq2[p
 	return func(yield func(position position.Position, piece Piece) bool) {
 		position := position.New(from.File+direction.File, from.Rank+direction.Rank)
 		for position.IsInRange(s.edgePosition) {
-			if !yield(position, s.squares[position.Rank-1][position.File-1]) {
+			if !yield(position, s.rows[position.Rank-1][position.File-1]) {
 				return
 			}
 
@@ -93,13 +92,13 @@ func (s *Squares) GetByPosition(position position.Position) (Piece, error) {
 		return nil, fmt.Errorf("%w (%s)", ErrSquareOutOfRange, position)
 	}
 
-	return s.squares[position.Rank-1][position.File-1], nil
+	return s.rows[position.Rank-1][position.File-1], nil
 }
 
 // GetByPiece возвращает клетку по фигуре.
 // Если клетка не найдена, возвращает nil.
 func (s *Squares) GetByPiece(piece Piece) position.Position {
-	for rank, row := range s.squares {
+	for rank, row := range s.rows {
 		for file := range row {
 			if row[file] == piece {
 				return position.New(position.File(file+1), position.Rank(rank+1))
@@ -113,7 +112,7 @@ func (s *Squares) GetByPiece(piece Piece) position.Position {
 // GetAllPieces возвращает все фигуры для данной стороны.
 func (s *Squares) GetAllPieces(side Side) []Piece {
 	pieces := make([]Piece, 0, 16)
-	for _, row := range s.squares {
+	for _, row := range s.rows {
 		for _, piece := range row {
 			if piece != nil && piece.Side() == side {
 				pieces = append(pieces, piece)
@@ -129,7 +128,7 @@ func (s *Squares) GetAllPieces(side Side) []Piece {
 // Если фигуры не найдены, вернет пустой массив.
 func (s *Squares) GetPieces(notation string, side Side) []Piece {
 	pieces := make([]Piece, 0, 8)
-	for _, row := range s.squares {
+	for _, row := range s.rows {
 		for _, piece := range row {
 			if piece != nil && piece.Side() == side && piece.Notation() == notation {
 				pieces = append(pieces, piece)
@@ -156,8 +155,8 @@ func (s *Squares) MovePiece(from, to position.Position) (capturedPiece Piece, er
 		return nil, ErrSquareOutOfRange
 	}
 
-	capturedPiece = s.squares[to.Rank-1][to.File-1]
-	s.squares[from.Rank-1][from.File-1], s.squares[to.Rank-1][to.File-1] = nil, s.squares[from.Rank-1][from.File-1]
+	capturedPiece = s.rows[to.Rank-1][to.File-1]
+	s.rows[from.Rank-1][from.File-1], s.rows[to.Rank-1][to.File-1] = nil, s.rows[from.Rank-1][from.File-1]
 
 	return
 }
@@ -167,14 +166,14 @@ func (s *Squares) MovePieceTemporarily(from, to position.Position, callback func
 		return ErrSquareOutOfRange
 	}
 
-	fromSquarePiece := s.squares[from.Rank-1][from.File-1]
-	toSquarePiece := s.squares[to.Rank-1][to.File-1]
+	fromSquarePiece := s.rows[from.Rank-1][from.File-1]
+	toSquarePiece := s.rows[to.Rank-1][to.File-1]
 
 	defer func() {
-		s.squares[from.Rank-1][from.File-1], s.squares[to.Rank-1][to.File-1] = fromSquarePiece, toSquarePiece
+		s.rows[from.Rank-1][from.File-1], s.rows[to.Rank-1][to.File-1] = fromSquarePiece, toSquarePiece
 	}()
 
-	s.squares[from.Rank-1][from.File-1], s.squares[to.Rank-1][to.File-1] = nil, fromSquarePiece
+	s.rows[from.Rank-1][from.File-1], s.rows[to.Rank-1][to.File-1] = nil, fromSquarePiece
 
 	callback()
 
@@ -187,7 +186,7 @@ func (s *Squares) PlacePiece(piece Piece, position position.Position) error {
 		return ErrSquareOutOfRange
 	}
 
-	s.squares[position.Rank-1][position.File-1] = piece
+	s.rows[position.Rank-1][position.File-1] = piece
 
 	return nil
 }
