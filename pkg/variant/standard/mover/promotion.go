@@ -3,8 +3,9 @@ package mover
 import (
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
-	"github.com/elaxer/chess/pkg/variant/standard/move/resolver"
-	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
+	resolver "github.com/elaxer/chess/pkg/variant/standard/moveresolver"
+	validator "github.com/elaxer/chess/pkg/variant/standard/movevalidator"
+
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
@@ -15,7 +16,7 @@ type Promotion struct {
 
 func (m *Promotion) Make(move *move.Promotion, board chess.Board) (chess.Move, error) {
 	var err error
-	move.Normal, err = resolver.ResolveNormal(move.Normal, board)
+	move.Normal, err = resolver.ResolveNormal(move.Normal, board, board.Turn())
 	if err != nil {
 		return nil, err
 	}
@@ -23,12 +24,17 @@ func (m *Promotion) Make(move *move.Promotion, board chess.Board) (chess.Move, e
 		return nil, err
 	}
 
-	board.MovePiece(move.From, move.To)
+	capturedPiece, err := board.Squares().MovePiece(move.From, move.To)
+	if err != nil {
+		return nil, err
+	}
 
-	board.Squares().AddPiece(piece.New(move.NewPieceNotation, board.Turn()), move.To)
+	piece := piece.New(move.NewPieceNotation, board.Turn())
+	piece.MarkMoved()
 
-	move.CheckMate.IsCheck = board.State(!board.Turn()).IsCheck()
-	move.CheckMate.IsMate = board.State(!board.Turn()).IsMate()
+	board.Squares().PlacePiece(piece, move.To)
+
+	modifyNormal(move.Normal, capturedPiece, board)
 
 	return move, nil
 }

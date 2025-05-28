@@ -10,18 +10,18 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
-var ErrCastling = fmt.Errorf("%w: ошибка валидации рокировки", Err)
+var ErrCastling = fmt.Errorf("%w: castling validation error", Err)
 
 func ValidateCastling(castlingType move.CastlingType, side chess.Side, board chess.Board) error {
 	king, kingPosition := board.Squares().GetPiece(piece.NotationKing, side)
 	if king == nil {
-		return fmt.Errorf("%w: король не найден", ErrCastling)
+		return fmt.Errorf("%w: the king wasn't found", ErrCastling)
 	}
 	if king.IsMoved() {
-		return fmt.Errorf("%w: король уже ходил", ErrCastling)
+		return fmt.Errorf("%w: the king already has been moved", ErrCastling)
 	}
-	if !board.State(side).IsClear() {
-		return fmt.Errorf("%w: король под угрозой", ErrCastling)
+	if !board.State(side).Type().IsClear() {
+		return fmt.Errorf("%w: the king is under threat", ErrCastling)
 	}
 
 	positions, err := castlingVerifyingPositions(fileDirection(castlingType), board.Squares(), kingPosition)
@@ -30,13 +30,14 @@ func ValidateCastling(castlingType move.CastlingType, side chess.Side, board che
 	}
 
 	if board.Moves(!side).Intersect(positions).Cardinality() > 0 {
-		return fmt.Errorf("%w: поле для рокировки под боем", ErrCastling)
+		return fmt.Errorf("%w: castling squares are under threat", ErrCastling)
 	}
 
 	return nil
 }
 
-func castlingVerifyingPositions(direction position.File, squares chess.Squares, kingPosition position.Position) (position.Set, error) {
+// todo переделать под итератор
+func castlingVerifyingPositions(direction position.File, squares *chess.Squares, kingPosition position.Position) (position.Set, error) {
 	positions := mapset.NewSetWithSize[position.Position](2)
 	for file := kingPosition.File + direction; file <= squares.EdgePosition().File && file > 0; file += direction {
 		pos := position.New(file, kingPosition.Rank)

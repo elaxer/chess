@@ -21,7 +21,7 @@ func NewCastling(notation string) (*Castling, error) {
 	}
 
 	return &Castling{
-		CheckMate:    NewCheckMate(result["checkmate"]),
+		CheckMate:    CheckMateFromNotation(result["checkmate"]),
 		CastlingType: result["long"] == "",
 	}, nil
 }

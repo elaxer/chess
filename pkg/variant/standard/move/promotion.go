@@ -31,7 +31,7 @@ func NewPromotion(notation string) (*Promotion, error) {
 
 	return &Promotion{
 		&Normal{
-			NewCheckMate(result["checkmate"]),
+			CheckMateFromNotation(result["checkmate"]),
 			"",
 			position.FromNotation(result["from_file"]),
 			position.FromNotation(result["to"]),

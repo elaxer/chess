@@ -4,31 +4,18 @@ import "github.com/elaxer/chess/pkg/chess"
 
 var AllFuncs = []MetricFunc{
 	Turn,
-	State,
 	OppositeState,
 	MovesCount,
 	LastMove,
 	AdvantageDifference,
 }
 
-var stateStrings = map[chess.State]string{
-	chess.StateClear:     "clear",
-	chess.StateCheck:     "check",
-	chess.StateDraw:      "draw",
-	chess.StateMate:      "mate",
-	chess.StateStalemate: "stalemate",
-}
-
 func Turn(board chess.Board) Metric {
 	return New("Turn", board.Turn())
 }
 
-func State(board chess.Board) Metric {
-	return New("State", stateStrings[board.State(board.Turn())])
-}
-
 func OppositeState(board chess.Board) Metric {
-	return New("Opposite state", stateStrings[board.State(!board.Turn())])
+	return New("Opposite state", board.State(!board.Turn()))
 }
 
 func MovesCount(board chess.Board) Metric {

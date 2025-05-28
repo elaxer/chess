@@ -3,7 +3,6 @@ package visualizer
 import (
 	"fmt"
 	"io"
-	"slices"
 
 	"github.com/elaxer/chess/pkg/chess"
 )
@@ -13,15 +12,11 @@ type Visualizer struct {
 }
 
 func (v *Visualizer) Visualize(board chess.Board, writer io.Writer) {
-	squares := slices.All(board.Squares().Items())
-	reverse := (v.Options.Orientation == OptionOrientationDefault) || (v.Options.Orientation == OptionOrientationByTurn && board.Turn() == chess.SideWhite)
-	if reverse {
-		squares = slices.Backward(board.Squares().Items())
-	}
+	backward := (v.Options.Orientation == OptionOrientationDefault) || (v.Options.Orientation == OptionOrientationByTurn && board.Turn() == chess.SideWhite)
 
-	for i, row := range squares {
+	for rank, row := range board.Squares().IterByRows(backward) {
 		if v.Options.Positions {
-			fmt.Fprintf(writer, "%d ", i+1)
+			fmt.Fprintf(writer, "%d ", rank)
 		}
 		for _, piece := range row {
 			if piece == nil {

@@ -1,27 +1,44 @@
 package piece
 
 import (
+	"iter"
+
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
+)
+
+var (
+	orthogonalDirections = []position.Position{
+		position.New(1, 0),  // Right
+		position.New(-1, 0), // Left
+		position.New(0, 1),  // Up
+		position.New(0, -1), // Down
+	}
+	diagonalDirections = []position.Position{
+		position.New(1, 1),   // Up-Right
+		position.New(-1, -1), // Down-Left
+		position.New(1, -1),  // Down-Right
+		position.New(-1, 1),  // Up-Left
+	}
+	allDirections = append(orthogonalDirections, diagonalDirections...)
 )
 
 // sliding - структура для фигур, которые могут двигаться по диагонали или вертикали/горизонтали
 // (слон, ферзь, ладья).
 // Она содержит базовую структуру фигуры и методы для проверки возможности движения.
 type sliding struct {
-	*basePiece
+	*base
 }
 
-// slide - метод, который проверяет возможность движения фигуры по диагонали или вертикали/горизонтали.
-// canMove определяет, может ли фигура переместиться на указанную позицию,
-// canContinue определяет, может ли фигура продолжать движение в том же направлении.
-func (s *sliding) slide(position position.Position, board chess.Board) (canMove bool, canContinue bool) {
-	piece, err := board.Squares().GetByPosition(position)
+func (s *sliding) slide(from, direction position.Position, squares *chess.Squares) iter.Seq[position.Position] {
+	return func(yield func(position position.Position) bool) {
+		for move := range squares.IterByDirection(from, direction) {
+			piece, err := squares.GetByPosition(move)
+			canContinue := err == nil && piece == nil
 
-	return s.canMove(piece, s.side), err == nil && piece == nil
-}
-
-// todo
-func (s *sliding) isInRange(file position.File, rank position.Rank) bool {
-	return position.New(file, rank).Validate() == nil
+			if (s.canMove(piece, s.side) && !yield(move)) || !canContinue {
+				return
+			}
+		}
+	}
 }

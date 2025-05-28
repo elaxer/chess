@@ -18,33 +18,18 @@ type Bishop struct {
 }
 
 func NewBishop(side chess.Side) *Bishop {
-	return &Bishop{&sliding{&basePiece{side, false}}}
+	return &Bishop{&sliding{&base{side, false}}}
 }
 
-func (b *Bishop) Moves(board chess.Board) position.Set {
-	pos := board.Squares().GetByPiece(b)
-	directions := [4]position.Position{
-		position.New(1, 1),   // Diagonal up-right
-		position.New(-1, -1), // Diagonal down-left
-		position.New(1, -1),  // Diagonal down-right
-		position.New(-1, 1),  // Diagonal up-left
-	}
-
+func (b *Bishop) PseudoMoves(from position.Position, squares *chess.Squares) position.Set {
 	moves := mapset.NewSetWithSize[position.Position](13)
-	for _, direction := range directions {
-		for i, j := pos.File+direction.File, pos.Rank+direction.Rank; b.isInRange(i, j); i, j = i+direction.File, j+direction.Rank {
-			move := position.New(i, j)
-			canMove, canContinue := b.slide(move, board)
-			if canMove {
-				moves.Add(move)
-			}
-			if !canContinue {
-				break
-			}
+	for _, direction := range diagonalDirections {
+		for move := range b.slide(from, direction, squares) {
+			moves.Add(move)
 		}
 	}
 
-	return b.legalMoves(board, b, moves)
+	return moves
 }
 
 func (b *Bishop) Notation() string {

@@ -1,20 +1,24 @@
 package move
 
 import (
-	"fmt"
-
+	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
 type EnPassant struct {
-	*CheckMate
-	From, To position.Position
+	*Normal
 }
 
-func (m *EnPassant) Notation() string {
-	return fmt.Sprintf("%sx%s%s", m.From, m.To, m.CheckMate)
-}
-
-func (m *EnPassant) String() string {
-	return m.Notation()
+func NewEnPassant(from, to position.Position, capturedPiece chess.Piece, checkMate *CheckMate) *EnPassant {
+	return &EnPassant{
+		Normal: &Normal{
+			PieceNotation: piece.NotationPawn,
+			From:          from,
+			To:            to,
+			IsCapture:     true,
+			CapturedPiece: capturedPiece,
+			CheckMate:     checkMate,
+		},
+	}
 }

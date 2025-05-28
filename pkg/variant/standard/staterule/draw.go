@@ -6,19 +6,15 @@ import (
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
+	"github.com/elaxer/chess/pkg/variant/standard/state"
 )
 
 func Stalemate(board chess.Board, side chess.Side) chess.State {
-	if Check(board, side) == chess.StateClear && board.Moves(side).Cardinality() == 0 {
-		return chess.StateStalemate
+	if Check(board, side) == nil && board.Moves(side).Cardinality() == 0 {
+		return state.Stalemate
 	}
 
-	return chess.StateClear
-}
-
-// todo
-func ThreefoldRepetition(board chess.Board, side chess.Side) chess.State {
-	return chess.StateClear
+	return nil
 }
 
 func FiftyMove(board chess.Board, side chess.Side) chess.State {
@@ -38,8 +34,8 @@ func FiftyMove(board chess.Board, side chess.Side) chess.State {
 	}
 
 	if count/2+1 >= 50 {
-		return chess.StateDraw
+		return state.DrawFiftyMoves
 	}
 
-	return chess.StateClear
+	return nil
 }

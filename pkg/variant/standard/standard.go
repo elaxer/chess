@@ -8,6 +8,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/metric"
 	"github.com/elaxer/chess/pkg/variant/standard/mover"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
 	"github.com/elaxer/chess/pkg/variant/standard/staterule"
 )
 
@@ -16,19 +17,29 @@ import (
 // Реализует интерфейс standard из пакета chess.
 type standard struct {
 	turn           chess.Side
-	squares        chess.Squares
+	squares        *chess.Squares
 	movesHistory   []chess.Move
 	capturedPieces []chess.Piece
 
 	stateRules []staterule.Rule
 }
 
-func (b *standard) Squares() chess.Squares {
+func (b *standard) Squares() *chess.Squares {
 	return b.squares
 }
 
 func (b *standard) Turn() chess.Side {
 	return b.turn
+}
+
+func (b *standard) State(side chess.Side) chess.State {
+	for _, rule := range b.stateRules {
+		if state := rule(b, side); state != nil {
+			return state
+		}
+	}
+
+	return chess.StateClear
 }
 
 func (b *standard) MovesHistory() []chess.Move {
@@ -38,20 +49,31 @@ func (b *standard) MovesHistory() []chess.Move {
 func (b *standard) Moves(side chess.Side) position.Set {
 	moves := mapset.NewSetWithSize[position.Position](32)
 	for _, piece := range b.squares.GetAllPieces(side) {
-		moves = moves.Union(piece.Moves(b))
+		moves = moves.Union(b.LegalMoves(piece))
 	}
 
 	return moves
 }
 
-func (b *standard) State(side chess.Side) chess.State {
-	for _, rule := range b.stateRules {
-		if state := rule(b, side); state != chess.StateClear {
-			return state
-		}
+func (b *standard) LegalMoves(p chess.Piece) position.Set {
+	from := b.squares.GetByPiece(p)
+	pseudoMoves := p.PseudoMoves(from, b.squares)
+
+	if p.Side() != b.Turn() {
+		return pseudoMoves
 	}
 
-	return chess.StateClear
+	legalMoves := mapset.NewSetWithSize[position.Position](pseudoMoves.Cardinality())
+	for to := range pseudoMoves.Iter() {
+		b.squares.MovePieceTemporarily(from, to, func() {
+			_, kingPosition := b.squares.GetPiece(piece.NotationKing, b.turn)
+			if !b.Moves(!b.turn).ContainsOne(kingPosition) {
+				legalMoves.Add(to)
+			}
+		})
+	}
+
+	return legalMoves
 }
 
 func (b *standard) MakeMove(move chess.Move) error {
@@ -64,25 +86,6 @@ func (b *standard) MakeMove(move chess.Move) error {
 	b.turn = !b.turn
 
 	return nil
-}
-
-func (b *standard) MovePiece(from, to position.Position) (capturedPiece chess.Piece) {
-	piece, _ := b.squares.GetByPosition(from)
-	piece.MarkMoved()
-	defer func() {
-		piece = nil
-	}()
-
-	capturedPiece, _ = b.squares.GetByPosition(to)
-	defer func() {
-		capturedPiece = piece
-	}()
-
-	if capturedPiece != nil {
-		b.capturedPieces = append(b.capturedPieces, capturedPiece)
-	}
-
-	return
 }
 
 func (b *standard) MarshalJSON() ([]byte, error) {

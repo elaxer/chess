@@ -6,6 +6,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess"
 	. "github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
+	"github.com/elaxer/chess/pkg/variant/standard/state"
 	"github.com/elaxer/chess/pkg/variant/standarttest"
 )
 
@@ -25,7 +26,7 @@ func Test_standard_State(t *testing.T) {
 				{Piece: piece.NewKing(chess.SideBlack), Position: FromNotation("h8")},
 				{Piece: piece.NewRook(chess.SideBlack), Position: FromNotation("a8")},
 			})},
-			chess.StateCheck,
+			state.Check,
 		},
 		{
 			"check_bishop",
@@ -34,7 +35,7 @@ func Test_standard_State(t *testing.T) {
 				{Piece: piece.NewKing(chess.SideWhite), Position: FromNotation("h8")},
 				{Piece: piece.NewBishop(chess.SideWhite), Position: FromNotation("b4")},
 			})},
-			chess.StateCheck,
+			state.Check,
 		},
 
 		{
@@ -45,10 +46,10 @@ func Test_standard_State(t *testing.T) {
 				{Piece: piece.NewRook(chess.SideBlack), Position: FromNotation("a8")},
 				{Piece: piece.NewRook(chess.SideBlack), Position: FromNotation("b8")},
 			})},
-			chess.StateMate,
+			state.Mate,
 		},
 		{
-			// нет мата, потому что черный король может забрать угрожающую ладью
+			// no mate because the black king can capture the threatening rook
 			"no_mate",
 			fields{standarttest.NewEmpty(chess.SideWhite, []standarttest.Placement{
 				{Piece: piece.NewKing(chess.SideWhite), Position: FromNotation("a1")},
@@ -56,17 +57,17 @@ func Test_standard_State(t *testing.T) {
 				{Piece: piece.NewRook(chess.SideBlack), Position: FromNotation("a2")},
 				{Piece: piece.NewRook(chess.SideBlack), Position: FromNotation("b8")},
 			})},
-			chess.StateCheck,
+			state.Check,
 		},
 
 		{
 			"stalemate",
 			fields{standarttest.NewEmpty(chess.SideWhite, []standarttest.Placement{
 				{Piece: piece.NewKing(chess.SideWhite), Position: FromNotation("a8")},
-				{Piece: piece.NewKing(chess.SideBlack), Position: FromNotation("h1")},
+				{Piece: piece.NewKing(chess.SideBlack), Position: FromNotation("b6")},
 				{Piece: piece.NewQueen(chess.SideBlack), Position: FromNotation("c7")},
 			})},
-			chess.StateStalemate,
+			state.Stalemate,
 		},
 	}
 	for _, tt := range tests {

@@ -24,9 +24,9 @@ const (
 	Rank14
 	Rank15
 	Rank16
-)
 
-const MaxRank = Rank16
+	RankMax = Rank16
+)
 
 const RegexpRank = "(1[0-6]|[1-9])"
 
@@ -36,7 +36,7 @@ type Rank int8
 
 func (r Rank) Validate() error {
 	return validation.Errors{
-		"rank": validation.Validate(int8(r), validation.Required, validation.Min(1), validation.Max(int8(MaxRank))),
+		"rank": validation.Validate(int8(r), validation.Required, validation.Min(1), validation.Max(int8(RankMax))),
 	}.Filter()
 }
 

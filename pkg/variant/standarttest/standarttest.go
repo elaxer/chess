@@ -5,7 +5,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
-	"github.com/elaxer/chess/pkg/variant/standard/move/resolver"
+	resolver "github.com/elaxer/chess/pkg/variant/standard/moveresolver"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
@@ -17,7 +17,7 @@ type Placement struct {
 func NewEmpty(turn chess.Side, placements []Placement) chess.Board {
 	board := standard.NewFactory().CreateEmpty(turn)
 	for _, placement := range placements {
-		board.Squares().AddPiece(placement.Piece, placement.Position)
+		board.Squares().PlacePiece(placement.Piece, placement.Position)
 	}
 
 	return board
@@ -41,9 +41,8 @@ func NotationsToMoves(notations []string) []chess.Move {
 	return moves
 }
 
-// todo
 func ResolveNormal(move *move.Normal, board chess.Board) *move.Normal {
-	resolvedMove, err := resolver.ResolveNormal(move, board)
+	resolvedMove, err := resolver.ResolveNormal(move, board, board.Turn())
 	if err != nil {
 		panic(err)
 	}
@@ -53,12 +52,7 @@ func ResolveNormal(move *move.Normal, board chess.Board) *move.Normal {
 
 func ResolvePromotion(move *move.Promotion, board chess.Board) *move.Promotion {
 	move.Normal.PieceNotation = piece.NotationPawn
-	normal, err := resolver.ResolveNormal(move.Normal, board)
-	if err != nil {
-		panic(err)
-	}
-
-	move.Normal = normal
+	move.Normal = ResolveNormal(move.Normal, board)
 
 	return move
 }

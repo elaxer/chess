@@ -12,7 +12,7 @@ type CheckMate struct {
 	IsMate  bool
 }
 
-func NewCheckMate(notation string) *CheckMate {
+func CheckMateFromNotation(notation string) *CheckMate {
 	return &CheckMate{notation == notationCheck, notation == notationMate}
 }
 

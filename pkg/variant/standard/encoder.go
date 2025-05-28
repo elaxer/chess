@@ -7,8 +7,8 @@ import (
 
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
+	"github.com/elaxer/chess/pkg/variant/standard/metric"
 	mv "github.com/elaxer/chess/pkg/variant/standard/move"
-	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
@@ -26,21 +26,21 @@ func EncodeFEN(board chess.Board) string {
 		"%s %s %s %s %s %d",
 		fenPosition(board.Squares()),
 		board.Turn(),
-		fenCastlings(board),
-		fenEnPassantPosition(board),
+		metric.CastlingsString(board).Value(),
+		metric.EnPassantPosition(board).Value(),
 		fenHalfmoveClock(board),
 		len(board.MovesHistory())/2+1,
 	)
 }
 
-func fenPosition(squares chess.Squares) string {
+func fenPosition(squares *chess.Squares) string {
 	fen := ""
-	for i := range squares.EdgePosition().Rank {
+	for rank := range squares.EdgePosition().Rank {
 		row := ""
 		emptySquares := 0
-		for j := range squares.EdgePosition().File {
-			p, _ := squares.GetByPosition(position.New(j+1, i+1))
-			if p == nil {
+		for file := range squares.EdgePosition().File {
+			position, _ := squares.GetByPosition(position.New(file+1, rank+1))
+			if position == nil {
 				emptySquares++
 
 				continue
@@ -51,7 +51,7 @@ func fenPosition(squares chess.Squares) string {
 			}
 			emptySquares = 0
 
-			row += fmt.Sprintf("%s", p)
+			row += fmt.Sprintf("%s", position)
 		}
 
 		if emptySquares > 0 {
@@ -62,51 +62,6 @@ func fenPosition(squares chess.Squares) string {
 	}
 
 	return fen[:len(fen)-1]
-}
-
-func fenCastlings(board chess.Board) string {
-	castlings := map[string]bool{
-		"K": validator.ValidateCastling(mv.CastlingShort, chess.SideWhite, board) == nil,
-		"Q": validator.ValidateCastling(mv.CastlingLong, chess.SideWhite, board) == nil,
-		"k": validator.ValidateCastling(mv.CastlingShort, chess.SideBlack, board) == nil,
-		"q": validator.ValidateCastling(mv.CastlingLong, chess.SideBlack, board) == nil,
-	}
-
-	fen := ""
-	for castling, isValid := range castlings {
-		if isValid {
-			fen += castling
-		}
-	}
-
-	if fen == "" {
-		return "-"
-	}
-
-	return fen
-}
-
-func fenEnPassantPosition(board chess.Board) string {
-	if len(board.MovesHistory()) == 0 {
-		return "-"
-	}
-
-	lastMove := board.MovesHistory()[len(board.MovesHistory())-1]
-	normalMove, ok := lastMove.(*mv.Normal)
-	if !ok || normalMove.PieceNotation != piece.NotationPawn {
-		return "-"
-	}
-
-	if normalMove.To.Rank != normalMove.From.Rank+(piece.PawnRankDirection(!board.Turn())*2) {
-		return "-"
-	}
-
-	passant := position.New(
-		normalMove.To.File,
-		normalMove.From.Rank+piece.PawnRankDirection(!board.Turn()),
-	)
-
-	return passant.String()
 }
 
 func fenHalfmoveClock(board chess.Board) string {

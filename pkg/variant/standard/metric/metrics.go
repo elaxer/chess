@@ -5,7 +5,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess/metric"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
-	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
+	validator "github.com/elaxer/chess/pkg/variant/standard/movevalidator"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 

@@ -6,8 +6,9 @@ import (
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
-	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
+	validator "github.com/elaxer/chess/pkg/variant/standard/movevalidator"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
+	"github.com/elaxer/chess/pkg/variant/standard/state"
 )
 
 // Castling это структура, реализующая интерфейс Mover для рокировки.
@@ -27,29 +28,26 @@ func (m *Castling) Make(castlingType move.CastlingType, board chess.Board) (ches
 
 	rank := kingPosition.Rank
 
-	board.MovePiece(kingPosition, position.New(kingPosition.File+direction*2, rank))
-	board.MovePiece(rookPosition, position.New(kingPosition.File+direction, rank))
+	board.Squares().MovePiece(kingPosition, position.New(kingPosition.File+direction*2, rank))
+	board.Squares().MovePiece(rookPosition, position.New(kingPosition.File+direction, rank))
 
 	return &move.Castling{
 		CheckMate: &move.CheckMate{
-			IsCheck: board.State(!board.Turn()).IsCheck(),
-			IsMate:  board.State(!board.Turn()).IsMate(),
+			IsCheck: board.State(!board.Turn()) == state.Check,
+			IsMate:  board.State(!board.Turn()) == state.Mate,
 		},
 		CastlingType: castlingType,
 	}, nil
 }
 
-func (m *Castling) rookPosition(direction position.File, squares chess.Squares, kingPosition position.Position) (position.Position, error) {
-	for i := kingPosition.File + direction; i <= squares.EdgePosition().File && i > 0; i += direction {
-		pos := position.New(i, kingPosition.Rank)
-
-		p, _ := squares.GetByPosition(pos)
+func (m *Castling) rookPosition(direction position.File, squares *chess.Squares, kingPosition position.Position) (position.Position, error) {
+	for position, p := range squares.IterByDirection(kingPosition, position.New(direction, 0)) {
 		if p != nil && p.Notation() == piece.NotationRook {
-			return pos, nil
+			return position, nil
 		}
 	}
 
-	return position.Position{}, fmt.Errorf("%w: ладья не найдена", validator.ErrCastling)
+	return position.NewNull(), fmt.Errorf("%w: rook wasn't found", validator.ErrCastling)
 }
 
 // todo

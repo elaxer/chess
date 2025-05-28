@@ -7,7 +7,7 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/move"
 )
 
-var ErrNormal = fmt.Errorf("%w: ошибка валидации обычного хода", Err)
+var ErrNormal = fmt.Errorf("%w: normal move validation error", Err)
 
 func ValidateNormal(move *move.Normal, board chess.Board) error {
 	if err := move.Validate(); err != nil {
@@ -20,9 +20,9 @@ func ValidateNormal(move *move.Normal, board chess.Board) error {
 	}
 
 	if piece.Side() != board.Turn() {
-		return fmt.Errorf("%w: неверная сторона хода", ErrNormal)
-	} else if !piece.Moves(board).ContainsOne(move.To) {
-		return fmt.Errorf("%w: фигура не имеет такого хода", ErrNormal)
+		return fmt.Errorf("%w: wrong side", ErrNormal)
+	} else if !board.LegalMoves(piece).ContainsOne(move.To) {
+		return fmt.Errorf("%w: piece doesn't have such move", ErrNormal)
 	}
 
 	return nil

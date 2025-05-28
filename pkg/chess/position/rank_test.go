@@ -20,7 +20,7 @@ func TestRank_Validate(t *testing.T) {
 		},
 		{
 			"bigger_than_max",
-			Rank(MaxRank + 1),
+			Rank(RankMax + 1),
 			true,
 		},
 	}

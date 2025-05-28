@@ -15,9 +15,9 @@ func TestPromotion_Make(t *testing.T) {
 	b := standard.NewFactory().CreateEmpty(SideWhite)
 	squares := b.Squares()
 
-	squares.AddPiece(piece.NewPawn(SideWhite), position.FromNotation("d7"))
-	squares.AddPiece(piece.NewKing(SideWhite), position.FromNotation("a1"))
-	squares.AddPiece(piece.NewKing(SideBlack), position.FromNotation("a8"))
+	squares.PlacePiece(piece.NewPawn(SideWhite), position.FromNotation("d7"))
+	squares.PlacePiece(piece.NewKing(SideWhite), position.FromNotation("a1"))
+	squares.PlacePiece(piece.NewKing(SideBlack), position.FromNotation("a8"))
 
 	promotion := &move.Promotion{
 		Normal:           &move.Normal{CheckMate: new(move.CheckMate), To: position.FromNotation("d8")},

@@ -7,7 +7,6 @@ import (
 )
 
 type Metric interface {
-	fmt.Stringer
 	Description() string
 	Value() any
 }

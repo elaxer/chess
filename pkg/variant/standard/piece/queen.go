@@ -3,6 +3,7 @@ package piece
 import (
 	"encoding/json"
 
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 )
@@ -13,31 +14,26 @@ const (
 )
 
 type Queen struct {
-	*basePiece
-	*Rook
-	*Bishop
+	*sliding
 }
 
 func NewQueen(side chess.Side) *Queen {
-	return &Queen{&basePiece{side, false}, NewRook(side), NewBishop(side)}
+	return &Queen{&sliding{&base{side, false}}}
 }
 
 func (q *Queen) Side() chess.Side {
 	return q.side
 }
 
-func (q *Queen) Moves(board chess.Board) position.Set {
-	pos := board.Squares().GetByPiece(q)
+func (q *Queen) PseudoMoves(from position.Position, squares *chess.Squares) position.Set {
+	moves := mapset.NewSetWithSize[position.Position](27)
+	for _, direction := range allDirections {
+		for move := range q.slide(from, direction, squares) {
+			moves.Add(move)
+		}
+	}
 
-	board.Squares().AddPiece(q.Rook, pos)
-	moves := q.Rook.Moves(board)
-
-	board.Squares().AddPiece(q.Bishop, pos)
-	moves = moves.Union(q.Bishop.Moves(board))
-
-	board.Squares().AddPiece(q, pos)
-
-	return q.legalMoves(board, q, moves)
+	return moves
 }
 
 func (q *Queen) Notation() string {
@@ -58,7 +54,7 @@ func (q *Queen) String() string {
 
 func (q *Queen) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]any{
-		"side":     q.basePiece.side,
+		"side":     q.base.side,
 		"notation": q.Notation(),
 	})
 }

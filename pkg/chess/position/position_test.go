@@ -56,7 +56,7 @@ func TestPosition_UnmarshalJSON(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			position := Position{}
+			position := NewNull()
 
 			if err := position.UnmarshalJSON([]byte(tt.args.data)); (err != nil) != tt.wantErr {
 				t.Errorf("Position.UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
@@ -96,7 +96,7 @@ func TestPosition_String(t *testing.T) {
 		},
 		{
 			"bigger_than_max_values",
-			fields{File(MaxFile + 1), Rank(MaxRank + 1)},
+			fields{File(FileMax + 1), Rank(RankMax + 1)},
 			"",
 		},
 		{
@@ -152,6 +152,40 @@ func TestPosition_Validate(t *testing.T) {
 			}
 			if err := p.Validate(); (err != nil) != tt.wantErr {
 				t.Errorf("Position.Validate() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestPosition_IsInRange(t *testing.T) {
+	type fields struct {
+		File File
+		Rank Rank
+	}
+	type args struct {
+		position Position
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   bool
+	}{
+		{
+			"invalid",
+			fields{FileI, Rank2},
+			args{New(FileH, Rank8)},
+			false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := Position{
+				File: tt.fields.File,
+				Rank: tt.fields.Rank,
+			}
+			if got := p.IsInRange(tt.args.position); got != tt.want {
+				t.Errorf("Position.IsInRange() = %v, want %v", got, tt.want)
 			}
 		})
 	}

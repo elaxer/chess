@@ -14,34 +14,33 @@ const (
 )
 
 type Knight struct {
-	*basePiece
+	*base
 }
 
 func NewKnight(side chess.Side) *Knight {
-	return &Knight{&basePiece{side, false}}
+	return &Knight{&base{side, false}}
 }
 
-func (k *Knight) Moves(board chess.Board) position.Set {
-	pos := board.Squares().GetByPiece(k)
+func (k *Knight) PseudoMoves(from position.Position, squares *chess.Squares) position.Set {
 	positions := [8]position.Position{
-		position.New(pos.File+1, pos.Rank+2),
-		position.New(pos.File-1, pos.Rank+2),
-		position.New(pos.File+2, pos.Rank+1),
-		position.New(pos.File-2, pos.Rank+1),
-		position.New(pos.File-1, pos.Rank-2),
-		position.New(pos.File-2, pos.Rank-1),
-		position.New(pos.File+2, pos.Rank-1),
-		position.New(pos.File+1, pos.Rank-2),
+		position.New(from.File+1, from.Rank+2),
+		position.New(from.File-1, from.Rank+2),
+		position.New(from.File+2, from.Rank+1),
+		position.New(from.File-2, from.Rank+1),
+		position.New(from.File-1, from.Rank-2),
+		position.New(from.File-2, from.Rank-1),
+		position.New(from.File+2, from.Rank-1),
+		position.New(from.File+1, from.Rank-2),
 	}
 
-	moves := mapset.NewSetWithSize[position.Position](8)
+	moves := mapset.NewSetWithSize[position.Position](len(positions))
 	for _, move := range positions {
-		if piece, err := board.Squares().GetByPosition(move); err != nil && k.canMove(piece, k.side) {
+		if piece, err := squares.GetByPosition(move); err == nil && k.canMove(piece, k.side) {
 			moves.Add(move)
 		}
 	}
 
-	return k.legalMoves(board, k, moves)
+	return moves
 }
 func (k *Knight) Notation() string {
 	return NotationKnight

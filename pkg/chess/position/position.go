@@ -34,12 +34,16 @@ func New(file File, rank Rank) Position {
 	return Position{file, rank}
 }
 
+func NewNull() Position {
+	return Position{}
+}
+
 // FromNotation создает новую позицию из шахматной нотации.
 // Например, "e4" будет преобразовано в Position{FileE, Rank4}.
 func FromNotation(notation string) Position {
 	result, err := rgx.Group(notationRegexp, notation)
 	if err != nil {
-		return Position{}
+		return NewNull()
 	}
 
 	rank, _ := strconv.Atoi(result["rank"])
@@ -47,8 +51,12 @@ func FromNotation(notation string) Position {
 	return Position{NewFile(result["file"]), Rank(rank)}
 }
 
-func (p Position) IsInRange(edgePosition Position) bool {
-	return p.File <= edgePosition.File && p.File >= FileA && p.Rank <= edgePosition.Rank && p.Rank >= Rank1
+func (p Position) IsInRange(position Position) bool {
+	return p.File <= position.File && p.File >= FileA && p.Rank <= position.Rank && p.Rank >= Rank1
+}
+
+func (p Position) IsNull() bool {
+	return p.File == 0 && p.Rank == 0
 }
 
 func (p Position) Validate() error {
@@ -59,7 +67,6 @@ func (p Position) String() string {
 	return fmt.Sprintf("%s%s", p.File, p.Rank)
 }
 
-// todo pointer?
 func (p *Position) UnmarshalJSON(data []byte) error {
 	position := make(map[string]any, 2)
 	err := json.Unmarshal(data, &position)

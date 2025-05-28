@@ -71,7 +71,7 @@ func TestFile_Validate(t *testing.T) {
 		},
 		{
 			"bigger_than_max",
-			MaxFile + 1,
+			FileMax + 1,
 			true,
 		},
 	}
@@ -102,7 +102,7 @@ func TestFile_String(t *testing.T) {
 		},
 		{
 			"bigger_than_max",
-			MaxFile + 1,
+			FileMax + 1,
 			"",
 		},
 	}

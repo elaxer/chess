@@ -14,7 +14,7 @@ const (
 )
 
 type Pawn struct {
-	*basePiece
+	*base
 }
 
 // PawnRankDirection возвращает направление движения пешки для указанной стороны.
@@ -28,13 +28,13 @@ func PawnRankDirection(side chess.Side) position.Rank {
 }
 
 func NewPawn(side chess.Side) *Pawn {
-	return &Pawn{&basePiece{side, false}}
+	return &Pawn{&base{side, false}}
 }
 
-func (p *Pawn) Moves(board chess.Board) position.Set {
-	moves := p.movesForward(board).Union(p.movesDiagonal(board))
+func (p *Pawn) PseudoMoves(from position.Position, squares *chess.Squares) position.Set {
+	direction := PawnRankDirection(p.side)
 
-	return p.legalMoves(board, p, moves)
+	return p.movesForward(from, direction, squares).Union(p.movesDiagonal(from, direction, squares))
 }
 
 func (p *Pawn) Notation() string {
@@ -47,17 +47,14 @@ func (p *Pawn) Weight() uint8 {
 
 // movesForward возвращает возможные ходы вперед для пешки.
 // Пешка может двигаться на одну или две клетки вперед, если она не была перемещена ранее.
-func (p *Pawn) movesForward(board chess.Board) position.Set {
-	direction := PawnRankDirection(p.side)
-	pos := board.Squares().GetByPiece(p)
-
+func (p *Pawn) movesForward(from position.Position, direction position.Rank, squares *chess.Squares) position.Set {
 	moves := mapset.NewSetWithSize[position.Position](2)
 	positions := [2]position.Position{
-		position.New(pos.File, pos.Rank+direction*1),
-		position.New(pos.File, pos.Rank+direction*2),
+		position.New(from.File, from.Rank+direction*1),
+		position.New(from.File, from.Rank+direction*2),
 	}
 	for i, move := range positions {
-		piece, err := board.Squares().GetByPosition(move)
+		piece, err := squares.GetByPosition(move)
 		if (err != nil || piece != nil) || (i == 1 && p.isMoved) {
 			break
 		}
@@ -71,17 +68,14 @@ func (p *Pawn) movesForward(board chess.Board) position.Set {
 // movesDiagonal возвращает возможные диагональные ходы для пешки.
 // Пешка может бить противника по диагонали на одну клетку вперед.
 // Если на диагонали нет противника, то возвращается пустой массив.
-func (p *Pawn) movesDiagonal(board chess.Board) position.Set {
-	direction := PawnRankDirection(p.side)
-	pos := board.Squares().GetByPiece(p)
-
+func (p *Pawn) movesDiagonal(from position.Position, direction position.Rank, squares *chess.Squares) position.Set {
 	moves := mapset.NewSetWithSize[position.Position](2)
 	positions := [2]position.Position{
-		position.New(pos.File+1, pos.Rank+direction),
-		position.New(pos.File-1, pos.Rank+direction),
+		position.New(from.File+1, from.Rank+direction),
+		position.New(from.File-1, from.Rank+direction),
 	}
 	for _, move := range positions {
-		piece, err := board.Squares().GetByPosition(move)
+		piece, err := squares.GetByPosition(move)
 		if err == nil && piece != nil && piece.Side() != p.side {
 			moves.Add(move)
 		}

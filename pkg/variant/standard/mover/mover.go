@@ -22,7 +22,7 @@ func MakeMove(move chess.Move, board chess.Board) (chess.Move, error) {
 
 // todo
 func makeMoveFromNotation(notation string, board chess.Board) (chess.Move, error) {
-	if move, err := mv.NewNormal(notation); err == nil {
+	if move, err := mv.NormalFromNotation(notation); err == nil {
 		return normalMover.Make(move, board)
 	}
 	if move, err := mv.NewPromotion(notation); err == nil {
@@ -32,5 +32,5 @@ func makeMoveFromNotation(notation string, board chess.Board) (chess.Move, error
 		return castlingMover.Make(move.CastlingType, board)
 	}
 
-	return nil, fmt.Errorf("%w: invalid move", Err)
+	return nil, fmt.Errorf("%w: invalid move \"%s\"", Err, notation)
 }

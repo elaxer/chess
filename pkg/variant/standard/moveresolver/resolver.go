@@ -9,11 +9,11 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/move"
 )
 
-var Err = errors.New("ошибка резолвинга")
+var Err = errors.New("resolving error")
 
 // ResolveNormal определяет стартовую позицию фигуры, которая будет ходить.
 // from - данные о стартовой позиции фигуры. Они могут быть заполнены не полностью.
-func ResolveNormal(move *move.Normal, board chess.Board) (*move.Normal, error) {
+func ResolveNormal(move *move.Normal, board chess.Board, turn chess.Side) (*move.Normal, error) {
 	if move.From.Validate() == nil {
 		return move, nil
 	}
@@ -22,14 +22,14 @@ func ResolveNormal(move *move.Normal, board chess.Board) (*move.Normal, error) {
 	}
 
 	pieces := make([]chess.Piece, 0, 8)
-	for _, piece := range board.Squares().GetPieces(move.PieceNotation, board.Turn()) {
-		if piece.Moves(board).ContainsOne(move.To) {
+	for _, piece := range board.Squares().GetPieces(move.PieceNotation, turn) {
+		if board.LegalMoves(piece).ContainsOne(move.To) {
 			pieces = append(pieces, piece)
 		}
 	}
 
 	if len(pieces) == 0 {
-		return nil, fmt.Errorf("%w: не найдено подходящих фигур для хода", Err)
+		return nil, fmt.Errorf("%w: no moves found", Err)
 	}
 	if len(pieces) == 1 {
 		move.From = board.Squares().GetByPiece(pieces[0])
@@ -60,10 +60,7 @@ func UnresolveFrom(from, to position.Position, board chess.Board) (position.Posi
 
 	for _, samePiece := range board.Squares().GetPieces(piece.Notation(), piece.Side()) {
 		samePiecePosition := board.Squares().GetByPiece(samePiece)
-		if samePiecePosition == from {
-			continue
-		}
-		if !samePiece.Moves(board).ContainsOne(to) {
+		if samePiecePosition == from || !board.LegalMoves(samePiece).ContainsOne(to) {
 			continue
 		}
 
@@ -74,7 +71,7 @@ func UnresolveFrom(from, to position.Position, board chess.Board) (position.Posi
 		}
 	}
 
-	unresolvedFrom := position.Position{}
+	unresolvedFrom := position.NewNull()
 	if hasSameRank {
 		unresolvedFrom.File = from.File
 	}

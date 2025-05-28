@@ -29,15 +29,15 @@ type Normal struct {
 	CapturedPiece chess.Piece
 }
 
-// NewNormal создает новый ход из шахматной нотации.
-func NewNormal(notation string) (*Normal, error) {
+// NormalFromNotation создает новый ход из шахматной нотации.
+func NormalFromNotation(notation string) (*Normal, error) {
 	result, err := rgx.Group(normalRegexp, notation)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Normal{
-		NewCheckMate(result["checkmate"]),
+		CheckMateFromNotation(result["checkmate"]),
 		result["piece"],
 		position.FromNotation(result["from"]),
 		position.FromNotation(result["to"]),

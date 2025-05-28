@@ -8,7 +8,7 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
-var ErrPromotion = fmt.Errorf("%w: ошибка валидации хода с превращением пешки", Err)
+var ErrPromotion = fmt.Errorf("%w: promotion validation error", Err)
 
 func ValidatePromotion(move *move.Promotion, board chess.Board) error {
 	if err := move.Validate(); err != nil {
@@ -23,7 +23,7 @@ func ValidatePromotion(move *move.Promotion, board chess.Board) error {
 		return fmt.Errorf("%w: %w", ErrPromotion, err)
 	}
 	if p.Notation() != piece.NotationPawn {
-		return fmt.Errorf("%w: превращение возможно только из пешки", ErrPromotion)
+		return fmt.Errorf("%w: promotion is only possible from a pawn", ErrPromotion)
 	}
 
 	return nil

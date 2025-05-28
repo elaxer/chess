@@ -1,38 +1,34 @@
 package chess
 
-const (
-	StateClear State = iota
-	StateCheck
-	StateMate
-	StateStalemate
-	StateDraw
+var (
+	StateClear = NewState("clear", StateTypeClear)
 )
 
-// State представляет состояние доски.
-// Возможные состояния:
-// - Clear: обычная позиция
-// - Check: шах
-// - Mate: мат
-// - Stalemate: пат
-// - Draw: ничья
-type State uint8
-
-func (s State) IsClear() bool {
-	return s == StateClear
+type State interface {
+	Name() string
+	Type() StateType
 }
 
-func (s State) IsCheck() bool {
-	return s == StateCheck
+type state struct {
+	name      string
+	stateType StateType
 }
 
-func (s State) IsMate() bool {
-	return s == StateMate
+func NewState(name string, stateType StateType) State {
+	return &state{
+		name:      name,
+		stateType: stateType,
+	}
 }
 
-func (s State) IsStalemate() bool {
-	return s == StateStalemate
+func (s *state) Name() string {
+	return s.name
 }
 
-func (s State) IsDraw() bool {
-	return s == StateDraw
+func (s *state) Type() StateType {
+	return s.stateType
+}
+
+func (s *state) String() string {
+	return s.name
 }

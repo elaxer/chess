@@ -24,9 +24,9 @@ const (
 	FileN
 	FileO
 	FileP
-)
 
-const MaxFile = FileP
+	FileMax = FileP
+)
 
 const files = "abcdefghijklmnop"
 
@@ -45,7 +45,7 @@ func NewFile(char string) File {
 
 func (f File) Validate() error {
 	return validation.Errors{
-		"file": validation.Validate(int8(f), validation.Required, validation.Min(1), validation.Max(int8(MaxFile))),
+		"file": validation.Validate(int8(f), validation.Required, validation.Min(1), validation.Max(int8(FileMax))),
 	}.Filter()
 }
 

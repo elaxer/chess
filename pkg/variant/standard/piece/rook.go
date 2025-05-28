@@ -18,41 +18,22 @@ type Rook struct {
 }
 
 func NewRook(side chess.Side) *Rook {
-	return &Rook{&sliding{&basePiece{side, false}}}
+	return &Rook{&sliding{&base{side, false}}}
 }
 
-func (r *Rook) Moves(board chess.Board) position.Set {
-	pos := board.Squares().GetByPiece(r)
-	directions := [4]position.Position{
-		position.New(1, 0),  // Right
-		position.New(-1, 0), // Left
-		position.New(0, 1),  // Up
-		position.New(0, -1), // Down
-	}
-
+func (r *Rook) PseudoMoves(from position.Position, squares *chess.Squares) position.Set {
 	moves := mapset.NewSetWithSize[position.Position](14)
-	for _, direction := range directions {
-		for i, j := pos.File+direction.File, pos.Rank+direction.Rank; r.isInRange(i, j); i, j = i+direction.File, j+direction.Rank {
-			move := position.New(i, j)
-			canMove, canContinue := r.slide(move, board)
-			if canMove {
-				moves.Add(move)
-			}
-			if !canContinue {
-				break
-			}
+	for _, direction := range orthogonalDirections {
+		for move := range r.slide(from, direction, squares) {
+			moves.Add(move)
 		}
 	}
 
-	return r.legalMoves(board, r, moves)
+	return moves
 }
 
 func (r *Rook) Notation() string {
-	if r.side == chess.SideBlack {
-		return "r"
-	}
-
-	return "R"
+	return NotationRook
 }
 
 func (r *Rook) Weight() uint8 {
@@ -60,7 +41,11 @@ func (r *Rook) Weight() uint8 {
 }
 
 func (r *Rook) String() string {
-	return r.Notation()
+	if r.side == chess.SideBlack {
+		return "r"
+	}
+
+	return "R"
 }
 
 func (r *Rook) MarshalJSON() ([]byte, error) {

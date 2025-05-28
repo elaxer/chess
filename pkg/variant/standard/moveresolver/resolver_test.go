@@ -6,7 +6,7 @@ import (
 	. "github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/move"
-	"github.com/elaxer/chess/pkg/variant/standard/move/resolver"
+	resolver "github.com/elaxer/chess/pkg/variant/standard/moveresolver"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 	"github.com/elaxer/chess/pkg/variant/standarttest"
 )
@@ -107,7 +107,7 @@ func TestResolveNormal_From(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := resolver.ResolveNormal(tt.args.move, tt.args.board)
+			got, err := resolver.ResolveNormal(tt.args.move, tt.args.board, tt.args.board.Turn())
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ResolveFrom() error = %v, wantErr %v", err, tt.wantErr)
 				return
