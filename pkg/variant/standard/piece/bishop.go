@@ -18,7 +18,7 @@ type Bishop struct {
 }
 
 func NewBishop(side chess.Side) *Bishop {
-	return &Bishop{&sliding{&base{side, false}}}
+	return &Bishop{&sliding{&abstract{side, false}}}
 }
 
 func (b *Bishop) PseudoMoves(from position.Position, squares *chess.Squares) position.Set {

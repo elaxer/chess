@@ -18,7 +18,7 @@ type Queen struct {
 }
 
 func NewQueen(side chess.Side) *Queen {
-	return &Queen{&sliding{&base{side, false}}}
+	return &Queen{&sliding{&abstract{side, false}}}
 }
 
 func (q *Queen) Side() chess.Side {
@@ -54,7 +54,7 @@ func (q *Queen) String() string {
 
 func (q *Queen) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]any{
-		"side":     q.base.side,
+		"side":     q.abstract.side,
 		"notation": q.Notation(),
 	})
 }

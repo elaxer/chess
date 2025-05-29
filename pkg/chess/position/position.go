@@ -41,14 +41,14 @@ func NewNull() Position {
 // FromNotation создает новую позицию из шахматной нотации.
 // Например, "e4" будет преобразовано в Position{FileE, Rank4}.
 func FromNotation(notation string) Position {
-	result, err := rgx.Group(notationRegexp, notation)
+	data, err := rgx.Group(notationRegexp, notation)
 	if err != nil {
 		return NewNull()
 	}
 
-	rank, _ := strconv.Atoi(result["rank"])
+	rank, _ := strconv.Atoi(data["rank"])
 
-	return Position{NewFile(result["file"]), Rank(rank)}
+	return Position{NewFile(data["file"]), Rank(rank)}
 }
 
 func (p Position) IsInRange(position Position) bool {

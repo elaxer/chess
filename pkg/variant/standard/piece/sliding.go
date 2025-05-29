@@ -27,7 +27,7 @@ var (
 // (слон, ферзь, ладья).
 // Она содержит базовую структуру фигуры и методы для проверки возможности движения.
 type sliding struct {
-	*base
+	*abstract
 }
 
 func (s *sliding) slide(from, direction position.Position, squares *chess.Squares) iter.Seq[position.Position] {

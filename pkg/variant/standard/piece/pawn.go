@@ -14,7 +14,7 @@ const (
 )
 
 type Pawn struct {
-	*base
+	*abstract
 }
 
 // PawnRankDirection возвращает направление движения пешки для указанной стороны.
@@ -28,7 +28,7 @@ func PawnRankDirection(side chess.Side) position.Rank {
 }
 
 func NewPawn(side chess.Side) *Pawn {
-	return &Pawn{&base{side, false}}
+	return &Pawn{&abstract{side, false}}
 }
 
 func (p *Pawn) PseudoMoves(from position.Position, squares *chess.Squares) position.Set {

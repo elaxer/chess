@@ -18,7 +18,7 @@ type Rook struct {
 }
 
 func NewRook(side chess.Side) *Rook {
-	return &Rook{&sliding{&base{side, false}}}
+	return &Rook{&sliding{&abstract{side, false}}}
 }
 
 func (r *Rook) PseudoMoves(from position.Position, squares *chess.Squares) position.Set {

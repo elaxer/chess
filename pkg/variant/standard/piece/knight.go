@@ -14,11 +14,11 @@ const (
 )
 
 type Knight struct {
-	*base
+	*abstract
 }
 
 func NewKnight(side chess.Side) *Knight {
-	return &Knight{&base{side, false}}
+	return &Knight{&abstract{side, false}}
 }
 
 func (k *Knight) PseudoMoves(from position.Position, squares *chess.Squares) position.Set {

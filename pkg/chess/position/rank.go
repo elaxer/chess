@@ -25,6 +25,7 @@ const (
 	Rank15
 	Rank16
 
+	RankMin = Rank1
 	RankMax = Rank16
 )
 
@@ -36,7 +37,7 @@ type Rank int8
 
 func (r Rank) Validate() error {
 	return validation.Errors{
-		"rank": validation.Validate(int8(r), validation.Required, validation.Min(1), validation.Max(int8(RankMax))),
+		"rank": validation.Validate(int8(r), validation.Required, validation.Min(int8(RankMin)), validation.Max(int8(RankMax))),
 	}.Filter()
 }
 

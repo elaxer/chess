@@ -15,11 +15,11 @@ const (
 )
 
 type King struct {
-	*base
+	*abstract
 }
 
 func NewKing(side chess.Side) *King {
-	return &King{&base{side, false}}
+	return &King{&abstract{side, false}}
 }
 
 func (k *King) PseudoMoves(from position.Position, squares *chess.Squares) position.Set {

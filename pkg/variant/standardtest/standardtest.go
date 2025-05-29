@@ -6,9 +6,9 @@ import (
 
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
-	"github.com/elaxer/chess/pkg/variant/standard"
-	"github.com/elaxer/chess/pkg/variant/standard/move"
-	resolver "github.com/elaxer/chess/pkg/variant/standard/moveresolver"
+	"github.com/elaxer/chess/pkg/variant/standard/board"
+	"github.com/elaxer/chess/pkg/variant/standard/move/move"
+	"github.com/elaxer/chess/pkg/variant/standard/move/resolver"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
@@ -18,7 +18,7 @@ type Placement struct {
 }
 
 func NewEmpty(turn chess.Side, placements []Placement) chess.Board {
-	board := standard.NewFactory().CreateEmpty(turn)
+	board := board.NewFactory().CreateEmpty(turn)
 	for _, placement := range placements {
 		board.Squares().PlacePiece(placement.Piece, placement.Position)
 	}
@@ -27,7 +27,7 @@ func NewEmpty(turn chess.Side, placements []Placement) chess.Board {
 }
 
 func NewFromMoves(notations []string) chess.Board {
-	board, err := standard.NewFactory().CreateFromMoves(NotationsToMoves(notations))
+	board, err := board.NewFactory().CreateFromMoves(NotationsToMoves(notations))
 	if err != nil {
 		panic(err)
 	}

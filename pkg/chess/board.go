@@ -11,3 +11,9 @@ type Board interface {
 	LegalMoves(piece Piece) position.Set
 	MakeMove(move Move) error
 }
+
+type BoardFactory interface {
+	CreateEmpty(turn Side) Board
+	CreateFilled() Board
+	CreateFromMoves(moves []Move) (Board, error)
+}
