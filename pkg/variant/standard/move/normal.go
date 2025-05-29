@@ -10,7 +10,7 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
-var normalRegexp = regexp.MustCompile(fmt.Sprintf(
+var regexpNormal = regexp.MustCompile(fmt.Sprintf(
 	"^(?P<piece>[KQBNR])?%s?(?P<is_capture>x)?%s%s?$",
 	position.RegexpFrom,
 	position.RegexpTo,
@@ -31,7 +31,7 @@ type Normal struct {
 
 // NormalFromNotation создает новый ход из шахматной нотации.
 func NormalFromNotation(notation string) (*Normal, error) {
-	result, err := rgx.Group(normalRegexp, notation)
+	result, err := rgx.Group(regexpNormal, notation)
 	if err != nil {
 		return nil, err
 	}
@@ -47,10 +47,7 @@ func NormalFromNotation(notation string) (*Normal, error) {
 }
 
 func (m *Normal) Notation() string {
-	str := string(m.PieceNotation)
-	if m.From.Validate() == nil {
-		str += m.From.String()
-	}
+	str := string(m.PieceNotation) + m.From.String()
 	if m.IsCapture {
 		str += "x"
 	}

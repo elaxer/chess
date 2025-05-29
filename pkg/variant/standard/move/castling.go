@@ -7,7 +7,7 @@ import (
 	"github.com/elaxer/chess/pkg/rgx"
 )
 
-var RegexpCastling = regexp.MustCompile(fmt.Sprintf("^0-0(?P<long>-0)?%s?$", RegexpCheckMate))
+var regexpCastling = regexp.MustCompile(fmt.Sprintf("^[0Oo]-[0Oo](?P<long>-[0Oo])?%s?$", RegexpCheckMate))
 
 type Castling struct {
 	*CheckMate
@@ -15,7 +15,7 @@ type Castling struct {
 }
 
 func NewCastling(notation string) (*Castling, error) {
-	result, err := rgx.Group(RegexpCastling, notation)
+	result, err := rgx.Group(regexpCastling, notation)
 	if err != nil {
 		return nil, err
 	}

@@ -24,6 +24,11 @@ func (m *Promotion) Make(move *move.Promotion, board chess.Board) (chess.Move, e
 		return nil, err
 	}
 
+	unresolvedFrom, err := resolver.UnresolveFrom(move.From, move.To, board)
+	if err != nil {
+		return nil, err
+	}
+
 	capturedPiece, err := board.Squares().MovePiece(move.From, move.To)
 	if err != nil {
 		return nil, err
@@ -35,6 +40,7 @@ func (m *Promotion) Make(move *move.Promotion, board chess.Board) (chess.Move, e
 	board.Squares().PlacePiece(piece, move.To)
 
 	modifyNormal(move.Normal, capturedPiece, board)
+	move.From = unresolvedFrom
 
 	return move, nil
 }

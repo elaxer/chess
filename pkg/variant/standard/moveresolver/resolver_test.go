@@ -170,6 +170,32 @@ func TestUnresolveFrom(t *testing.T) {
 			position.FromNotation("b7"),
 			false,
 		},
+		{
+			"not_same_file_and_rank",
+			args{
+				position.FromNotation("g1"),
+				position.FromNotation("e2"),
+				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
+					{Piece: piece.NewKnight(SideWhite), Position: position.FromNotation("c3")},
+					{Piece: piece.NewKnight(SideWhite), Position: position.FromNotation("g1")},
+				}),
+			},
+			position.FromNotation("g"),
+			false,
+		},
+		{
+			"not_same_moves",
+			args{
+				position.FromNotation("e2"),
+				position.FromNotation("e4"),
+				standardtest.NewEmpty(SideBlack, []standardtest.Placement{
+					{Piece: piece.NewPawn(SideBlack), Position: position.FromNotation("e2")},
+					{Piece: piece.NewPawn(SideBlack), Position: position.FromNotation("f2")},
+				}),
+			},
+			position.NewNull(),
+			false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

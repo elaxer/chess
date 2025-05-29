@@ -51,19 +51,19 @@ func ResolveNormal(move *move.Normal, board chess.Board, turn chess.Side) (*move
 }
 
 func UnresolveFrom(from, to position.Position, board chess.Board) (position.Position, error) {
-	if err := from.Validate(); err != nil {
+	piece, err := board.Squares().GetByPosition(from)
+	if err != nil {
 		return from, err
 	}
 
-	piece, _ := board.Squares().GetByPosition(from)
-	hasSameFile, hasSameRank := false, false
-
+	hasSamePiece, hasSameFile, hasSameRank := false, false, false
 	for _, samePiece := range board.Squares().GetPieces(piece.Notation(), piece.Side()) {
 		samePiecePosition := board.Squares().GetByPiece(samePiece)
 		if samePiecePosition == from || !board.LegalMoves(samePiece).ContainsOne(to) {
 			continue
 		}
 
+		hasSamePiece = true
 		hasSameFile = hasSameFile || samePiecePosition.File == from.File
 		hasSameRank = hasSameRank || samePiecePosition.Rank == from.Rank
 		if hasSameFile && hasSameRank {
@@ -72,7 +72,7 @@ func UnresolveFrom(from, to position.Position, board chess.Board) (position.Posi
 	}
 
 	unresolvedFrom := position.NewNull()
-	if hasSameRank {
+	if hasSameRank || (hasSamePiece && !hasSameFile) {
 		unresolvedFrom.File = from.File
 	}
 	if hasSameFile {

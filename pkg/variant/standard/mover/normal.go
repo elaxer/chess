@@ -16,6 +16,10 @@ func (m *Normal) Make(move *move.Normal, board chess.Board) (chess.Move, error) 
 	if err != nil {
 		return nil, err
 	}
+	unresolvedFrom, err := resolver.UnresolveFrom(move.From, move.To, board)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := validator.ValidateNormal(move, board); err != nil {
 		return nil, err
@@ -30,6 +34,8 @@ func (m *Normal) Make(move *move.Normal, board chess.Board) (chess.Move, error) 
 	piece.MarkMoved()
 
 	modifyNormal(move, capturedPiece, board)
+
+	move.From = unresolvedFrom
 
 	return move, nil
 }
