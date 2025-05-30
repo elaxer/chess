@@ -22,16 +22,16 @@ import (
 func Encode(board chess.Board) string {
 	return fmt.Sprintf(
 		"%s %s %v %v %v %d",
-		fenPosition(board.Squares()),
+		piecePlacements(board.Squares()),
 		board.Turn(),
-		castlingRights(board),
+		castlingAbility(board),
 		callMetric(standardmetric.EnPassantTargetSquare, board),
 		callMetric(standardmetric.HalfmoveClock, board),
-		len(board.MovesHistory())/2+1,
+		callMetric(metric.FullmoveCounter, board),
 	)
 }
 
-func fenPosition(squares *chess.Squares) string {
+func piecePlacements(squares *chess.Squares) string {
 	fen := ""
 	for _, row := range squares.IterByRows(true) {
 		rowStr := ""
@@ -61,8 +61,8 @@ func fenPosition(squares *chess.Squares) string {
 	return fen[:len(fen)-1]
 }
 
-func castlingRights(board chess.Board) string {
-	theoretical := standardmetric.CastlingRights(board).Value().(standardmetric.Castlings)["theoretical"]
+func castlingAbility(board chess.Board) string {
+	theoretical := standardmetric.CastlingAbility(board).Value().(standardmetric.Castlings)["theoretical"]
 	str := ""
 	if theoretical[chess.SideWhite][move.CastlingShort] {
 		str += "K"

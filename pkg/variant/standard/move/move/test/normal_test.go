@@ -8,7 +8,7 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
-func TestNewNormal(t *testing.T) {
+func TestNormalFromNotation(t *testing.T) {
 	type args struct {
 		str string
 	}
@@ -94,9 +94,8 @@ func TestNewNormal(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := NormalFromNotation(tt.args.str)
-
 			if (err != nil) != tt.wantErr {
-				t.Errorf("NewNormal() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("NormalFromNotation() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if tt.wantErr {
@@ -104,7 +103,7 @@ func TestNewNormal(t *testing.T) {
 			}
 
 			if gotStr := got.String(); gotStr != tt.want {
-				t.Errorf("NewNormal() = %v, want %v", gotStr, tt.want)
+				t.Errorf("NormalFromNotation().String() = %v, want %v", gotStr, tt.want)
 			}
 		})
 	}
@@ -119,7 +118,6 @@ func TestNormal_String(t *testing.T) {
 		{
 			"normal",
 			&Normal{
-				CheckMate:     new(CheckMate),
 				To:            position.FromNotation("a8"),
 				PieceNotation: piece.NotationQueen,
 				IsCapture:     false,
@@ -129,7 +127,6 @@ func TestNormal_String(t *testing.T) {
 		{
 			"normal_pawn",
 			&Normal{
-				CheckMate:     new(CheckMate),
 				To:            position.FromNotation("e4"),
 				PieceNotation: piece.NotationPawn,
 				IsCapture:     false,
@@ -139,7 +136,7 @@ func TestNormal_String(t *testing.T) {
 		{
 			"check",
 			&Normal{
-				CheckMate:     &CheckMate{IsCheck: true, IsMate: false},
+				CheckMate:     CheckMate{IsCheck: true},
 				To:            position.FromNotation("a1"),
 				PieceNotation: piece.NotationRook,
 				IsCapture:     false,
@@ -149,7 +146,7 @@ func TestNormal_String(t *testing.T) {
 		{
 			"mate",
 			&Normal{
-				CheckMate:     &CheckMate{IsCheck: false, IsMate: true},
+				CheckMate:     CheckMate{IsMate: true},
 				To:            position.FromNotation("a1"),
 				PieceNotation: piece.NotationBishop,
 				IsCapture:     false,
@@ -159,7 +156,7 @@ func TestNormal_String(t *testing.T) {
 		{
 			"check_capture",
 			&Normal{
-				CheckMate:     &CheckMate{IsCheck: true, IsMate: false},
+				CheckMate:     CheckMate{IsCheck: true},
 				To:            position.FromNotation("a1"),
 				PieceNotation: piece.NotationKnight,
 				IsCapture:     true,
@@ -169,7 +166,7 @@ func TestNormal_String(t *testing.T) {
 		{
 			"mate_capture",
 			&Normal{
-				CheckMate:     &CheckMate{IsCheck: false, IsMate: true},
+				CheckMate:     CheckMate{IsMate: true},
 				To:            position.FromNotation("c5"),
 				PieceNotation: piece.NotationPawn,
 				IsCapture:     true,

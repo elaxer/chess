@@ -24,10 +24,10 @@ func Encode(board chess.Board, tags map[string]string) string {
 		pgn += fmt.Sprintf("%s ", move)
 	}
 
-	return pgn + pgnResult(board)
+	return pgn + result(board)
 }
 
-func pgnResult(board chess.Board) string {
+func result(board chess.Board) string {
 	if !board.State(board.Turn()).Type().IsTerminal() {
 		return "*"
 	}

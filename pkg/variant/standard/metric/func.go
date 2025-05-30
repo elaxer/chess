@@ -5,6 +5,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/metric"
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
+	"github.com/elaxer/chess/pkg/variant/standard/move/resolver"
 	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
@@ -12,12 +13,12 @@ import (
 type Castlings = map[string]map[chess.Side]map[move.CastlingType]bool
 
 var AllFuncs = []metric.MetricFunc{
-	CastlingRights,
+	CastlingAbility,
 	EnPassantTargetSquare,
 	HalfmoveClock,
 }
 
-func CastlingRights(board chess.Board) metric.Metric {
+func CastlingAbility(board chess.Board) metric.Metric {
 	callback := func(side chess.Side, board chess.Board, validateObstacle bool) map[move.CastlingType]bool {
 		return map[move.CastlingType]bool{
 			move.CastlingShort: validator.ValidateCastling(move.CastlingShort, side, board, validateObstacle) == nil,
@@ -36,9 +37,10 @@ func CastlingRights(board chess.Board) metric.Metric {
 		},
 	}
 
-	return metric.New("Castling rights", castlings)
+	return metric.New("Castling ability", castlings)
 }
 
+// todo переделать
 func EnPassantTargetSquare(board chess.Board) metric.Metric {
 	if len(board.MovesHistory()) == 0 {
 		return nil
@@ -50,13 +52,18 @@ func EnPassantTargetSquare(board chess.Board) metric.Metric {
 		return nil
 	}
 
-	if normalMove.To.Rank != normalMove.From.Rank+(piece.PawnRankDirection(!board.Turn())*2) {
+	from, err := resolver.ResolveFrom(normalMove, board, board.Turn())
+	if err != nil {
+		return nil
+	}
+
+	if normalMove.To.Rank != from.Rank+(piece.PawnRankDirection(!board.Turn())*2) {
 		return nil
 	}
 
 	passant := position.New(
 		normalMove.To.File,
-		normalMove.From.Rank+piece.PawnRankDirection(!board.Turn()),
+		from.Rank+piece.PawnRankDirection(!board.Turn()),
 	)
 
 	return metric.New("En passant target square", passant)

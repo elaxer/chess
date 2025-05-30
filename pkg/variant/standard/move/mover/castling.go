@@ -32,7 +32,7 @@ func (m *Castling) Make(castlingType move.CastlingType, board chess.Board) (ches
 	board.Squares().MovePiece(rookPosition, position.New(kingPosition.File+direction, rank))
 
 	return &move.Castling{
-		CheckMate: &move.CheckMate{
+		CheckMate: move.CheckMate{
 			IsCheck: board.State(!board.Turn()) == state.Check,
 			IsMate:  board.State(!board.Turn()) == state.Mate,
 		},

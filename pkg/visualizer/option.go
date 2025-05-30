@@ -11,7 +11,7 @@ const (
 )
 
 type Options struct {
-	Orientation OptionOrientation
-	Positions   bool
-	MetricFuncs []metric.MetricFunc
+	Orientation   OptionOrientation
+	ShowPositions bool
+	MetricFuncs   []metric.MetricFunc
 }

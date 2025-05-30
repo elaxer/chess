@@ -4,7 +4,8 @@ import "github.com/elaxer/chess/pkg/chess"
 
 var AllFuncs = []MetricFunc{
 	OppositeState,
-	MovesCount,
+	HalfmoveCounter,
+	FullmoveCounter,
 	LastMove,
 	Material,
 	MaterialDifference,
@@ -14,8 +15,19 @@ func OppositeState(board chess.Board) Metric {
 	return New("Opposite state", board.State(!board.Turn()))
 }
 
-func MovesCount(board chess.Board) Metric {
-	return New("Moves count", len(board.MovesHistory()))
+func HalfmoveCounter(board chess.Board) Metric {
+	return New("Halfmoves", len(board.MovesHistory()))
+}
+
+func FullmoveCounter(board chess.Board) Metric {
+	moves := len(board.MovesHistory())
+	fullmove := moves / 2
+
+	if moves%2 != 0 || moves == 0 {
+		fullmove++
+	}
+
+	return New("Full moves", len(board.MovesHistory())/2+1)
 }
 
 func LastMove(board chess.Board) Metric {

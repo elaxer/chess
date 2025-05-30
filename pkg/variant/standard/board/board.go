@@ -93,6 +93,6 @@ func (b *board) MarshalJSON() ([]byte, error) {
 		"squares":         b.squares,
 		"state":           b.State(b.turn),
 		"captured_pieces": b.capturedPieces,
-		"castlings":       metric.CastlingRights(b).Value().(metric.Castlings)["practical"][b.turn],
+		"castlings":       metric.CastlingAbility(b).Value().(metric.Castlings)["practical"][b.turn],
 	})
 }

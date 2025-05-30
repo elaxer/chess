@@ -11,7 +11,7 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standardtest"
 )
 
-func TestResolveNormal(t *testing.T) {
+func TestResolveFrom(t *testing.T) {
 	type args struct {
 		move  *move.Normal
 		board Board
@@ -107,12 +107,12 @@ func TestResolveNormal(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := resolver.ResolveNormal(tt.args.move, tt.args.board, tt.args.board.Turn())
+			got, err := resolver.ResolveFrom(tt.args.move, tt.args.board, tt.args.board.Turn())
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ResolveNormal() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got.From != tt.want {
+			if got != tt.want {
 				t.Errorf("ResolveNormal() = %v, want %v", got, tt.want)
 			}
 		})

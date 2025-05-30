@@ -25,7 +25,7 @@ func TestValidatePromotion(t *testing.T) {
 			"valid",
 			args{
 				&move.Promotion{
-					Normal:           &move.Normal{CheckMate: new(move.CheckMate), To: FromNotation("d8")},
+					Normal:           &move.Normal{To: FromNotation("d8")},
 					NewPieceNotation: piece.NotationQueen,
 				},
 				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
@@ -38,7 +38,7 @@ func TestValidatePromotion(t *testing.T) {
 			"concurrent_pawns",
 			args{
 				&move.Promotion{
-					Normal:           &move.Normal{CheckMate: new(move.CheckMate), From: Position{File: FileA}, To: FromNotation("b1")},
+					Normal:           &move.Normal{From: Position{File: FileA}, To: FromNotation("b1")},
 					NewPieceNotation: piece.NotationQueen,
 				},
 				standardtest.NewEmpty(SideBlack, []standardtest.Placement{
@@ -52,7 +52,9 @@ func TestValidatePromotion(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := validator.ValidatePromotion(standardtest.ResolvePromotion(tt.args.move, tt.args.board), tt.args.board)
+			standardtest.ResolvePromotion(tt.args.move, tt.args.board)
+
+			err := validator.ValidatePromotion(tt.args.move, tt.args.board)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ValidatePromotion() error = %v, wantErr %v", err, tt.wantErr)
 			}

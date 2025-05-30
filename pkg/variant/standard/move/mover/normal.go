@@ -12,32 +12,36 @@ type Normal struct {
 }
 
 func (m *Normal) Make(move *move.Normal, board chess.Board) (chess.Move, error) {
-	move, err := resolver.ResolveNormal(move, board, board.Turn())
-	if err != nil {
-		return nil, err
-	}
-	unresolvedFrom, err := resolver.UnresolveFrom(move.From, move.To, board)
-	if err != nil {
-		return nil, err
-	}
+	var err error
+	moveCopy := *move
 
-	if err := validator.ValidateNormal(move, board); err != nil {
-		return nil, err
-	}
-
-	capturedPiece, err := board.Squares().MovePiece(move.From, move.To)
+	moveCopy.From, err = resolver.ResolveFrom(move, board, board.Turn())
 	if err != nil {
 		return nil, err
 	}
 
-	piece, _ := board.Squares().GetByPosition(move.To)
+	if err := validator.ValidateNormal(&moveCopy, board); err != nil {
+		return nil, err
+	}
+
+	unresolvedFrom, err := resolver.UnresolveFrom(&moveCopy, board)
+	if err != nil {
+		return nil, err
+	}
+
+	capturedPiece, err := board.Squares().MovePiece(moveCopy.From, moveCopy.To)
+	if err != nil {
+		return nil, err
+	}
+
+	piece, _ := board.Squares().GetByPosition(moveCopy.To)
 	piece.MarkMoved()
 
-	modifyNormal(move, capturedPiece, board)
+	modifyNormal(&moveCopy, capturedPiece, board)
 
-	move.From = unresolvedFrom
+	moveCopy.From = unresolvedFrom
 
-	return move, nil
+	return &moveCopy, nil
 }
 
 func modifyNormal(move *move.Normal, capturedPiece chess.Piece, board chess.Board) {

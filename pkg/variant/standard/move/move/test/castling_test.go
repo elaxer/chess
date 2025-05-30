@@ -6,7 +6,7 @@ import (
 	. "github.com/elaxer/chess/pkg/variant/standard/move/move"
 )
 
-func TestNewCastling(t *testing.T) {
+func TestCastlingFromNotation(t *testing.T) {
 	type args struct {
 		str string
 	}
@@ -52,20 +52,29 @@ func TestNewCastling(t *testing.T) {
 			"0-0-0#",
 			false,
 		},
+		{
+			"O character",
+			args{"O-O#"},
+			"0-0#",
+			false,
+		},
+		{
+			"All characters",
+			args{"O-o-0+"},
+			"0-0-0+",
+			false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := CastlingFromNotation(tt.args.str)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("NewCastling() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if tt.wantErr {
+				t.Errorf("CastlingFromNotation() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
-			if got.String() != tt.want {
-				t.Errorf("NewCastling() = %v, want %v", got, tt.want)
+			if !tt.wantErr && got.String() != tt.want {
+				t.Errorf("CastlingFromNotation().String() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -82,22 +91,22 @@ func TestCastling_String(t *testing.T) {
 	}{
 		{
 			"castling_short",
-			fields{&Castling{CheckMate: new(CheckMate), CastlingType: CastlingShort}},
+			fields{NewCastling(CastlingShort)},
 			"0-0",
 		},
 		{
 			"castling_long",
-			fields{&Castling{CheckMate: new(CheckMate), CastlingType: CastlingLong}},
+			fields{NewCastling(CastlingLong)},
 			"0-0-0",
 		},
 		{
 			"castling_check",
-			fields{&Castling{CheckMate: &CheckMate{IsCheck: true, IsMate: false}, CastlingType: CastlingShort}},
+			fields{&Castling{CheckMate: CheckMate{IsCheck: true}, CastlingType: CastlingShort}},
 			"0-0+",
 		},
 		{
 			"castling_mate",
-			fields{&Castling{CheckMate: &CheckMate{IsCheck: false, IsMate: true}, CastlingType: CastlingLong}},
+			fields{&Castling{CheckMate: CheckMate{IsMate: true}, CastlingType: CastlingLong}},
 			"0-0-0#",
 		},
 	}

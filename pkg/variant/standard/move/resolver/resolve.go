@@ -5,19 +5,20 @@ import (
 	"fmt"
 
 	"github.com/elaxer/chess/pkg/chess"
+	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
 )
 
 var Err = errors.New("resolving error")
 
-// ResolveNormal определяет стартовую позицию фигуры, которая будет ходить.
+// ResolveFrom определяет стартовую позицию фигуры, которая будет ходить.
 // from - данные о стартовой позиции фигуры. Они могут быть заполнены не полностью.
-func ResolveNormal(move *move.Normal, board chess.Board, turn chess.Side) (*move.Normal, error) {
+func ResolveFrom(move *move.Normal, board chess.Board, turn chess.Side) (position.Position, error) {
 	if move.From.Validate() == nil {
-		return move, nil
+		return move.From, nil
 	}
 	if err := move.To.Validate(); err != nil {
-		return nil, err
+		return position.NewNull(), err
 	}
 
 	pieces := make([]chess.Piece, 0, 8)
@@ -28,23 +29,22 @@ func ResolveNormal(move *move.Normal, board chess.Board, turn chess.Side) (*move
 	}
 
 	if len(pieces) == 0 {
-		return nil, fmt.Errorf("%w: no moves found", Err)
+		return position.NewNull(), fmt.Errorf("%w: no moves found", Err)
 	}
 	if len(pieces) == 1 {
-		move.From = board.Squares().GetByPiece(pieces[0])
-
-		return move, nil
+		return board.Squares().GetByPiece(pieces[0]), nil
 	}
 
+	resolvedFrom := move.From
 	for _, piece := range pieces {
 		pos := board.Squares().GetByPiece(piece)
 		if move.From.Rank == 0 && pos.File == move.From.File {
-			move.From.Rank = pos.Rank
+			resolvedFrom.Rank = pos.Rank
 		}
 		if move.From.File == 0 && pos.Rank == move.From.Rank {
-			move.From.File = pos.File
+			resolvedFrom.File = pos.File
 		}
 	}
 
-	return move, nil
+	return resolvedFrom, nil
 }

@@ -27,7 +27,7 @@ var stateRules = []rule.Rule{
 	rule.Stalemate,
 	rule.Check,
 
-	rule.FiftyMove,
+	rule.FiftyMoves,
 }
 
 type factory struct {

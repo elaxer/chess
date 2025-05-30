@@ -19,7 +19,7 @@ var regexpNormal = regexp.MustCompile(fmt.Sprintf(
 
 // Normal представляет обычный ход фигурой в шахматах.
 type Normal struct {
-	*CheckMate
+	CheckMate
 	// PieceNotation обозначает фигуру, которая делает ход.
 	PieceNotation string
 	// From, To означают начальную и конечную позиции хода.

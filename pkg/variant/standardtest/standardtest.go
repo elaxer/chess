@@ -44,23 +44,35 @@ func NotationsToMoves(notations []string) []chess.Move {
 	return moves
 }
 
-func ResolveNormal(move *move.Normal, board chess.Board) *move.Normal {
-	resolvedMove, err := resolver.ResolveNormal(move, board, board.Turn())
+func ResolveNormal(move *move.Normal, board chess.Board) {
+	resolvedFrom, err := resolver.ResolveFrom(move, board, board.Turn())
 	if err != nil {
 		panic(err)
 	}
 
-	return resolvedMove
+	move.From = resolvedFrom
 }
 
-func ResolvePromotion(move *move.Promotion, board chess.Board) *move.Promotion {
+func ResolvePromotion(move *move.Promotion, board chess.Board) {
 	move.Normal.PieceNotation = piece.NotationPawn
-	move.Normal = ResolveNormal(move.Normal, board)
-
-	return move
+	ResolveNormal(move.Normal, board)
 }
 
-func NewPiece(notation string, isMoved bool) chess.Piece {
+// NewPiece creates a new piece by notation.
+// Created piece marked as not moved.
+// P, R, N, B, Q, K - creates white piece
+// p, r, n, b, q, k - creates black piece
+func NewPiece(notation string) chess.Piece {
+	return newPiece(notation, false)
+}
+
+// NewPieceW creates a new walked piece by notation.
+// See NewPiece for more details
+func NewPieceW(notation string) chess.Piece {
+	return newPiece(notation, true)
+}
+
+func newPiece(notation string, isMoved bool) chess.Piece {
 	side := chess.SideWhite
 	if unicode.IsLower([]rune(notation)[0]) {
 		side = chess.SideBlack

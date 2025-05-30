@@ -20,7 +20,7 @@ func TestPromotion_Make(t *testing.T) {
 	squares.PlacePiece(piece.NewKing(SideBlack), position.FromNotation("a8"))
 
 	promotion := &move.Promotion{
-		Normal:           &move.Normal{CheckMate: new(move.CheckMate), To: position.FromNotation("d8")},
+		Normal:           &move.Normal{To: position.FromNotation("d8")},
 		NewPieceNotation: piece.NotationQueen,
 	}
 	_, err := new(mover.Promotion).Make(promotion, b)

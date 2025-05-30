@@ -1,6 +1,10 @@
 package chess
 
-import "github.com/elaxer/chess/pkg/chess/position"
+import (
+	"fmt"
+
+	"github.com/elaxer/chess/pkg/chess/position"
+)
 
 // Piece interface describes a chess piece.
 // It provides methods to get the piece's side, check if it has been moved,
@@ -28,4 +32,6 @@ type Piece interface {
 	// Weight returns the weight of the piece.
 	// The weight is used to evaluate the piece's value in the game.
 	Weight() uint8
+
+	fmt.Stringer
 }

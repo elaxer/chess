@@ -16,31 +16,36 @@ type Promotion struct {
 
 func (m *Promotion) Make(move *move.Promotion, board chess.Board) (chess.Move, error) {
 	var err error
-	move.Normal, err = resolver.ResolveNormal(move.Normal, board, board.Turn())
-	if err != nil {
-		return nil, err
-	}
-	if err := validator.ValidatePromotion(move, board); err != nil {
-		return nil, err
-	}
+	moveCopy := *move
+	normalCopy := *move.Normal
+	moveCopy.Normal = &normalCopy
 
-	unresolvedFrom, err := resolver.UnresolveFrom(move.From, move.To, board)
+	moveCopy.Normal.From, err = resolver.ResolveFrom(moveCopy.Normal, board, board.Turn())
 	if err != nil {
 		return nil, err
 	}
 
-	capturedPiece, err := board.Squares().MovePiece(move.From, move.To)
+	if err := validator.ValidatePromotion(&moveCopy, board); err != nil {
+		return nil, err
+	}
+
+	unresolvedFrom, err := resolver.UnresolveFrom(moveCopy.Normal, board)
 	if err != nil {
 		return nil, err
 	}
 
-	piece := piece.New(move.NewPieceNotation, board.Turn())
+	capturedPiece, err := board.Squares().MovePiece(moveCopy.From, moveCopy.To)
+	if err != nil {
+		return nil, err
+	}
+
+	piece := piece.New(moveCopy.NewPieceNotation, board.Turn())
 	piece.MarkMoved()
 
-	board.Squares().PlacePiece(piece, move.To)
+	board.Squares().PlacePiece(piece, moveCopy.To)
 
-	modifyNormal(move.Normal, capturedPiece, board)
-	move.From = unresolvedFrom
+	modifyNormal(moveCopy.Normal, capturedPiece, board)
+	moveCopy.From = unresolvedFrom
 
 	return move, nil
 }

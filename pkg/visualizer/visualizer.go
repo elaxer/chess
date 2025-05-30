@@ -15,7 +15,7 @@ func (v *Visualizer) Visualize(board chess.Board, writer io.Writer) {
 	backward := (v.Options.Orientation == OptionOrientationDefault) || (v.Options.Orientation == OptionOrientationByTurn && board.Turn() == chess.SideWhite)
 
 	for rank, row := range board.Squares().IterByRows(backward) {
-		if v.Options.Positions {
+		if v.Options.ShowPositions {
 			fmt.Fprintf(writer, "%d ", rank)
 		}
 		for _, piece := range row {
@@ -29,7 +29,7 @@ func (v *Visualizer) Visualize(board chess.Board, writer io.Writer) {
 		fmt.Fprintln(writer)
 	}
 
-	if v.Options.Positions {
+	if v.Options.ShowPositions {
 		fmt.Fprintf(writer, "  ")
 		for file := range board.Squares().EdgePosition().File {
 			fmt.Fprintf(writer, "%s ", file+1)

@@ -12,11 +12,11 @@ type CheckMate struct {
 	IsMate  bool
 }
 
-func CheckMateFromNotation(notation string) *CheckMate {
-	return &CheckMate{notation == notationCheck, notation == notationMate}
+func CheckMateFromNotation(notation string) CheckMate {
+	return CheckMate{notation == notationCheck, notation == notationMate}
 }
 
-func (m *CheckMate) String() string {
+func (m CheckMate) String() string {
 	switch {
 	case m.IsMate:
 		return notationMate
