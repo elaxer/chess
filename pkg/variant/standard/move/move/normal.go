@@ -7,6 +7,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/rgx"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
@@ -19,7 +20,7 @@ var regexpNormal = regexp.MustCompile(fmt.Sprintf(
 
 // Normal представляет обычный ход фигурой в шахматах.
 type Normal struct {
-	CheckMate
+	abstract
 	// PieceNotation обозначает фигуру, которая делает ход.
 	PieceNotation string
 	// From, To означают начальную и конечную позиции хода.
@@ -37,7 +38,7 @@ func NormalFromNotation(notation string) (*Normal, error) {
 	}
 
 	return &Normal{
-		CheckMateFromNotation(data["checkmate"]),
+		abstractFromNotation(data["checkmate"]),
 		data["piece"],
 		position.FromNotation(data["from"]),
 		position.FromNotation(data["to"]),
@@ -52,12 +53,19 @@ func (m *Normal) Notation() string {
 		str += "x"
 	}
 
-	return str + m.To.String() + m.CheckMate.String()
+	return str + m.To.String() + m.abstract.String()
 }
 
 func (m *Normal) Validate() error {
+	pieceNotations := make([]any, 0, len(piece.AllNotations))
+	for _, notation := range piece.AllNotations {
+		pieceNotations = append(pieceNotations, notation)
+	}
+
 	return validation.ValidateStruct(
 		m,
+		validation.Field(&m.PieceNotation, validation.In(pieceNotations...)),
+		validation.Field(&m.From),
 		validation.Field(&m.To),
 	)
 }

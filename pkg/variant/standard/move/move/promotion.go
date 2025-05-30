@@ -31,8 +31,8 @@ func PromotionFromNotation(notation string) (*Promotion, error) {
 
 	return &Promotion{
 		&Normal{
-			CheckMateFromNotation(data["checkmate"]),
-			"",
+			abstractFromNotation(data["checkmate"]),
+			piece.NotationPawn,
 			position.FromNotation(data["from_file"]),
 			position.FromNotation(data["to"]),
 			data["is_capture"] != "",
@@ -43,7 +43,7 @@ func PromotionFromNotation(notation string) (*Promotion, error) {
 }
 
 func (m *Promotion) Notation() string {
-	return fmt.Sprintf("%s%s=%s%s", m.From, m.To, m.NewPieceNotation, m.CheckMate)
+	return fmt.Sprintf("%s%s=%s%s", m.From, m.To, m.NewPieceNotation, m.abstract)
 }
 
 func (m *Promotion) Validate() error {

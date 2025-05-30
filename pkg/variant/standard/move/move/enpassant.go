@@ -10,7 +10,7 @@ type EnPassant struct {
 	*Normal
 }
 
-func NewEnPassant(from, to position.Position, capturedPiece chess.Piece, checkMate CheckMate) *EnPassant {
+func NewEnPassant(from, to position.Position, capturedPiece chess.Piece) *EnPassant {
 	return &EnPassant{
 		Normal: &Normal{
 			PieceNotation: piece.NotationPawn,
@@ -18,7 +18,6 @@ func NewEnPassant(from, to position.Position, capturedPiece chess.Piece, checkMa
 			To:            to,
 			IsCapture:     true,
 			CapturedPiece: capturedPiece,
-			CheckMate:     checkMate,
 		},
 	}
 }

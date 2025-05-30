@@ -5,7 +5,6 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
 	"github.com/elaxer/chess/pkg/variant/standard/move/resolver"
 	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
-	"github.com/elaxer/chess/pkg/variant/standard/state/state"
 )
 
 type Normal struct {
@@ -47,6 +46,5 @@ func (m *Normal) Make(move *move.Normal, board chess.Board) (chess.Move, error) 
 func modifyNormal(move *move.Normal, capturedPiece chess.Piece, board chess.Board) {
 	move.IsCapture = capturedPiece != nil
 	move.CapturedPiece = capturedPiece
-	move.CheckMate.IsCheck = board.State(!board.Turn()) == state.Check
-	move.CheckMate.IsMate = board.State(!board.Turn()) == state.Mate
+	move.NewBoardState = board.State(!board.Turn())
 }

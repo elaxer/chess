@@ -10,7 +10,7 @@ import (
 var regexpCastling = regexp.MustCompile(fmt.Sprintf("^[0Oo]-[0Oo](?P<long>-[0Oo])?%s?$", RegexpCheckMate))
 
 type Castling struct {
-	CheckMate
+	abstract
 	CastlingType
 }
 
@@ -25,13 +25,13 @@ func CastlingFromNotation(notation string) (*Castling, error) {
 	}
 
 	return &Castling{
-		CheckMate:    CheckMateFromNotation(result["checkmate"]),
+		abstract:     abstractFromNotation(result["checkmate"]),
 		CastlingType: result["long"] == "",
 	}, nil
 }
 
 func (m *Castling) Notation() string {
-	return m.CastlingType.String() + m.CheckMate.String()
+	return m.CastlingType.String() + m.abstract.String()
 }
 
 func (m *Castling) Validate() error {

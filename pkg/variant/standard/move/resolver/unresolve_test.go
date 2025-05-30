@@ -84,7 +84,7 @@ func TestUnresolveFrom(t *testing.T) {
 			false,
 		},
 		{
-			"single_pawn_capturing",
+			"single_pawn_capture",
 			args{
 				&move.Normal{From: position.FromNotation("e2"), To: position.FromNotation("d1"), PieceNotation: piece.NotationPawn, IsCapture: true},
 				standardtest.NewEmpty(SideWhite, []standardtest.Placement{

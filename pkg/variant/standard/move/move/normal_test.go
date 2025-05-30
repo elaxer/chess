@@ -1,11 +1,11 @@
-package move_test
+package move
 
 import (
 	"testing"
 
 	"github.com/elaxer/chess/pkg/chess/position"
-	. "github.com/elaxer/chess/pkg/variant/standard/move/move"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
+	"github.com/elaxer/chess/pkg/variant/standard/state/state"
 )
 
 func TestNormalFromNotation(t *testing.T) {
@@ -125,7 +125,7 @@ func TestNormal_String(t *testing.T) {
 			"Qa8",
 		},
 		{
-			"normal_pawn",
+			"pawn",
 			&Normal{
 				To:            position.FromNotation("e4"),
 				PieceNotation: piece.NotationPawn,
@@ -136,7 +136,7 @@ func TestNormal_String(t *testing.T) {
 		{
 			"check",
 			&Normal{
-				CheckMate:     CheckMate{IsCheck: true},
+				abstract:      abstract{NewBoardState: state.Check},
 				To:            position.FromNotation("a1"),
 				PieceNotation: piece.NotationRook,
 				IsCapture:     false,
@@ -146,7 +146,7 @@ func TestNormal_String(t *testing.T) {
 		{
 			"mate",
 			&Normal{
-				CheckMate:     CheckMate{IsMate: true},
+				abstract:      abstract{NewBoardState: state.Mate},
 				To:            position.FromNotation("a1"),
 				PieceNotation: piece.NotationBishop,
 				IsCapture:     false,
@@ -154,9 +154,9 @@ func TestNormal_String(t *testing.T) {
 			"Ba1#",
 		},
 		{
-			"check_capture",
+			"check_with_capture",
 			&Normal{
-				CheckMate:     CheckMate{IsCheck: true},
+				abstract:      abstract{NewBoardState: state.Check},
 				To:            position.FromNotation("a1"),
 				PieceNotation: piece.NotationKnight,
 				IsCapture:     true,
@@ -164,9 +164,9 @@ func TestNormal_String(t *testing.T) {
 			"Nxa1+",
 		},
 		{
-			"mate_capture",
+			"mate_with_capture",
 			&Normal{
-				CheckMate:     CheckMate{IsMate: true},
+				abstract:      abstract{NewBoardState: state.Mate},
 				To:            position.FromNotation("c5"),
 				PieceNotation: piece.NotationPawn,
 				IsCapture:     true,

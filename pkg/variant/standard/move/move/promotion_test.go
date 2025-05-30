@@ -1,10 +1,10 @@
-package move_test
+package move
 
 import (
 	"testing"
 
-	. "github.com/elaxer/chess/pkg/variant/standard/move/move"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
+	"github.com/elaxer/chess/pkg/variant/standard/state/state"
 
 	"github.com/elaxer/chess/pkg/chess/position"
 )
@@ -20,7 +20,7 @@ func TestNewPromotion(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"valid",
+			"promotion",
 			args{"e8=Q"},
 			&Promotion{
 				Normal:           &Normal{To: position.FromNotation("e8")},
@@ -41,7 +41,7 @@ func TestNewPromotion(t *testing.T) {
 			"check",
 			args{"d1=N+"},
 			&Promotion{
-				Normal:           &Normal{CheckMate: CheckMate{IsCheck: true}, To: position.FromNotation("d1")},
+				Normal:           &Normal{abstract: abstract{NewBoardState: state.Check}, To: position.FromNotation("d1")},
 				NewPieceNotation: piece.NotationKnight,
 			},
 			false,
@@ -50,7 +50,7 @@ func TestNewPromotion(t *testing.T) {
 			"mate",
 			args{"a8=R#"},
 			&Promotion{
-				Normal:           &Normal{CheckMate: CheckMate{IsMate: true}, To: position.FromNotation("a8")},
+				Normal:           &Normal{abstract: abstract{NewBoardState: state.Mate}, To: position.FromNotation("a8")},
 				NewPieceNotation: piece.NotationRook,
 			},
 			false,
@@ -99,7 +99,7 @@ func TestPromotion_Notation(t *testing.T) {
 		want   string
 	}{
 		{
-			"valid",
+			"promotion",
 			fields{&Promotion{
 				Normal:           &Normal{To: position.FromNotation("a1")},
 				NewPieceNotation: piece.NotationRook,

@@ -8,7 +8,6 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
 	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
-	"github.com/elaxer/chess/pkg/variant/standard/state/state"
 )
 
 // Castling это структура, реализующая интерфейс Mover для рокировки.
@@ -31,13 +30,10 @@ func (m *Castling) Make(castlingType move.CastlingType, board chess.Board) (ches
 	board.Squares().MovePiece(kingPosition, position.New(kingPosition.File+direction*2, rank))
 	board.Squares().MovePiece(rookPosition, position.New(kingPosition.File+direction, rank))
 
-	return &move.Castling{
-		CheckMate: move.CheckMate{
-			IsCheck: board.State(!board.Turn()) == state.Check,
-			IsMate:  board.State(!board.Turn()) == state.Mate,
-		},
-		CastlingType: castlingType,
-	}, nil
+	move := move.NewCastling(castlingType)
+	move.NewBoardState = board.State(!board.Turn())
+
+	return move, nil
 }
 
 func (m *Castling) rookPosition(direction position.File, squares *chess.Squares, kingPosition position.Position) (position.Position, error) {

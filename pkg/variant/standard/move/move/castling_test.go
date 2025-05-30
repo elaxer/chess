@@ -1,9 +1,9 @@
-package move_test
+package move
 
 import (
 	"testing"
 
-	. "github.com/elaxer/chess/pkg/variant/standard/move/move"
+	"github.com/elaxer/chess/pkg/variant/standard/state/state"
 )
 
 func TestCastlingFromNotation(t *testing.T) {
@@ -29,33 +29,33 @@ func TestCastlingFromNotation(t *testing.T) {
 			false,
 		},
 		{
-			"short_check",
+			"short_with_check",
 			args{"0-0+"},
 			"0-0+",
 			false,
 		},
 		{
-			"short_mate",
+			"short_with_mate",
 			args{"0-0#"},
 			"0-0#",
 			false,
 		},
 		{
-			"long_check",
+			"long_with_check",
 			args{"0-0-0+"},
 			"0-0-0+",
 			false,
 		},
 		{
-			"long_mate",
+			"long_with_mate",
 			args{"0-0-0#"},
 			"0-0-0#",
 			false,
 		},
 		{
 			"O character",
-			args{"O-O#"},
-			"0-0#",
+			args{"O-O"},
+			"0-0",
 			false,
 		},
 		{
@@ -100,13 +100,13 @@ func TestCastling_String(t *testing.T) {
 			"0-0-0",
 		},
 		{
-			"castling_check",
-			fields{&Castling{CheckMate: CheckMate{IsCheck: true}, CastlingType: CastlingShort}},
+			"castling_with_check",
+			fields{&Castling{abstract: abstract{NewBoardState: state.Check}, CastlingType: CastlingShort}},
 			"0-0+",
 		},
 		{
-			"castling_mate",
-			fields{&Castling{CheckMate: CheckMate{IsMate: true}, CastlingType: CastlingLong}},
+			"castling_with_mate",
+			fields{&Castling{abstract: abstract{NewBoardState: state.Mate}, CastlingType: CastlingLong}},
 			"0-0-0#",
 		},
 	}

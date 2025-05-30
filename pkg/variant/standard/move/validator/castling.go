@@ -57,7 +57,7 @@ func ValidateCastling(castlingType move.CastlingType, side chess.Side, board che
 func castlingValidateObstacle(direction position.File, squares *chess.Squares, kingPosition position.Position, castlingRook chess.Piece) error {
 	for _, piece := range squares.IterByDirection(kingPosition, position.New(direction, 0)) {
 		if piece != nil && piece != castlingRook {
-			return fmt.Errorf("%w: an obstacle")
+			return fmt.Errorf("%w: an obstacle", Err)
 		}
 	}
 
@@ -72,9 +72,8 @@ func fileDirection(castlingType move.CastlingType) position.File {
 }
 
 func castlingRookPosition(castlingType move.CastlingType, rank position.Rank) position.Position {
-	if castlingType == move.CastlingShort {
-		return position.New(position.FileH, rank)
-	} else {
-		return position.New(position.FileA, rank)
-	}
+	return map[move.CastlingType]position.Position{
+		move.CastlingShort: position.New(position.FileH, rank),
+		move.CastlingLong:  position.New(position.FileA, rank),
+	}[castlingType]
 }
