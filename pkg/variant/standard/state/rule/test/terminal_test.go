@@ -12,7 +12,7 @@ import (
 )
 
 // todo test opposite turn
-func TestMate(t *testing.T) {
+func TestCheckmate(t *testing.T) {
 	type args struct {
 		board chess.Board
 		side  chess.Side
@@ -23,7 +23,7 @@ func TestMate(t *testing.T) {
 		want chess.State
 	}{
 		{
-			"mate",
+			"checkmate",
 			args{
 				standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
 					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromNotation("a1")},
@@ -33,11 +33,11 @@ func TestMate(t *testing.T) {
 				}),
 				chess.SideWhite,
 			},
-			state.Mate,
+			state.Checkmate,
 		},
 		{
-			// no mate because the black king can capture the threatening rook
-			"no_mate",
+			// no checkmate because the black king can capture the threatening rook
+			"no_checkmate",
 			args{
 				standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
 					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromNotation("a1")},
@@ -53,8 +53,8 @@ func TestMate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := rule.Mate(tt.args.board, tt.args.side); got != tt.want {
-				t.Errorf("Mate() = %v, want %v", got, tt.want)
+			if got := rule.Checkmate(tt.args.board, tt.args.side); got != tt.want {
+				t.Errorf("Checkmate() = %v, want %v", got, tt.want)
 			}
 		})
 	}

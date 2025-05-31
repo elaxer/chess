@@ -61,7 +61,7 @@ func TestNormalFromNotation(t *testing.T) {
 			false,
 		},
 		{
-			"mate",
+			"checkmate",
 			args{"Be8#"},
 			"Be8#",
 			false,
@@ -79,7 +79,7 @@ func TestNormalFromNotation(t *testing.T) {
 			false,
 		},
 		{
-			"capture_mate",
+			"capture_checkmate",
 			args{"Qxh8#"},
 			"Qxh8#",
 			false,
@@ -144,9 +144,9 @@ func TestNormal_String(t *testing.T) {
 			"Ra1+",
 		},
 		{
-			"mate",
+			"checkmate",
 			&Normal{
-				abstract:      abstract{NewBoardState: state.Mate},
+				abstract:      abstract{NewBoardState: state.Checkmate},
 				To:            position.FromNotation("a1"),
 				PieceNotation: piece.NotationBishop,
 				IsCapture:     false,
@@ -164,9 +164,9 @@ func TestNormal_String(t *testing.T) {
 			"Nxa1+",
 		},
 		{
-			"mate_with_capture",
+			"checkmate_with_capture",
 			&Normal{
-				abstract:      abstract{NewBoardState: state.Mate},
+				abstract:      abstract{NewBoardState: state.Checkmate},
 				To:            position.FromNotation("c5"),
 				PieceNotation: piece.NotationPawn,
 				IsCapture:     true,

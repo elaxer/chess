@@ -35,7 +35,7 @@ func TestCastlingFromNotation(t *testing.T) {
 			false,
 		},
 		{
-			"short_with_mate",
+			"short_with_checkmate",
 			args{"0-0#"},
 			"0-0#",
 			false,
@@ -47,7 +47,7 @@ func TestCastlingFromNotation(t *testing.T) {
 			false,
 		},
 		{
-			"long_with_mate",
+			"long_with_checkmate",
 			args{"0-0-0#"},
 			"0-0-0#",
 			false,
@@ -105,8 +105,8 @@ func TestCastling_String(t *testing.T) {
 			"0-0+",
 		},
 		{
-			"castling_with_mate",
-			fields{&Castling{abstract: abstract{NewBoardState: state.Mate}, CastlingType: CastlingLong}},
+			"castling_with_checkmate",
+			fields{&Castling{abstract: abstract{NewBoardState: state.Checkmate}, CastlingType: CastlingLong}},
 			"0-0-0#",
 		},
 	}

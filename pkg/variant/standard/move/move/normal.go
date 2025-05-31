@@ -15,7 +15,7 @@ var regexpNormal = regexp.MustCompile(fmt.Sprintf(
 	"^(?P<piece>[KQBNR])?%s?(?P<is_capture>x)?%s%s?$",
 	position.RegexpFrom,
 	position.RegexpTo,
-	RegexpCheckMate,
+	RegexpSuffix,
 ))
 
 // Normal представляет обычный ход фигурой в шахматах.

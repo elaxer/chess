@@ -6,11 +6,11 @@ import (
 )
 
 const (
-	notationCheck = "+"
-	notationMate  = "#"
+	notationCheck     = "+"
+	notationCheckmate = "#"
 )
 
-const RegexpCheckMate = `(?P<checkmate>[+#])`
+const RegexpSuffix = `(?P<suffix>[+#])`
 
 type abstract struct {
 	NewBoardState chess.State
@@ -20,8 +20,8 @@ func abstractFromNotation(notation string) abstract {
 	switch notation {
 	case notationCheck:
 		return abstract{state.Check}
-	case notationMate:
-		return abstract{state.Mate}
+	case notationCheckmate:
+		return abstract{state.Checkmate}
 	}
 
 	return abstract{nil}
@@ -29,8 +29,8 @@ func abstractFromNotation(notation string) abstract {
 
 func (m abstract) String() string {
 	switch m.NewBoardState {
-	case state.Mate:
-		return notationMate
+	case state.Checkmate:
+		return notationCheckmate
 	case state.Check:
 		return notationCheck
 	}

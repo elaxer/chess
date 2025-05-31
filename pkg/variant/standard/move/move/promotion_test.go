@@ -47,10 +47,10 @@ func TestNewPromotion(t *testing.T) {
 			false,
 		},
 		{
-			"mate",
+			"checkmate",
 			args{"a8=R#"},
 			&Promotion{
-				Normal:           &Normal{abstract: abstract{NewBoardState: state.Mate}, To: position.FromNotation("a8")},
+				Normal:           &Normal{abstract: abstract{NewBoardState: state.Checkmate}, To: position.FromNotation("a8")},
 				NewPieceNotation: piece.NotationRook,
 			},
 			false,

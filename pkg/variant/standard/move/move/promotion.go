@@ -13,7 +13,7 @@ import (
 var regexpPromotion = regexp.MustCompile(fmt.Sprintf(
 	`^(?P<from_file>[a-p])?(?P<is_capture>x)?%s=(?P<piece>[QBNR])%s?$`,
 	position.RegexpTo,
-	RegexpCheckMate,
+	RegexpSuffix,
 ))
 
 // Promotion представляет ход с превращением пешки в другую фигуру.

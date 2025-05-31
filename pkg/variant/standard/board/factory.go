@@ -23,7 +23,7 @@ var firstRowPieceNotations = []string{
 }
 
 var stateRules = []rule.Rule{
-	rule.Mate,
+	rule.Checkmate,
 	rule.Stalemate,
 	rule.Check,
 

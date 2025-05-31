@@ -5,9 +5,9 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/state/state"
 )
 
-func Mate(board chess.Board, side chess.Side) chess.State {
+func Checkmate(board chess.Board, side chess.Side) chess.State {
 	if Check(board, side) != nil && board.Moves(side).Cardinality() == 0 {
-		return state.Mate
+		return state.Checkmate
 	}
 
 	return nil
