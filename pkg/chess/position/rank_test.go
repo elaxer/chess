@@ -14,8 +14,8 @@ func TestRank_Validate(t *testing.T) {
 			false,
 		},
 		{
-			"less_than_1",
-			Rank(0),
+			"less_than_min",
+			Rank(RankMin - 1),
 			true,
 		},
 		{

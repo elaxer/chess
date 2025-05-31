@@ -1,11 +1,13 @@
 package chess
 
+import "fmt"
+
 var (
 	StateClear = NewState("clear", StateTypeClear)
 )
 
 type State interface {
-	Name() string
+	fmt.Stringer
 	Type() StateType
 }
 
@@ -19,10 +21,6 @@ func NewState(name string, stateType StateType) State {
 		name:      name,
 		stateType: stateType,
 	}
-}
-
-func (s *state) Name() string {
-	return s.name
 }
 
 func (s *state) Type() StateType {

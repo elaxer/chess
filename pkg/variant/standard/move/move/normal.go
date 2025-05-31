@@ -38,22 +38,13 @@ func NormalFromNotation(notation string) (*Normal, error) {
 	}
 
 	return &Normal{
-		abstractFromNotation(data["checkmate"]),
+		abstractFromNotation(data["suffix"]),
 		data["piece"],
-		position.FromNotation(data["from"]),
-		position.FromNotation(data["to"]),
+		position.FromString(data["from"]),
+		position.FromString(data["to"]),
 		data["is_capture"] != "",
 		nil,
 	}, nil
-}
-
-func (m *Normal) Notation() string {
-	str := string(m.PieceNotation) + m.From.String()
-	if m.IsCapture {
-		str += "x"
-	}
-
-	return str + m.To.String() + m.abstract.String()
 }
 
 func (m *Normal) Validate() error {
@@ -71,5 +62,10 @@ func (m *Normal) Validate() error {
 }
 
 func (m *Normal) String() string {
-	return m.Notation()
+	capture := ""
+	if m.IsCapture {
+		capture = "x"
+	}
+
+	return fmt.Sprintf("%s%s%s%s%s", m.PieceNotation, m.From, capture, m.To, m.abstract)
 }

@@ -31,19 +31,15 @@ func PromotionFromNotation(notation string) (*Promotion, error) {
 
 	return &Promotion{
 		&Normal{
-			abstractFromNotation(data["checkmate"]),
+			abstractFromNotation(data["suffix"]),
 			piece.NotationPawn,
-			position.FromNotation(data["from_file"]),
-			position.FromNotation(data["to"]),
+			position.FromString(data["from_file"]),
+			position.FromString(data["to"]),
 			data["is_capture"] != "",
 			nil,
 		},
 		data["piece"],
 	}, nil
-}
-
-func (m *Promotion) Notation() string {
-	return fmt.Sprintf("%s%s=%s%s", m.From, m.To, m.NewPieceNotation, m.abstract)
 }
 
 func (m *Promotion) Validate() error {
@@ -59,5 +55,10 @@ func (m *Promotion) Validate() error {
 }
 
 func (m *Promotion) String() string {
-	return m.Notation()
+	capture := ""
+	if m.IsCapture {
+		capture = "x"
+	}
+
+	return fmt.Sprintf("%s%s%s=%s%s", m.From, capture, m.To, m.NewPieceNotation, m.abstract)
 }

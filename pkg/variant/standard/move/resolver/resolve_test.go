@@ -26,16 +26,16 @@ func TestResolveFrom(t *testing.T) {
 			"empty_from",
 			args{
 				move: &move.Normal{
-					To:            position.FromNotation("e4"),
+					To:            position.FromString("e4"),
 					PieceNotation: piece.NotationPawn,
 				},
 				board: standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewPawn(SideWhite), Position: position.FromNotation("d2")},
-					{Piece: piece.NewPawn(SideWhite), Position: position.FromNotation("e2")},
-					{Piece: piece.NewPawn(SideWhite), Position: position.FromNotation("f2")},
+					{Piece: piece.NewPawn(SideWhite), Position: position.FromString("d2")},
+					{Piece: piece.NewPawn(SideWhite), Position: position.FromString("e2")},
+					{Piece: piece.NewPawn(SideWhite), Position: position.FromString("f2")},
 				}),
 			},
-			position.FromNotation("e2"),
+			position.FromString("e2"),
 			false,
 		},
 		{
@@ -43,15 +43,15 @@ func TestResolveFrom(t *testing.T) {
 			args{
 				move: &move.Normal{
 					From:          position.Position{File: position.FileA},
-					To:            position.FromNotation("b8"),
+					To:            position.FromString("b8"),
 					PieceNotation: piece.NotationRook,
 				},
 				board: standardtest.NewEmpty(SideBlack, []standardtest.Placement{
-					{Piece: piece.NewRook(SideBlack), Position: position.FromNotation("f8")},
-					{Piece: piece.NewRook(SideBlack), Position: position.FromNotation("a8")},
+					{Piece: piece.NewRook(SideBlack), Position: position.FromString("f8")},
+					{Piece: piece.NewRook(SideBlack), Position: position.FromString("a8")},
 				}),
 			},
-			position.FromNotation("a8"),
+			position.FromString("a8"),
 			false,
 		},
 		{
@@ -59,15 +59,15 @@ func TestResolveFrom(t *testing.T) {
 			args{
 				move: &move.Normal{
 					From:          position.Position{File: position.FileG},
-					To:            position.FromNotation("e2"),
+					To:            position.FromString("e2"),
 					PieceNotation: piece.NotationKnight,
 				},
 				board: standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewKnight(SideWhite), Position: position.FromNotation("g1")},
-					{Piece: piece.NewKnight(SideWhite), Position: position.FromNotation("c3")},
+					{Piece: piece.NewKnight(SideWhite), Position: position.FromString("g1")},
+					{Piece: piece.NewKnight(SideWhite), Position: position.FromString("c3")},
 				}),
 			},
-			position.FromNotation("g1"),
+			position.FromString("g1"),
 			false,
 		},
 		{
@@ -75,32 +75,32 @@ func TestResolveFrom(t *testing.T) {
 			args{
 				move: &move.Normal{
 					From:          position.Position{Rank: 1},
-					To:            position.FromNotation("a5"),
+					To:            position.FromString("a5"),
 					PieceNotation: piece.NotationRook,
 				},
 				board: standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewRook(SideWhite), Position: position.FromNotation("a1")},
-					{Piece: piece.NewRook(SideWhite), Position: position.FromNotation("a8")},
+					{Piece: piece.NewRook(SideWhite), Position: position.FromString("a1")},
+					{Piece: piece.NewRook(SideWhite), Position: position.FromString("a8")},
 				}),
 			},
-			position.FromNotation("a1"),
+			position.FromString("a1"),
 			false,
 		},
 		{
 			"full_from",
 			args{
 				move: &move.Normal{
-					From:          position.FromNotation("f2"),
-					To:            position.FromNotation("d4"),
+					From:          position.FromString("f2"),
+					To:            position.FromString("d4"),
 					PieceNotation: piece.NotationBishop,
 				},
 				board: standardtest.NewEmpty(SideBlack, []standardtest.Placement{
-					{Piece: piece.NewBishop(SideBlack), Position: position.FromNotation("b2")},
-					{Piece: piece.NewBishop(SideBlack), Position: position.FromNotation("f2")},
-					{Piece: piece.NewBishop(SideBlack), Position: position.FromNotation("b6")},
+					{Piece: piece.NewBishop(SideBlack), Position: position.FromString("b2")},
+					{Piece: piece.NewBishop(SideBlack), Position: position.FromString("f2")},
+					{Piece: piece.NewBishop(SideBlack), Position: position.FromString("b6")},
 				}),
 			},
-			position.FromNotation("f2"),
+			position.FromString("f2"),
 			false,
 		},
 	}

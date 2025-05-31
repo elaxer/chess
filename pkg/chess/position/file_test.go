@@ -65,8 +65,8 @@ func TestFile_Validate(t *testing.T) {
 			false,
 		},
 		{
-			"less_than_1",
-			File(0),
+			"less_than_min",
+			FileMin - 1,
 			true,
 		},
 		{

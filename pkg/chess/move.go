@@ -1,9 +1,10 @@
 package chess
 
+import "fmt"
+
 // Move это интерфейс, представляющий ход в шахматной игре.
 type Move interface {
-	// Notation возвращает нотацию хода.
-	Notation() string
+	fmt.Stringer
 	// Validate проверяет, корректны ли данные хода.
 	Validate() error
 }
@@ -13,7 +14,7 @@ type Move interface {
 // Релазиует интерфейс Move
 type RawMove string
 
-func (m RawMove) Notation() string {
+func (m RawMove) String() string {
 	return string(m)
 }
 

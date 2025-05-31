@@ -2,7 +2,6 @@ package position
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -18,7 +17,7 @@ var (
 	RegexpTo   = fmt.Sprintf("(?P<to>%s%s)", RegexpFile, RegexpRank)
 )
 
-var notationRegexp = regexp.MustCompile("^(?P<file>[a-p])?(?P<rank>1[0-6]|[1-9])?$")
+var regexpPosition = regexp.MustCompile("^(?P<file>[a-p])?(?P<rank>1[0-6]|[1-9])?$")
 
 type Set = mapset.Set[Position]
 
@@ -38,10 +37,10 @@ func NewNull() Position {
 	return Position{}
 }
 
-// FromNotation создает новую позицию из шахматной нотации.
+// FromString создает новую позицию из шахматной нотации.
 // Например, "e4" будет преобразовано в Position{FileE, Rank4}.
-func FromNotation(notation string) Position {
-	data, err := rgx.Group(notationRegexp, notation)
+func FromString(str string) Position {
+	data, err := rgx.Group(regexpPosition, str)
 	if err != nil {
 		return NewNull()
 	}
@@ -69,23 +68,21 @@ func (p Position) String() string {
 
 func (p *Position) UnmarshalJSON(data []byte) error {
 	position := make(map[string]any, 2)
-	err := json.Unmarshal(data, &position)
-	if err != nil {
+	if err := json.Unmarshal(data, &position); err != nil {
 		return err
 	}
 
-	file, ok := position["file"].(float64)
-	if !ok {
-		return errors.New("invalid file coordinates")
+	if file, ok := position["file"].(float64); ok {
+		if File(file).Validate() == nil {
+			p.File = File(file)
+		}
 	}
 
-	rank, ok := position["rank"].(float64)
-	if !ok {
-		return errors.New("invalid rank coordinates")
+	if rank, ok := position["rank"].(float64); ok {
+		if Rank(rank).Validate() == nil {
+			p.Rank = Rank(rank)
+		}
 	}
-
-	p.File = File(file)
-	p.Rank = Rank(rank)
 
 	return nil
 }

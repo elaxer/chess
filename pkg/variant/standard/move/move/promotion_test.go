@@ -23,7 +23,7 @@ func TestNewPromotion(t *testing.T) {
 			"promotion",
 			args{"e8=Q"},
 			&Promotion{
-				Normal:           &Normal{To: position.FromNotation("e8")},
+				Normal:           &Normal{To: position.FromString("e8")},
 				NewPieceNotation: piece.NotationQueen,
 			},
 			false,
@@ -32,7 +32,7 @@ func TestNewPromotion(t *testing.T) {
 			"from_file",
 			args{"fe8=R"},
 			&Promotion{
-				Normal:           &Normal{From: position.FromNotation("f"), To: position.FromNotation("e8")},
+				Normal:           &Normal{From: position.FromString("f"), To: position.FromString("e8")},
 				NewPieceNotation: piece.NotationRook,
 			},
 			false,
@@ -41,7 +41,7 @@ func TestNewPromotion(t *testing.T) {
 			"check",
 			args{"d1=N+"},
 			&Promotion{
-				Normal:           &Normal{abstract: abstract{NewBoardState: state.Check}, To: position.FromNotation("d1")},
+				Normal:           &Normal{abstract: abstract{NewBoardState: state.Check}, To: position.FromString("d1")},
 				NewPieceNotation: piece.NotationKnight,
 			},
 			false,
@@ -50,8 +50,17 @@ func TestNewPromotion(t *testing.T) {
 			"checkmate",
 			args{"a8=R#"},
 			&Promotion{
-				Normal:           &Normal{abstract: abstract{NewBoardState: state.Checkmate}, To: position.FromNotation("a8")},
+				Normal:           &Normal{abstract: abstract{NewBoardState: state.Checkmate}, To: position.FromString("a8")},
 				NewPieceNotation: piece.NotationRook,
+			},
+			false,
+		},
+		{
+			"with_capture",
+			args{"xc8=B"},
+			&Promotion{
+				Normal:           &Normal{To: position.FromString("c8"), IsCapture: true},
+				NewPieceNotation: piece.NotationBishop,
 			},
 			false,
 		},
@@ -89,7 +98,7 @@ func TestNewPromotion(t *testing.T) {
 	}
 }
 
-func TestPromotion_Notation(t *testing.T) {
+func TestPromotion_String(t *testing.T) {
 	type fields struct {
 		promotion *Promotion
 	}
@@ -101,7 +110,7 @@ func TestPromotion_Notation(t *testing.T) {
 		{
 			"promotion",
 			fields{&Promotion{
-				Normal:           &Normal{To: position.FromNotation("a1")},
+				Normal:           &Normal{To: position.FromString("a1")},
 				NewPieceNotation: piece.NotationRook,
 			}},
 			"a1=R",
@@ -110,7 +119,7 @@ func TestPromotion_Notation(t *testing.T) {
 			"from_file",
 			fields{
 				&Promotion{
-					Normal:           &Normal{From: position.FromNotation("f"), To: position.FromNotation("e8")},
+					Normal:           &Normal{From: position.FromString("f"), To: position.FromString("e8")},
 					NewPieceNotation: piece.NotationRook,
 				},
 			},
@@ -119,7 +128,7 @@ func TestPromotion_Notation(t *testing.T) {
 		{
 			"full_from",
 			fields{&Promotion{
-				Normal:           &Normal{From: position.FromNotation("b2"), To: position.FromNotation("b1")},
+				Normal:           &Normal{From: position.FromString("b2"), To: position.FromString("b1")},
 				NewPieceNotation: piece.NotationKnight,
 			}},
 			"b2b1=N",
@@ -127,8 +136,8 @@ func TestPromotion_Notation(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.fields.promotion.Notation(); got != tt.want {
-				t.Errorf("Promotion.Notation() = %v, want %v", got, tt.want)
+			if got := tt.fields.promotion.String(); got != tt.want {
+				t.Errorf("Promotion.String() = %v, want %v", got, tt.want)
 			}
 		})
 	}

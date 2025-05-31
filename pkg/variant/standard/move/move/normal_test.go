@@ -118,7 +118,7 @@ func TestNormal_String(t *testing.T) {
 		{
 			"normal",
 			&Normal{
-				To:            position.FromNotation("a8"),
+				To:            position.FromString("a8"),
 				PieceNotation: piece.NotationQueen,
 				IsCapture:     false,
 			},
@@ -127,7 +127,7 @@ func TestNormal_String(t *testing.T) {
 		{
 			"pawn",
 			&Normal{
-				To:            position.FromNotation("e4"),
+				To:            position.FromString("e4"),
 				PieceNotation: piece.NotationPawn,
 				IsCapture:     false,
 			},
@@ -137,7 +137,7 @@ func TestNormal_String(t *testing.T) {
 			"check",
 			&Normal{
 				abstract:      abstract{NewBoardState: state.Check},
-				To:            position.FromNotation("a1"),
+				To:            position.FromString("a1"),
 				PieceNotation: piece.NotationRook,
 				IsCapture:     false,
 			},
@@ -147,7 +147,7 @@ func TestNormal_String(t *testing.T) {
 			"checkmate",
 			&Normal{
 				abstract:      abstract{NewBoardState: state.Checkmate},
-				To:            position.FromNotation("a1"),
+				To:            position.FromString("a1"),
 				PieceNotation: piece.NotationBishop,
 				IsCapture:     false,
 			},
@@ -157,7 +157,7 @@ func TestNormal_String(t *testing.T) {
 			"check_with_capture",
 			&Normal{
 				abstract:      abstract{NewBoardState: state.Check},
-				To:            position.FromNotation("a1"),
+				To:            position.FromString("a1"),
 				PieceNotation: piece.NotationKnight,
 				IsCapture:     true,
 			},
@@ -167,7 +167,7 @@ func TestNormal_String(t *testing.T) {
 			"checkmate_with_capture",
 			&Normal{
 				abstract:      abstract{NewBoardState: state.Checkmate},
-				To:            position.FromNotation("c5"),
+				To:            position.FromString("c5"),
 				PieceNotation: piece.NotationPawn,
 				IsCapture:     true,
 			},

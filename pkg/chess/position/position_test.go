@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestFromNotation(t *testing.T) {
+func TestFromString(t *testing.T) {
 	type args struct {
 		notation string
 	}
@@ -23,11 +23,16 @@ func TestFromNotation(t *testing.T) {
 			args{"c"},
 			Position{File: FileC},
 		},
+		{
+			"rank",
+			args{"3"},
+			Position{Rank: Rank3},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FromNotation(tt.args.notation); got != tt.want {
-				t.Errorf("FromNotation() = %v, want %v", got, tt.want)
+			if got := FromString(tt.args.notation); got != tt.want {
+				t.Errorf("FromString() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -48,27 +53,52 @@ func TestPosition_UnmarshalJSON(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"valid",
+			"full",
 			fields{FileA, Rank1},
 			args{`{"file": 1, "rank": 1}`},
+			false,
+		},
+		{
+			"only_file",
+			fields{File: FileE},
+			args{`{"file": 5}`},
+			false,
+		},
+		{
+			"only_rank",
+			fields{Rank: Rank9},
+			args{`{"rank": 9}`},
+			false,
+		},
+		{
+			"invalid",
+			fields{},
+			args{`{"file": -3, "rank": 100}`},
+			false,
+		},
+		{
+			"invalid_file",
+			fields{Rank: Rank2},
+			args{`{"file": 18, "rank": 2}`},
+			false,
+		},
+		{
+			"invalid_rank",
+			fields{File: FileC},
+			args{`{"file": 3, "rank": 0}`},
 			false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			position := NewNull()
-
 			if err := position.UnmarshalJSON([]byte(tt.args.data)); (err != nil) != tt.wantErr {
 				t.Errorf("Position.UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
-			if position.File != tt.fields.File {
-				t.Errorf("Position.UnmarshalJSON() got = %v, wantErr %v", position.File, tt.fields.File)
-				return
-			}
-			if position.Rank != tt.fields.Rank {
-				t.Errorf("Position.UnmarshalJSON() c.Rank = %v, wantErr %v", position.Rank, tt.fields.Rank)
+			if position.File != tt.fields.File || position.Rank != tt.fields.Rank {
+				t.Errorf("Position is %v, expected %v", position, Position{tt.fields.File, tt.fields.Rank})
 			}
 		})
 	}

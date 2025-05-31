@@ -7,7 +7,9 @@ import (
 )
 
 const (
-	FileA File = iota + 1
+	FileNull File = iota
+
+	FileA
 	FileB
 	FileC
 	FileD
@@ -48,6 +50,10 @@ func NewFile(char string) File {
 	idx := strings.Index(files, strings.ToLower(char))
 
 	return File(idx + 1)
+}
+
+func (f File) IsNull() bool {
+	return f == FileNull
 }
 
 func (f File) Validate() error {

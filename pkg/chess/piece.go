@@ -14,6 +14,7 @@ import (
 // The Piece interface is essential for the chess game logic, allowing the game to handle pieces generically
 // while still respecting the unique movement and rules associated with each type of piece.
 type Piece interface {
+	fmt.Stringer
 	// Side returns the side of the piece.
 	Side() Side
 	// IsMoved returns true if the piece has been moved.
@@ -32,6 +33,4 @@ type Piece interface {
 	// Weight returns the weight of the piece.
 	// The weight is used to evaluate the piece's value in the game.
 	Weight() uint8
-
-	fmt.Stringer
 }

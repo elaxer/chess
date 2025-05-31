@@ -30,14 +30,10 @@ func CastlingFromNotation(notation string) (*Castling, error) {
 	}, nil
 }
 
-func (m *Castling) Notation() string {
-	return m.CastlingType.String() + m.abstract.String()
-}
-
 func (m *Castling) Validate() error {
 	return nil
 }
 
 func (m *Castling) String() string {
-	return m.Notation()
+	return m.CastlingType.String() + m.abstract.String()
 }

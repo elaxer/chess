@@ -3,7 +3,6 @@ package board_test
 import (
 	"testing"
 
-	"github.com/elaxer/chess/pkg/variant/standard/board"
 	"github.com/elaxer/chess/pkg/variant/standard/codec/fen"
 	"github.com/elaxer/chess/pkg/variant/standardtest"
 )
@@ -77,9 +76,9 @@ func TestFactory_CreateFromMoves(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			board, err := board.NewFactory().CreateFromMoves(standardtest.NotationsToMoves(tt.args.moves))
+			board, err := standardtest.NewFromMoves(tt.args.moves)
 			if err != nil {
-				t.Fatalf("Failed to create board from moves: %v", err)
+				t.Errorf("Failed to create board from moves: %v", err)
 				return
 			}
 

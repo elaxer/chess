@@ -26,10 +26,10 @@ func TestCheckmate(t *testing.T) {
 			"checkmate",
 			args{
 				standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
-					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromNotation("a1")},
-					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromNotation("h8")},
-					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromNotation("a8")},
-					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromNotation("b8")},
+					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromString("a1")},
+					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromString("h8")},
+					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromString("a8")},
+					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromString("b8")},
 				}),
 				chess.SideWhite,
 			},
@@ -40,10 +40,10 @@ func TestCheckmate(t *testing.T) {
 			"no_checkmate",
 			args{
 				standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
-					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromNotation("a1")},
-					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromNotation("h8")},
-					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromNotation("a2")},
-					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromNotation("b8")},
+					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromString("a1")},
+					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromString("h8")},
+					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromString("a2")},
+					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromString("b8")},
 				}),
 				chess.SideWhite,
 			},

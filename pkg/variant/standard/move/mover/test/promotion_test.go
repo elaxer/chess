@@ -15,12 +15,12 @@ func TestPromotion_Make(t *testing.T) {
 	b := board.NewFactory().CreateEmpty(SideWhite)
 	squares := b.Squares()
 
-	squares.PlacePiece(piece.NewPawn(SideWhite), position.FromNotation("d7"))
-	squares.PlacePiece(piece.NewKing(SideWhite), position.FromNotation("a1"))
-	squares.PlacePiece(piece.NewKing(SideBlack), position.FromNotation("a8"))
+	squares.PlacePiece(piece.NewPawn(SideWhite), position.FromString("d7"))
+	squares.PlacePiece(piece.NewKing(SideWhite), position.FromString("a1"))
+	squares.PlacePiece(piece.NewKing(SideBlack), position.FromString("a8"))
 
 	promotion := &move.Promotion{
-		Normal:           &move.Normal{To: position.FromNotation("d8")},
+		Normal:           &move.Normal{To: position.FromString("d8")},
 		NewPieceNotation: piece.NotationQueen,
 	}
 	_, err := new(mover.Promotion).Make(promotion, b)
@@ -28,7 +28,7 @@ func TestPromotion_Make(t *testing.T) {
 		t.Fatalf("promotion failed: %v", err)
 	}
 
-	queen, err := squares.GetByPosition(position.FromNotation("d8"))
+	queen, err := squares.GetByPosition(position.FromString("d8"))
 	if err != nil {
 		t.Fatal(err)
 	}

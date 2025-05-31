@@ -7,7 +7,9 @@ import (
 )
 
 const (
-	Rank1 Rank = iota + 1
+	RankNull Rank = iota
+
+	Rank1
 	Rank2
 	Rank3
 	Rank4
@@ -34,6 +36,10 @@ const RegexpRank = "(1[0-6]|[1-9])"
 // Rank представляет горизонталь на шахматной доске.
 // Принимает значения от 1 до 16.
 type Rank int8
+
+func (r Rank) IsNull() bool {
+	return r == RankNull
+}
 
 func (r Rank) Validate() error {
 	return validation.Errors{

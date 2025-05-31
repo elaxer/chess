@@ -25,11 +25,11 @@ func TestValidatePromotion(t *testing.T) {
 			"valid",
 			args{
 				&move.Promotion{
-					Normal:           &move.Normal{To: FromNotation("d8")},
+					Normal:           &move.Normal{To: FromString("d8")},
 					NewPieceNotation: piece.NotationQueen,
 				},
 				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewPawn(SideWhite), Position: FromNotation("d7")},
+					{Piece: piece.NewPawn(SideWhite), Position: FromString("d7")},
 				}),
 			},
 			false,
@@ -38,13 +38,13 @@ func TestValidatePromotion(t *testing.T) {
 			"concurrent_pawns",
 			args{
 				&move.Promotion{
-					Normal:           &move.Normal{From: Position{File: FileA}, To: FromNotation("b1")},
+					Normal:           &move.Normal{From: Position{File: FileA}, To: FromString("b1")},
 					NewPieceNotation: piece.NotationQueen,
 				},
 				standardtest.NewEmpty(SideBlack, []standardtest.Placement{
-					{Piece: piece.NewPawn(SideBlack), Position: FromNotation("a2")},
-					{Piece: piece.NewPawn(SideBlack), Position: FromNotation("c2")},
-					{Piece: piece.NewKnight(SideWhite), Position: FromNotation("b1")},
+					{Piece: piece.NewPawn(SideBlack), Position: FromString("a2")},
+					{Piece: piece.NewPawn(SideBlack), Position: FromString("c2")},
+					{Piece: piece.NewKnight(SideWhite), Position: FromString("b1")},
 				}),
 			},
 			false,

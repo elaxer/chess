@@ -17,7 +17,7 @@ var (
 )
 
 func MakeMove(move chess.Move, board chess.Board) (chess.Move, error) {
-	return makeMoveFromNotation(move.Notation(), board)
+	return makeMoveFromNotation(move.String(), board)
 }
 
 // todo

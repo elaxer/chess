@@ -26,8 +26,8 @@ func NewEmpty(turn chess.Side, placements []Placement) chess.Board {
 	return board
 }
 
-func NewFromMoves(notations []string) chess.Board {
-	board, err := board.NewFactory().CreateFromMoves(NotationsToMoves(notations))
+func MustNewFromMoves(moveStrings []string) chess.Board {
+	board, err := NewFromMoves(moveStrings)
 	if err != nil {
 		panic(err)
 	}
@@ -35,13 +35,12 @@ func NewFromMoves(notations []string) chess.Board {
 	return board
 }
 
-func NotationsToMoves(notations []string) []chess.Move {
-	moves := make([]chess.Move, 0, len(notations))
-	for _, notation := range notations {
+func NewFromMoves(moveStrings []string) (chess.Board, error) {
+	moves := make([]chess.Move, 0, len(moveStrings))
+	for _, notation := range moveStrings {
 		moves = append(moves, chess.RawMove(notation))
 	}
-
-	return moves
+	return board.NewFactory().CreateFromMoves(moves)
 }
 
 func ResolveNormal(move *move.Normal, board chess.Board) {

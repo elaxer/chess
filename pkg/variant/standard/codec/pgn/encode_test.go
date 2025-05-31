@@ -7,7 +7,7 @@ import (
 )
 
 func TestEncode(t *testing.T) {
-	board := standardtest.NewFromMoves([]string{
+	board := standardtest.MustNewFromMoves([]string{
 		"e4", "c6",
 		"d4", "d5",
 		"e5", "Bf5",
