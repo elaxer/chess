@@ -60,16 +60,16 @@ func TestEncode(t *testing.T) {
 		"Qxc6", "Rd6",
 	})
 
-	pgn := Encode(board, map[string]string{
-		"Event":       "Saint Louis Rapid 2017",
-		"Site":        "Saint Louis USA",
-		"Date":        "2017.08.14",
-		"Round":       "?",
-		"White":       "Garry Kasparov",
-		"Black":       "Navara, David",
-		"Result":      "*",
-		"TimeControl": "",
-		"Link":        "https://www.chess.com/games/view/14842105",
+	pgn := Encode(board, []Header{
+		NewHeader("Event", "Saint Louis Rapid 2017"),
+		NewHeader("Site", "Saint Louis USA"),
+		NewHeader("Date", "2017.08.14"),
+		NewHeader("Round", "?"),
+		NewHeader("White", "Garry Kasparov"),
+		NewHeader("Black", "Navara, David"),
+		NewHeader("Result", "*"),
+		NewHeader("TimeControl", ""),
+		NewHeader("Link", "https://www.chess.com/games/view/14842105"),
 	})
 	expectedPGN := `[Event "Saint Louis Rapid 2017"]
 [Site "Saint Louis USA"]
@@ -89,6 +89,7 @@ Rxc8+ Rxc8 28. Kc3 a5 29. Ra6 Rb8 30. Rxa5 Rb1 31. c5 Re1 32. Ra8+ Ke7 33. Ra7+
 Ke8 34. Nd3 Re3 35. Kd2 Rh3 36. c6 Rxh2+ 37. Ke3 Rc2 38. e6 h3 39. Nb4 f4+ 40.
 Kd4 h2 41. Ra8+ Ke7 42. Rh8 Rd2+ 43. Kc5 Be4 44. c7 Bb7 45. Kb6 Bc8 46. Rxc8
 h1=Q 47. Re8+ Kxe8 48. c8=Q+ Ke7 49. Nc6+ Qxc6+ 50. Qxc6 Rd6 *`
+
 	if pgn != expectedPGN {
 		t.Errorf("Unexpected PGN:\n%s", pgn)
 	}

@@ -78,16 +78,16 @@ func (b *board) LegalMoves(p chess.Piece) position.Set {
 	return legalMoves
 }
 
-func (b *board) MakeMove(move chess.Move) error {
-	modifiedMove, err := mover.MakeMove(move, b)
+func (b *board) MakeMove(move chess.Move) (chess.MoveResult, error) {
+	moveResult, err := mover.MakeMove(move, b)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	b.movesHistory = append(b.movesHistory, modifiedMove)
+	b.movesHistory = append(b.movesHistory, moveResult)
 	b.turn = !b.turn
 
-	return nil
+	return moveResult, nil
 }
 
 func (b *board) MarshalJSON() ([]byte, error) {

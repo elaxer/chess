@@ -38,6 +38,7 @@ func NewFromMoves(moveStrings []string) (chess.Board, error) {
 	for _, notation := range moveStrings {
 		moves = append(moves, chess.StringMove(notation))
 	}
+
 	return board.NewFactory().CreateFromMoves(moves)
 }
 

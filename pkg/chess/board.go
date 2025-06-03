@@ -6,10 +6,10 @@ type Board interface {
 	Squares() *Squares
 	Turn() Side
 	State(side Side) State
-	MovesHistory() []MoveResult // []MoveResult
+	MovesHistory() []MoveResult
 	Moves(side Side) position.Set
 	LegalMoves(piece Piece) position.Set
-	MakeMove(move Move) error // MoveResult
+	MakeMove(move Move) (MoveResult, error) // MoveResult
 	// UndoLastMove(move MoveResult) error
 }
 

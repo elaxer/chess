@@ -64,7 +64,7 @@ func (f *factory) CreateFilled() chess.Board {
 func (f *factory) CreateFromMoves(moves []chess.Move) (chess.Board, error) {
 	board := f.CreateFilled()
 	for i, move := range moves {
-		if err := board.MakeMove(move); err != nil {
+		if _, err := board.MakeMove(move); err != nil {
 			return nil, fmt.Errorf("%s#%d: %w", move, i+1, err)
 		}
 	}

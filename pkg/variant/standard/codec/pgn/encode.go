@@ -2,29 +2,69 @@ package pgn
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/elaxer/chess/pkg/chess"
 )
 
-func Encode(board chess.Board, tags map[string]string) string {
-	pgn := ""
-	for tag, value := range tags {
-		pgn += fmt.Sprintf("[%s \"%s\"]\n", tag, value)
+func Encode(board chess.Board, headers []Header) string {
+	var pgn strings.Builder
+	fmt.Fprintln(&pgn, EncodeHeaders(headers))
+
+	movesStr := wrapText(EncodeMoves(board.MovesHistory()), 79)
+	fmt.Fprint(&pgn, movesStr)
+
+	return pgn.String() + " " + result(board)
+}
+
+func EncodeHeaders(headers []Header) string {
+	var str strings.Builder
+	for _, header := range headers {
+		fmt.Fprintln(&str, header)
 	}
 
-	pgn += "\n"
+	return str.String()
+}
 
+func EncodeMoves(moves []chess.MoveResult) string {
+	var str strings.Builder
 	currentMoveNumber := 0
-	for i, move := range board.MovesHistory() {
+	for i, move := range moves {
 		if moveNumber := (i + 2) / 2; moveNumber != currentMoveNumber {
 			currentMoveNumber = moveNumber
-			pgn += fmt.Sprintf("%d. ", currentMoveNumber)
+			fmt.Fprintf(&str, "%d. ", currentMoveNumber)
 		}
 
-		pgn += fmt.Sprintf("%s ", move)
+		fmt.Fprintf(&str, "%s ", move)
 	}
 
-	return pgn + result(board)
+	return str.String()
+}
+
+func wrapText(text string, maxWidth int) string {
+	if maxWidth <= 0 {
+		return text
+	}
+
+	var result strings.Builder
+	var lineLen int
+
+	words := strings.Fields(text)
+
+	for i, word := range words {
+		if lineLen+len(word) > maxWidth {
+			result.WriteString("\n")
+			lineLen = 0
+		} else if i != 0 {
+			result.WriteString(" ")
+			lineLen++
+		}
+
+		result.WriteString(word)
+		lineLen += len(word)
+	}
+
+	return result.String()
 }
 
 func result(board chess.Board) string {
