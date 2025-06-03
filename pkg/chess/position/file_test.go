@@ -35,18 +35,13 @@ func TestNewFile(t *testing.T) {
 		{
 			"x",
 			args{"x"},
-			File(0),
+			FileNull,
 			true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := NewFile(tt.args.str)
-			if err := got.Validate(); (err != nil) != tt.wantErr {
-				t.Errorf("NewFile() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
+			if got := NewFile(tt.args.str); got != tt.want {
 				t.Errorf("NewFile() got = %v, wantErr %v", got, tt.want)
 			}
 		})
@@ -65,13 +60,13 @@ func TestFile_Validate(t *testing.T) {
 			false,
 		},
 		{
-			"less_than_min",
-			FileMin - 1,
-			true,
+			"null",
+			FileNull,
+			false,
 		},
 		{
 			"bigger_than_max",
-			FileMax + 1,
+			FileMax + 5,
 			true,
 		},
 	}
@@ -102,7 +97,7 @@ func TestFile_String(t *testing.T) {
 		},
 		{
 			"bigger_than_max",
-			FileMax + 1,
+			FileMax + 5,
 			"",
 		},
 	}

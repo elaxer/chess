@@ -19,7 +19,7 @@ type Squares struct {
 }
 
 func NewSquares(edgePosition position.Position) *Squares {
-	if !edgePosition.IsInRange(MaxEdgePosition) {
+	if !edgePosition.IsBoundaries(MaxEdgePosition) {
 		panic("cannot create squares with size greater than max size")
 	}
 
@@ -73,7 +73,7 @@ func (s *Squares) IterByRows(backward bool) iter.Seq2[position.Rank, iter.Seq2[p
 func (s *Squares) IterByDirection(from, direction position.Position) iter.Seq2[position.Position, Piece] {
 	return func(yield func(position position.Position, piece Piece) bool) {
 		position := position.New(from.File+direction.File, from.Rank+direction.Rank)
-		for position.IsInRange(s.edgePosition) {
+		for position.IsBoundaries(s.edgePosition) {
 			if !yield(position, s.rows[position.Rank-1][position.File-1]) {
 				return
 			}
@@ -84,11 +84,11 @@ func (s *Squares) IterByDirection(from, direction position.Position) iter.Seq2[p
 	}
 }
 
-// GetByPosition возвращает клетку по ее позиции.
+// FindByPosition возвращает клетку по ее позиции.
 // Если клетка не найдена, возвращает nil.
 // Позиция должна быть в пределах доски.
-func (s *Squares) GetByPosition(position position.Position) (Piece, error) {
-	if !position.IsInRange(s.edgePosition) {
+func (s *Squares) FindByPosition(position position.Position) (Piece, error) {
+	if !position.IsBoundaries(s.edgePosition) {
 		return nil, fmt.Errorf("%w (%s)", ErrSquareOutOfRange, position)
 	}
 
@@ -106,7 +106,7 @@ func (s *Squares) GetByPiece(piece Piece) position.Position {
 		}
 	}
 
-	return position.NewNull()
+	return position.NewEmpty()
 }
 
 // GetAllPieces возвращает все фигуры для данной стороны.
@@ -139,19 +139,19 @@ func (s *Squares) GetPieces(notation string, side Side) []Piece {
 	return pieces
 }
 
-// GetPiece возвращает одну фигуру определенного типа для указанной стороны и его позицию.
+// FindPiece возвращает одну фигуру определенного типа для указанной стороны и его позицию.
 // Если фигура не найдена, вернет nil.
-func (s *Squares) GetPiece(notation string, side Side) (Piece, position.Position) {
+func (s *Squares) FindPiece(notation string, side Side) (Piece, position.Position) {
 	pieces := s.GetPieces(notation, side)
 	if len(pieces) == 0 {
-		return nil, position.NewNull()
+		return nil, position.NewEmpty()
 	}
 
 	return pieces[0], s.GetByPiece(pieces[0])
 }
 
 func (s *Squares) MovePiece(from, to position.Position) (capturedPiece Piece, err error) {
-	if !from.IsInRange(s.edgePosition) || !to.IsInRange(s.edgePosition) {
+	if !from.IsBoundaries(s.edgePosition) || !to.IsBoundaries(s.edgePosition) {
 		return nil, ErrSquareOutOfRange
 	}
 
@@ -162,7 +162,7 @@ func (s *Squares) MovePiece(from, to position.Position) (capturedPiece Piece, er
 }
 
 func (s *Squares) MovePieceTemporarily(from, to position.Position, callback func()) error {
-	if !from.IsInRange(s.edgePosition) || !to.IsInRange(s.edgePosition) {
+	if !from.IsBoundaries(s.edgePosition) || !to.IsBoundaries(s.edgePosition) {
 		return ErrSquareOutOfRange
 	}
 
@@ -182,7 +182,7 @@ func (s *Squares) MovePieceTemporarily(from, to position.Position, callback func
 
 // PlacePiece устанавливает фигуру на клетку по заданной позиции.
 func (s *Squares) PlacePiece(piece Piece, position position.Position) error {
-	if !position.IsInRange(s.edgePosition) {
+	if !position.IsBoundaries(s.edgePosition) {
 		return ErrSquareOutOfRange
 	}
 

@@ -40,7 +40,7 @@ func (k *King) PseudoMoves(from position.Position, squares *chess.Squares) posit
 			continue
 		}
 
-		if piece, err := squares.GetByPosition(move); err == nil && k.canMove(piece, k.side) {
+		if piece, err := squares.FindByPosition(move); err == nil && k.canMove(piece, k.side) {
 			moves.Add(move)
 		}
 	}

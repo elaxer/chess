@@ -31,8 +31,6 @@ const (
 	RankMax = Rank16
 )
 
-const RegexpRank = "(1[0-6]|[1-9])"
-
 // Rank представляет горизонталь на шахматной доске.
 // Принимает значения от 1 до 16.
 type Rank int8
@@ -43,12 +41,12 @@ func (r Rank) IsNull() bool {
 
 func (r Rank) Validate() error {
 	return validation.Errors{
-		"rank": validation.Validate(int8(r), validation.Required, validation.Min(int8(RankMin)), validation.Max(int8(RankMax))),
+		"rank": validation.Validate(int8(r), validation.Min(int8(RankNull)), validation.Max(int8(RankMax))),
 	}.Filter()
 }
 
 func (r Rank) String() string {
-	if r.Validate() != nil {
+	if r == RankNull || r.Validate() != nil {
 		return ""
 	}
 

@@ -1,23 +1,24 @@
 package move
 
 import (
-	"github.com/elaxer/chess/pkg/chess"
+	"fmt"
+
 	"github.com/elaxer/chess/pkg/chess/position"
-	"github.com/elaxer/chess/pkg/variant/standard/piece"
+	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 type EnPassant struct {
-	*Normal
+	Piece
 }
 
-func NewEnPassant(from, to position.Position, capturedPiece chess.Piece) *EnPassant {
-	return &EnPassant{
-		Normal: &Normal{
-			PieceNotation: piece.NotationPawn,
-			From:          from,
-			To:            to,
-			IsCapture:     true,
-			CapturedPiece: capturedPiece,
-		},
-	}
+func NewEnPassant(from, to position.Position) *EnPassant {
+	return &EnPassant{NewPiece(from, to)}
+}
+
+func (m *EnPassant) Validate() error {
+	return validation.ValidateStruct(m, validation.Field(&m.Piece))
+}
+
+func (m *EnPassant) String() string {
+	return fmt.Sprintf("%s%s", m.From, m.To)
 }

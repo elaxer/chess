@@ -54,7 +54,7 @@ func (p *Pawn) movesForward(from position.Position, direction position.Rank, squ
 		position.New(from.File, from.Rank+direction*2),
 	}
 	for i, move := range positions {
-		piece, err := squares.GetByPosition(move)
+		piece, err := squares.FindByPosition(move)
 		if (err != nil || piece != nil) || (i == 1 && p.isMoved) {
 			break
 		}
@@ -75,7 +75,7 @@ func (p *Pawn) movesDiagonal(from position.Position, direction position.Rank, sq
 		position.New(from.File-1, from.Rank+direction),
 	}
 	for _, move := range positions {
-		piece, err := squares.GetByPosition(move)
+		piece, err := squares.FindByPosition(move)
 		if err == nil && piece != nil && piece.Side() != p.side {
 			moves.Add(move)
 		}

@@ -25,7 +25,7 @@ func TestSquares_GetByPosition(t *testing.T) {
 	king := &mockPiece{"K", SideWhite}
 
 	squares.rows[3][0] = king
-	p, err := squares.GetByPosition(position.FromString("a4"))
+	p, err := squares.FindByPosition(position.FromString("a4"))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -50,10 +50,10 @@ func TestSquares_MovePiece(t *testing.T) {
 	if capturedPiece == nil || capturedPiece != knight {
 		t.Fatalf("expected %s, got %v", knight, capturedPiece)
 	}
-	if piece, _ := squares.GetByPosition(position.FromString("e1")); piece != nil {
+	if piece, _ := squares.FindByPosition(position.FromString("e1")); piece != nil {
 		t.Errorf("expected nil, got %v", piece)
 	}
-	if piece, _ := squares.GetByPosition(position.FromString("e2")); piece != king {
+	if piece, _ := squares.FindByPosition(position.FromString("e2")); piece != king {
 		t.Errorf("expected %s, got %v", king, piece)
 	}
 }
@@ -65,18 +65,18 @@ func TestSquares_MovePieceTemporarily(t *testing.T) {
 	squares.PlacePiece(queen, position.FromString("b4"))
 
 	squares.MovePieceTemporarily(position.FromString("b4"), position.FromString("f8"), func() {
-		if piece, _ := squares.GetByPosition(position.FromString("b4")); piece != nil {
+		if piece, _ := squares.FindByPosition(position.FromString("b4")); piece != nil {
 			t.Errorf("expected nil, got %v", piece)
 		}
-		if piece, _ := squares.GetByPosition(position.FromString("f8")); piece != queen {
+		if piece, _ := squares.FindByPosition(position.FromString("f8")); piece != queen {
 			t.Errorf("expected %s, got %v", queen, piece)
 		}
 	})
 
-	if piece, _ := squares.GetByPosition(position.FromString("b4")); piece != queen {
+	if piece, _ := squares.FindByPosition(position.FromString("b4")); piece != queen {
 		t.Errorf("expected %s, got %v", queen, piece)
 	}
-	if piece, _ := squares.GetByPosition(position.FromString("f8")); piece != nil {
+	if piece, _ := squares.FindByPosition(position.FromString("f8")); piece != nil {
 		t.Errorf("expected nil, got %v", piece)
 	}
 }

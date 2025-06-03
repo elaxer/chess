@@ -44,7 +44,7 @@ type File int8
 // NewFile создает новый объект File из символа, представляющего вертикаль.
 func NewFile(char string) File {
 	if char == "" {
-		return File(0)
+		return FileNull
 	}
 
 	idx := strings.Index(files, strings.ToLower(char))
@@ -58,12 +58,12 @@ func (f File) IsNull() bool {
 
 func (f File) Validate() error {
 	return validation.Errors{
-		"file": validation.Validate(int8(f), validation.Required, validation.Min(int8(FileMin)), validation.Max(int8(FileMax))),
+		"file": validation.Validate(int8(f), validation.Min(int8(FileNull)), validation.Max(int8(FileMax))),
 	}.Filter()
 }
 
 func (f File) String() string {
-	if f.Validate() != nil {
+	if f == FileNull || f.Validate() != nil {
 		return ""
 	}
 

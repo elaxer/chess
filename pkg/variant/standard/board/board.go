@@ -12,13 +12,15 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/state/rule"
 )
 
+var edgePosition = position.New(position.FileH, position.Rank8)
+
 // board - эта структура описывает шахматную доску и ее состояние.
 // Реализует логику стандартных шахмат.
 // Реализует интерфейс board из пакета chess.
 type board struct {
 	turn           chess.Side
 	squares        *chess.Squares
-	movesHistory   []chess.Move
+	movesHistory   []chess.MoveResult
 	capturedPieces []chess.Piece
 
 	stateRules []rule.Rule
@@ -42,7 +44,7 @@ func (b *board) State(side chess.Side) chess.State {
 	return chess.StateClear
 }
 
-func (b *board) MovesHistory() []chess.Move {
+func (b *board) MovesHistory() []chess.MoveResult {
 	return b.movesHistory
 }
 
@@ -66,7 +68,7 @@ func (b *board) LegalMoves(p chess.Piece) position.Set {
 	legalMoves := mapset.NewSetWithSize[position.Position](pseudoMoves.Cardinality())
 	for to := range pseudoMoves.Iter() {
 		b.squares.MovePieceTemporarily(from, to, func() {
-			_, kingPosition := b.squares.GetPiece(piece.NotationKing, b.turn)
+			_, kingPosition := b.squares.FindPiece(piece.NotationKing, b.turn)
 			if !b.Moves(!b.turn).ContainsOne(kingPosition) {
 				legalMoves.Add(to)
 			}

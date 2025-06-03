@@ -1,39 +1,44 @@
 package move
 
 import (
-	"fmt"
 	"regexp"
 
 	"github.com/elaxer/chess/pkg/rgx"
 )
 
-var regexpCastling = regexp.MustCompile(fmt.Sprintf("^[0Oo]-[0Oo](?P<long>-[0Oo])?%s?$", RegexpSuffix))
+var RegexpCastling = regexp.MustCompile("^[0Oo]-[0Oo](?P<long>-[0Oo])?[#+]?$")
 
-type Castling struct {
-	abstract
-	CastlingType
-}
+type Castling bool
 
-func NewCastling(castlingType CastlingType) *Castling {
-	return &Castling{CastlingType: castlingType}
-}
+const (
+	CastlingShort Castling = true
+	CastlingLong  Castling = false
+)
 
-func CastlingFromNotation(notation string) (*Castling, error) {
-	result, err := rgx.Group(regexpCastling, notation)
+func CastlingFromString(str string) (Castling, error) {
+	result, err := rgx.Group(RegexpCastling, str)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 
-	return &Castling{
-		abstract:     abstractFromNotation(result["suffix"]),
-		CastlingType: result["long"] == "",
-	}, nil
+	return Castling(result["long"] == ""), nil
 }
 
-func (m *Castling) Validate() error {
+func (m Castling) Validate() error {
 	return nil
 }
 
-func (m *Castling) String() string {
-	return m.CastlingType.String() + m.abstract.String()
+func (m Castling) IsShort() bool {
+	return m == CastlingShort
+}
+
+func (m Castling) IsLong() bool {
+	return m == CastlingLong
+}
+
+func (m Castling) String() string {
+	return map[Castling]string{
+		CastlingShort: "O-O",
+		CastlingLong:  "O-O-O",
+	}[m]
 }

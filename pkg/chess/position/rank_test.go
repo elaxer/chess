@@ -14,13 +14,13 @@ func TestRank_Validate(t *testing.T) {
 			false,
 		},
 		{
-			"less_than_min",
-			Rank(RankMin - 1),
-			true,
+			"null",
+			RankNull,
+			false,
 		},
 		{
 			"bigger_than_max",
-			Rank(RankMax + 1),
+			RankMax + 1,
 			true,
 		},
 	}

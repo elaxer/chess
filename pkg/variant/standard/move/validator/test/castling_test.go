@@ -4,11 +4,10 @@ import (
 	"testing"
 
 	. "github.com/elaxer/chess/pkg/chess"
+	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
 	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
 	"github.com/elaxer/chess/pkg/variant/standardtest"
-
-	. "github.com/elaxer/chess/pkg/chess/position"
 )
 
 // todo добавить тесты с новым параметром Side
@@ -17,7 +16,7 @@ func TestValidateCastling(t *testing.T) {
 		board Board
 	}
 	type args struct {
-		castling move.CastlingType
+		castling move.Castling
 	}
 	tests := []struct {
 		name    string
@@ -29,11 +28,11 @@ func TestValidateCastling(t *testing.T) {
 			"short",
 			fields{
 				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: FromString("e1")},
-					{Piece: standardtest.NewPiece("Q"), Position: FromString("g8")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("h1")},
-					{Piece: standardtest.NewPiece("r"), Position: FromString("b6")},
+					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
+					{Piece: standardtest.NewPiece("Q"), Position: position.FromString("g8")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
+					{Piece: standardtest.NewPiece("r"), Position: position.FromString("b6")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -43,10 +42,10 @@ func TestValidateCastling(t *testing.T) {
 			"long",
 			fields{
 				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("h1")},
-					{Piece: standardtest.NewPiece("r"), Position: FromString("g6")},
+					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
+					{Piece: standardtest.NewPiece("r"), Position: position.FromString("g6")},
 				}),
 			},
 			args{move.CastlingLong},
@@ -56,9 +55,9 @@ func TestValidateCastling(t *testing.T) {
 			"king_is_walked",
 			fields{
 				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPieceW("K"), Position: FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("h1")},
+					{Piece: standardtest.NewPieceW("K"), Position: position.FromString("e1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -68,9 +67,9 @@ func TestValidateCastling(t *testing.T) {
 			"rook_is_walked",
 			fields{
 				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("a1")},
-					{Piece: standardtest.NewPieceW("R"), Position: FromString("h1")},
+					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
+					{Piece: standardtest.NewPieceW("R"), Position: position.FromString("h1")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -80,10 +79,10 @@ func TestValidateCastling(t *testing.T) {
 			"let",
 			fields{
 				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("a1")},
-					{Piece: standardtest.NewPiece("N"), Position: FromString("g1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("h1")},
+					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
+					{Piece: standardtest.NewPiece("N"), Position: position.FromString("g1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -93,10 +92,10 @@ func TestValidateCastling(t *testing.T) {
 			"obstacle",
 			fields{
 				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("h1")},
-					{Piece: standardtest.NewPiece("n"), Position: FromString("g1")},
+					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
+					{Piece: standardtest.NewPiece("n"), Position: position.FromString("g1")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -106,10 +105,10 @@ func TestValidateCastling(t *testing.T) {
 			"future_check",
 			fields{
 				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("h1")},
-					{Piece: standardtest.NewPiece("r"), Position: FromString("g8")},
+					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
+					{Piece: standardtest.NewPiece("r"), Position: position.FromString("g8")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -119,10 +118,10 @@ func TestValidateCastling(t *testing.T) {
 			"attacked_castling_square",
 			fields{
 				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: FromString("h1")},
-					{Piece: standardtest.NewPiece("r"), Position: FromString("f8")},
+					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
+					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
+					{Piece: standardtest.NewPiece("r"), Position: position.FromString("f8")},
 				}),
 			},
 			args{move.CastlingShort},
@@ -132,7 +131,8 @@ func TestValidateCastling(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := validator.ValidateCastling(tt.args.castling, tt.fields.board.Turn(), tt.fields.board, true); (err != nil) != tt.wantErr {
+			err := validator.ValidateCastlingMove(tt.args.castling, tt.fields.board.Turn(), tt.fields.board, true)
+			if (err != nil) != tt.wantErr {
 				t.Errorf("ValidateCastling() = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

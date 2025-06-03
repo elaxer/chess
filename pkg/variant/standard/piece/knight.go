@@ -35,7 +35,7 @@ func (k *Knight) PseudoMoves(from position.Position, squares *chess.Squares) pos
 
 	moves := mapset.NewSetWithSize[position.Position](len(positions))
 	for _, move := range positions {
-		if piece, err := squares.GetByPosition(move); err == nil && k.canMove(piece, k.side) {
+		if piece, err := squares.FindByPosition(move); err == nil && k.canMove(piece, k.side) {
 			moves.Add(move)
 		}
 	}

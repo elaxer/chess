@@ -4,8 +4,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess"
 
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
-	"github.com/elaxer/chess/pkg/variant/standard/move/resolver"
-	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
+	"github.com/elaxer/chess/pkg/variant/standard/move/result"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
@@ -14,38 +13,22 @@ import (
 type Promotion struct {
 }
 
-func (m *Promotion) Make(move *move.Promotion, board chess.Board) (chess.Move, error) {
-	var err error
-	moveCopy := *move
-	normalCopy := *move.Normal
-	moveCopy.Normal = &normalCopy
+func (m *Promotion) Make(promotion *move.Promotion, board chess.Board) (*result.Promotion, error) {
+	if err := promotion.Validate(); err != nil {
+		return nil, err
+	}
 
-	moveCopy.Normal.From, err = resolver.ResolveFrom(moveCopy.Normal, board, board.Turn())
+	pieceResult, err := movePiece(promotion.Piece, piece.NotationPawn, board)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := validator.ValidatePromotion(&moveCopy, board); err != nil {
-		return nil, err
-	}
+	promotedPiece := piece.New(promotion.PromotedPieceNotation, board.Turn())
+	promotedPiece.MarkMoved()
 
-	unresolvedFrom, err := resolver.UnresolveFrom(moveCopy.Normal, board)
-	if err != nil {
-		return nil, err
-	}
+	board.Squares().PlacePiece(promotedPiece, promotion.To)
 
-	capturedPiece, err := board.Squares().MovePiece(moveCopy.From, moveCopy.To)
-	if err != nil {
-		return nil, err
-	}
+	pieceResult.Abstract = newAbstractResult(board)
 
-	piece := piece.New(moveCopy.NewPieceNotation, board.Turn())
-	piece.MarkMoved()
-
-	board.Squares().PlacePiece(piece, moveCopy.To)
-
-	modifyNormal(moveCopy.Normal, capturedPiece, board)
-	moveCopy.From = unresolvedFrom
-
-	return move, nil
+	return &result.Promotion{Piece: pieceResult, InputMove: *promotion}, nil
 }

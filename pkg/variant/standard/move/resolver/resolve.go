@@ -12,24 +12,23 @@ import (
 var Err = errors.New("resolving error")
 
 // ResolveFrom определяет стартовую позицию фигуры, которая будет ходить.
-// from - данные о стартовой позиции фигуры. Они могут быть заполнены не полностью.
-func ResolveFrom(move *move.Normal, board chess.Board, turn chess.Side) (position.Position, error) {
-	if move.From.Validate() == nil {
+func ResolveFrom(move move.Piece, pieceNotation string, board chess.Board, turn chess.Side) (position.Position, error) {
+	if move.From.IsFull() {
 		return move.From, nil
 	}
-	if err := move.To.Validate(); err != nil {
-		return position.NewNull(), err
+	if err := move.Validate(); err != nil {
+		return position.NewEmpty(), err
 	}
 
 	pieces := make([]chess.Piece, 0, 8)
-	for _, piece := range board.Squares().GetPieces(move.PieceNotation, turn) {
+	for _, piece := range board.Squares().GetPieces(pieceNotation, turn) {
 		if board.LegalMoves(piece).ContainsOne(move.To) {
 			pieces = append(pieces, piece)
 		}
 	}
 
 	if len(pieces) == 0 {
-		return position.NewNull(), fmt.Errorf("%w: no moves found", Err)
+		return position.NewEmpty(), fmt.Errorf("%w: no moves found", Err)
 	}
 	if len(pieces) == 1 {
 		return board.Squares().GetByPiece(pieces[0]), nil
@@ -38,10 +37,10 @@ func ResolveFrom(move *move.Normal, board chess.Board, turn chess.Side) (positio
 	resolvedFrom := move.From
 	for _, piece := range pieces {
 		pos := board.Squares().GetByPiece(piece)
-		if move.From.Rank == 0 && pos.File == move.From.File {
+		if move.From.Rank.IsNull() && pos.File == move.From.File {
 			resolvedFrom.Rank = pos.Rank
 		}
-		if move.From.File == 0 && pos.Rank == move.From.Rank {
+		if move.From.File.IsNull() && pos.Rank == move.From.Rank {
 			resolvedFrom.File = pos.File
 		}
 	}

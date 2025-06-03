@@ -12,8 +12,8 @@ import (
 
 var ErrCastling = fmt.Errorf("%w: castling validation error", Err)
 
-func ValidateCastling(castlingType move.CastlingType, side chess.Side, board chess.Board, validateObstacle bool) error {
-	king, kingPosition := board.Squares().GetPiece(piece.NotationKing, side)
+func ValidateCastlingMove(castlingType move.Castling, side chess.Side, board chess.Board, validateObstacle bool) error {
+	king, kingPosition := board.Squares().FindPiece(piece.NotationKing, side)
 	if king == nil {
 		return fmt.Errorf("%w: the king wasn't found", ErrCastling)
 	}
@@ -24,7 +24,7 @@ func ValidateCastling(castlingType move.CastlingType, side chess.Side, board che
 		return fmt.Errorf("%w: the king is under threat", ErrCastling)
 	}
 
-	rook, err := board.Squares().GetByPosition(castlingRookPosition(castlingType, kingPosition.Rank))
+	rook, err := board.Squares().FindByPosition(castlingRookPosition(castlingType, kingPosition.Rank))
 	if err != nil {
 		return err
 	}
@@ -64,15 +64,15 @@ func castlingValidateObstacle(direction position.File, squares *chess.Squares, k
 	return nil
 }
 
-func fileDirection(castlingType move.CastlingType) position.File {
-	return map[move.CastlingType]position.File{
+func fileDirection(castlingType move.Castling) position.File {
+	return map[move.Castling]position.File{
 		move.CastlingShort: 1,
 		move.CastlingLong:  -1,
 	}[castlingType]
 }
 
-func castlingRookPosition(castlingType move.CastlingType, rank position.Rank) position.Position {
-	return map[move.CastlingType]position.Position{
+func castlingRookPosition(castlingType move.Castling, rank position.Rank) position.Position {
+	return map[move.Castling]position.Position{
 		move.CastlingShort: position.New(position.FileH, rank),
 		move.CastlingLong:  position.New(position.FileA, rank),
 	}[castlingType]

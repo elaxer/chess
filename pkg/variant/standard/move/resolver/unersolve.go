@@ -1,20 +1,28 @@
 package resolver
 
 import (
+	"fmt"
+
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
-	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
-func UnresolveFrom(move *move.Normal, board chess.Board) (position.Position, error) {
-	p, err := board.Squares().GetByPosition(move.From)
+func UnresolveFrom(move move.Piece, board chess.Board) (position.Position, error) {
+	if err := move.ValidateStrict(); err != nil {
+		return position.NewEmpty(), err
+	}
+
+	piece, err := board.Squares().FindByPosition(move.From)
 	if err != nil {
-		return move.From, err
+		return position.NewEmpty(), err
+	}
+	if piece == nil {
+		return position.NewEmpty(), fmt.Errorf("%w: piece not found", Err)
 	}
 
 	hasSamePiece, hasSameFile, hasSameRank := false, false, false
-	for _, samePiece := range board.Squares().GetPieces(p.Notation(), p.Side()) {
+	for _, samePiece := range board.Squares().GetPieces(piece.Notation(), piece.Side()) {
 		samePiecePosition := board.Squares().GetByPiece(samePiece)
 		if samePiecePosition == move.From || !board.LegalMoves(samePiece).ContainsOne(move.To) {
 			continue
@@ -28,8 +36,8 @@ func UnresolveFrom(move *move.Normal, board chess.Board) (position.Position, err
 		}
 	}
 
-	unresolvedFrom := position.NewNull()
-	if hasSameRank || (hasSamePiece && !hasSameFile) || (!hasSamePiece && p.Notation() == piece.NotationPawn && move.IsCapture) {
+	unresolvedFrom := position.NewEmpty()
+	if hasSameRank || (hasSamePiece && !hasSameFile) {
 		unresolvedFrom.File = move.From.File
 	}
 	if hasSameFile {

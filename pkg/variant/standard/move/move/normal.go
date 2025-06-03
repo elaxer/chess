@@ -4,47 +4,37 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/rgx"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
-var regexpNormal = regexp.MustCompile(fmt.Sprintf(
-	"^(?P<piece>[KQBNR])?%s?(?P<is_capture>x)?%s%s?$",
-	position.RegexpFrom,
-	position.RegexpTo,
-	RegexpSuffix,
-))
+var RegexpNormal = regexp.MustCompile("^(?P<piece>[KQBNR])?(?P<from>[a-p]?(1[0-6]|[1-9])?)x?(?P<to>[a-p](1[0-6]|[1-9]))[#+]?$")
 
 // Normal представляет обычный ход фигурой в шахматах.
 type Normal struct {
-	abstract
+	Piece
 	// PieceNotation обозначает фигуру, которая делает ход.
-	PieceNotation string
-	// From, To означают начальную и конечную позиции хода.
-	From, To position.Position
-	// IsCapture означает, было ли взятие фигуры противника в результате хода.
-	IsCapture     bool
-	CapturedPiece chess.Piece
+	PieceNotation string `json:"piece_notation"`
 }
 
-// NormalFromNotation создает новый ход из шахматной нотации.
-func NormalFromNotation(notation string) (*Normal, error) {
-	data, err := rgx.Group(regexpNormal, notation)
+func NewNormal(from, to position.Position, pieceNotation string) *Normal {
+	return &Normal{NewPiece(from, to), pieceNotation}
+}
+
+// NormalFromString создает новый ход из шахматной нотации.
+func NormalFromString(notation string) (*Normal, error) {
+	data, err := rgx.Group(RegexpNormal, notation)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Normal{
-		abstractFromNotation(data["suffix"]),
-		data["piece"],
+	return NewNormal(
 		position.FromString(data["from"]),
 		position.FromString(data["to"]),
-		data["is_capture"] != "",
-		nil,
-	}, nil
+		data["piece"],
+	), nil
 }
 
 func (m *Normal) Validate() error {
@@ -55,17 +45,12 @@ func (m *Normal) Validate() error {
 
 	return validation.ValidateStruct(
 		m,
+		validation.Field(&m.Piece),
 		validation.Field(&m.PieceNotation, validation.In(pieceNotations...)),
-		validation.Field(&m.From),
-		validation.Field(&m.To),
 	)
 }
 
+// todo if p.Notation() == piece.NotationPawn && move.IsCapture
 func (m *Normal) String() string {
-	capture := ""
-	if m.IsCapture {
-		capture = "x"
-	}
-
-	return fmt.Sprintf("%s%s%s%s%s", m.PieceNotation, m.From, capture, m.To, m.abstract)
+	return fmt.Sprintf("%s%s%s", m.PieceNotation, m.From, m.To)
 }

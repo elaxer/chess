@@ -2,79 +2,77 @@ package move
 
 import (
 	"testing"
-
-	"github.com/elaxer/chess/pkg/variant/standard/state/state"
 )
 
-func TestCastlingFromNotation(t *testing.T) {
+func TestCastlingFromString(t *testing.T) {
 	type args struct {
 		str string
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    string
+		want    Castling
 		wantErr bool
 	}{
 		{
 			"short",
 			args{"0-0"},
-			"0-0",
+			CastlingShort,
 			false,
 		},
 		{
 			"long",
 			args{"0-0-0"},
-			"0-0-0",
+			CastlingLong,
 			false,
 		},
 		{
 			"short_with_check",
 			args{"0-0+"},
-			"0-0+",
+			CastlingShort,
 			false,
 		},
 		{
 			"short_with_checkmate",
 			args{"0-0#"},
-			"0-0#",
+			CastlingShort,
 			false,
 		},
 		{
 			"long_with_check",
 			args{"0-0-0+"},
-			"0-0-0+",
+			CastlingLong,
 			false,
 		},
 		{
 			"long_with_checkmate",
 			args{"0-0-0#"},
-			"0-0-0#",
+			CastlingLong,
 			false,
 		},
 		{
 			"O character",
 			args{"O-O"},
-			"0-0",
+			CastlingShort,
 			false,
 		},
 		{
 			"All characters",
 			args{"O-o-0+"},
-			"0-0-0+",
+			CastlingLong,
 			false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := CastlingFromNotation(tt.args.str)
+			got, err := CastlingFromString(tt.args.str)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("CastlingFromNotation() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("CastlingFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
-			if !tt.wantErr && got.String() != tt.want {
-				t.Errorf("CastlingFromNotation().String() = %v, want %v", got, tt.want)
+			if !tt.wantErr && got != tt.want {
+				t.Errorf("CastlingFromString() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -82,7 +80,7 @@ func TestCastlingFromNotation(t *testing.T) {
 
 func TestCastling_String(t *testing.T) {
 	type fields struct {
-		move *Castling
+		move Castling
 	}
 	tests := []struct {
 		name   string
@@ -91,23 +89,13 @@ func TestCastling_String(t *testing.T) {
 	}{
 		{
 			"castling_short",
-			fields{NewCastling(CastlingShort)},
-			"0-0",
+			fields{(CastlingShort)},
+			"O-O",
 		},
 		{
 			"castling_long",
-			fields{NewCastling(CastlingLong)},
-			"0-0-0",
-		},
-		{
-			"castling_with_check",
-			fields{&Castling{abstract: abstract{NewBoardState: state.Check}, CastlingType: CastlingShort}},
-			"0-0+",
-		},
-		{
-			"castling_with_checkmate",
-			fields{&Castling{abstract: abstract{NewBoardState: state.Checkmate}, CastlingType: CastlingLong}},
-			"0-0-0#",
+			fields{(CastlingLong)},
+			"O-O-O",
 		},
 	}
 	for _, tt := range tests {

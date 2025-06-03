@@ -10,44 +10,41 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
-var regexpPromotion = regexp.MustCompile(fmt.Sprintf(
-	`^(?P<from_file>[a-p])?(?P<is_capture>x)?%s=(?P<piece>[QBNR])%s?$`,
-	position.RegexpTo,
-	RegexpSuffix,
-))
+var RegexpPromotion = regexp.MustCompile("(?P<from>[a-p]?(1[0-6]|[1-9])?)x?(?P<to>[a-p](1[0-6]|[1-9]))=(?P<promoted_piece>[QBNR])[#+]?$")
 
 // Promotion представляет ход с превращением пешки в другую фигуру.
 // В шахматной нотации он записывается как "e8=Q" или "e7=R+".
 type Promotion struct {
-	*Normal
-	NewPieceNotation string
+	Piece
+	PromotedPieceNotation string `json:"promoted_piece_notation"`
 }
 
-func PromotionFromNotation(notation string) (*Promotion, error) {
-	data, err := rgx.Group(regexpPromotion, notation)
+func NewPromotion(from, to position.Position, promotedPieceNotation string) *Promotion {
+	return &Promotion{
+		NewPiece(from, to),
+		promotedPieceNotation,
+	}
+}
+
+func PromotionFromString(notation string) (*Promotion, error) {
+	data, err := rgx.Group(RegexpPromotion, notation)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Promotion{
-		&Normal{
-			abstractFromNotation(data["suffix"]),
-			piece.NotationPawn,
-			position.FromString(data["from_file"]),
-			position.FromString(data["to"]),
-			data["is_capture"] != "",
-			nil,
-		},
-		data["piece"],
-	}, nil
+	return NewPromotion(
+		position.FromString(data["from"]),
+		position.FromString(data["to"]),
+		data["promoted_piece"],
+	), nil
 }
 
 func (m *Promotion) Validate() error {
 	return validation.ValidateStruct(
 		m,
-		validation.Field(&m.To, validation.Required),
+		validation.Field(&m.Piece),
 		validation.Field(
-			&m.NewPieceNotation,
+			&m.PromotedPieceNotation,
 			validation.Required,
 			validation.In(piece.NotationQueen, piece.NotationRook, piece.NotationBishop, piece.NotationKnight),
 		),
@@ -55,10 +52,5 @@ func (m *Promotion) Validate() error {
 }
 
 func (m *Promotion) String() string {
-	capture := ""
-	if m.IsCapture {
-		capture = "x"
-	}
-
-	return fmt.Sprintf("%s%s%s=%s%s", m.From, capture, m.To, m.NewPieceNotation, m.abstract)
+	return fmt.Sprintf("%s%s=%s", m.From, m.To, m.PromotedPieceNotation)
 }

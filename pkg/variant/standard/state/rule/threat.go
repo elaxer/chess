@@ -7,7 +7,7 @@ import (
 )
 
 func Check(board chess.Board, side chess.Side) chess.State {
-	_, kingPosition := board.Squares().GetPiece(piece.NotationKing, side)
+	_, kingPosition := board.Squares().FindPiece(piece.NotationKing, side)
 	if board.Moves(!side).ContainsOne(kingPosition) {
 		return state.Check
 	}

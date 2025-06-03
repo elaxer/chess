@@ -6,6 +6,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
+	"github.com/elaxer/chess/pkg/variant/standard/move/result"
 	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
@@ -15,14 +16,14 @@ import (
 type Castling struct {
 }
 
-func (m *Castling) Make(castlingType move.CastlingType, board chess.Board) (chess.Move, error) {
-	if err := validator.ValidateCastling(castlingType, board.Turn(), board, true); err != nil {
+func (m *Castling) Make(castlingType move.Castling, board chess.Board) (chess.MoveResult, error) {
+	if err := validator.ValidateCastlingMove(castlingType, board.Turn(), board, true); err != nil {
 		return nil, err
 	}
 
 	direction := fileDirection(castlingType)
 
-	_, kingPosition := board.Squares().GetPiece(piece.NotationKing, board.Turn())
+	_, kingPosition := board.Squares().FindPiece(piece.NotationKing, board.Turn())
 	rookPosition, _ := m.rookPosition(direction, board.Squares(), kingPosition)
 
 	rank := kingPosition.Rank
@@ -30,12 +31,10 @@ func (m *Castling) Make(castlingType move.CastlingType, board chess.Board) (ches
 	board.Squares().MovePiece(kingPosition, position.New(kingPosition.File+direction*2, rank))
 	board.Squares().MovePiece(rookPosition, position.New(kingPosition.File+direction, rank))
 
-	move := move.NewCastling(castlingType)
-	move.NewBoardState = board.State(!board.Turn())
-
-	return move, nil
+	return &result.Castling{Abstract: newAbstractResult(board), Castling: castlingType}, nil
 }
 
+// todo
 func (m *Castling) rookPosition(direction position.File, squares *chess.Squares, kingPosition position.Position) (position.Position, error) {
 	for position, p := range squares.IterByDirection(kingPosition, position.New(direction, 0)) {
 		if p != nil && p.Notation() == piece.NotationRook {
@@ -43,12 +42,12 @@ func (m *Castling) rookPosition(direction position.File, squares *chess.Squares,
 		}
 	}
 
-	return position.NewNull(), fmt.Errorf("%w: rook wasn't found", validator.ErrCastling)
+	return position.NewEmpty(), fmt.Errorf("%w: rook wasn't found", validator.ErrCastling)
 }
 
 // todo
-func fileDirection(castlingType move.CastlingType) position.File {
-	return map[move.CastlingType]position.File{
+func fileDirection(castlingType move.Castling) position.File {
+	return map[move.Castling]position.File{
 		move.CastlingShort: 1,
 		move.CastlingLong:  -1,
 	}[castlingType]

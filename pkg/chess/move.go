@@ -1,23 +1,31 @@
 package chess
 
-import "fmt"
+import (
+	"fmt"
+
+	validation "github.com/go-ozzo/ozzo-validation"
+)
 
 // Move это интерфейс, представляющий ход в шахматной игре.
 type Move interface {
 	fmt.Stringer
-	// Validate проверяет, корректны ли данные хода.
-	Validate() error
+	validation.Validatable
 }
 
-// RawMove это тип хода, который содержит нотацию.
+type MoveResult interface {
+	Move
+	Move() Move
+}
+
+// StringMove это тип хода, который содержит нотацию.
 // Это полезно использовать для совершения ходов, когда имеется только строка нотации.
 // Релазиует интерфейс Move
-type RawMove string
+type StringMove string
 
-func (m RawMove) String() string {
+func (m StringMove) String() string {
 	return string(m)
 }
 
-func (m RawMove) Validate() error {
+func (m StringMove) Validate() error {
 	return nil
 }

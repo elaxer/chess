@@ -9,8 +9,6 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/state/rule"
 )
 
-var edgePosition = position.New(position.FileH, position.Rank8)
-
 var firstRowPieceNotations = []string{
 	piece.NotationRook,
 	piece.NotationKnight,
@@ -41,7 +39,7 @@ func (f *factory) CreateEmpty(turn chess.Side) chess.Board {
 	return &board{
 		turn:           turn,
 		squares:        chess.NewSquares(edgePosition),
-		movesHistory:   make([]chess.Move, 0, 128),
+		movesHistory:   make([]chess.MoveResult, 0, 128),
 		capturedPieces: make([]chess.Piece, 0, 30),
 
 		stateRules: stateRules,

@@ -12,12 +12,7 @@ import (
 	mapset "github.com/deckarep/golang-set/v2"
 )
 
-var (
-	RegexpFrom = fmt.Sprintf("(?P<from>%s?%s?)", RegexpFile, RegexpRank)
-	RegexpTo   = fmt.Sprintf("(?P<to>%s%s)", RegexpFile, RegexpRank)
-)
-
-var regexpPosition = regexp.MustCompile("^(?P<file>[a-p])?(?P<rank>1[0-6]|[1-9])?$")
+var Regexp = regexp.MustCompile("^(?P<file>[a-p])?(?P<rank>1[0-6]|[1-9])?$")
 
 type Set = mapset.Set[Position]
 
@@ -33,16 +28,16 @@ func New(file File, rank Rank) Position {
 	return Position{file, rank}
 }
 
-func NewNull() Position {
+func NewEmpty() Position {
 	return Position{}
 }
 
 // FromString создает новую позицию из шахматной нотации.
 // Например, "e4" будет преобразовано в Position{FileE, Rank4}.
 func FromString(str string) Position {
-	data, err := rgx.Group(regexpPosition, str)
+	data, err := rgx.Group(Regexp, str)
 	if err != nil {
-		return NewNull()
+		return NewEmpty()
 	}
 
 	rank, _ := strconv.Atoi(data["rank"])
@@ -50,12 +45,20 @@ func FromString(str string) Position {
 	return Position{NewFile(data["file"]), Rank(rank)}
 }
 
-func (p Position) IsInRange(position Position) bool {
-	return p.File <= position.File && p.File >= FileA && p.Rank <= position.Rank && p.Rank >= Rank1
+func (p Position) IsBoundaries(position Position) bool {
+	return p.File <= position.File && p.File >= FileMin && p.Rank <= position.Rank && p.Rank >= RankMin
 }
 
-func (p Position) IsNull() bool {
-	return p.File == 0 && p.Rank == 0
+func (p Position) IsFull() bool {
+	return !p.File.IsNull() && !p.Rank.IsNull()
+}
+
+func (p Position) IsPartial() bool {
+	return p.File.IsNull() || p.Rank.IsNull()
+}
+
+func (p Position) IsEmpty() bool {
+	return p.File.IsNull() && p.Rank.IsNull()
 }
 
 func (p Position) Validate() error {

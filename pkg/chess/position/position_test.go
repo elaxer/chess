@@ -4,6 +4,13 @@ import (
 	"testing"
 )
 
+func TestNewNull(t *testing.T) {
+	position := NewEmpty()
+	if !position.IsEmpty() {
+		t.Errorf("NewNull() = %v, want Position().IsNull() = true", position)
+	}
+}
+
 func TestFromString(t *testing.T) {
 	type args struct {
 		notation string
@@ -91,7 +98,7 @@ func TestPosition_UnmarshalJSON(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			position := NewNull()
+			position := NewEmpty()
 			if err := position.UnmarshalJSON([]byte(tt.args.data)); (err != nil) != tt.wantErr {
 				t.Errorf("Position.UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -120,8 +127,8 @@ func TestPosition_String(t *testing.T) {
 			"e4",
 		},
 		{
-			"invalid",
-			fields{File(0), Rank(0)},
+			"nulls",
+			fields{FileNull, RankNull},
 			"",
 		},
 		{
@@ -130,23 +137,19 @@ func TestPosition_String(t *testing.T) {
 			"",
 		},
 		{
-			"invalid_file",
-			fields{File(0), Rank4},
+			"null_file",
+			fields{FileNull, Rank4},
 			"4",
 		},
 		{
-			"invalid_rank",
-			fields{FileD, Rank(0)},
+			"null_rank",
+			fields{FileD, RankNull},
 			"d",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			position := Position{
-				File: tt.fields.File,
-				Rank: tt.fields.Rank,
-			}
-			if got := position.String(); got != tt.want {
+			if got := New(tt.fields.File, tt.fields.Rank).String(); got != tt.want {
 				t.Errorf("Position.String() = %v, want %v", got, tt.want)
 			}
 		})
@@ -165,22 +168,23 @@ func TestPosition_Validate(t *testing.T) {
 	}{
 		{
 			"valid",
-			fields{1, Rank1},
+			fields{FileA, Rank1},
 			false,
 		},
 		{
 			"invalid",
-			fields{0, Rank8},
+			fields{24, 89},
+			true,
+		},
+		{
+			"invalid_rank",
+			fields{FileA, 17},
 			true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := Position{
-				File: tt.fields.File,
-				Rank: tt.fields.Rank,
-			}
-			if err := p.Validate(); (err != nil) != tt.wantErr {
+			if err := New(tt.fields.File, tt.fields.Rank).Validate(); (err != nil) != tt.wantErr {
 				t.Errorf("Position.Validate() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -214,7 +218,7 @@ func TestPosition_IsInRange(t *testing.T) {
 				File: tt.fields.File,
 				Rank: tt.fields.Rank,
 			}
-			if got := p.IsInRange(tt.args.position); got != tt.want {
+			if got := p.IsBoundaries(tt.args.position); got != tt.want {
 				t.Errorf("Position.IsInRange() = %v, want %v", got, tt.want)
 			}
 		})

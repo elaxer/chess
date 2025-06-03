@@ -4,12 +4,11 @@ import (
 	"testing"
 
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
-	"github.com/elaxer/chess/pkg/variant/standard/state/state"
 
 	"github.com/elaxer/chess/pkg/chess/position"
 )
 
-func TestNewPromotion(t *testing.T) {
+func TestPromotionFromString(t *testing.T) {
 	type args struct {
 		notation string
 	}
@@ -22,46 +21,31 @@ func TestNewPromotion(t *testing.T) {
 		{
 			"promotion",
 			args{"e8=Q"},
-			&Promotion{
-				Normal:           &Normal{To: position.FromString("e8")},
-				NewPieceNotation: piece.NotationQueen,
-			},
+			NewPromotion(position.NewEmpty(), position.FromString("e8"), piece.NotationQueen),
 			false,
 		},
 		{
 			"from_file",
 			args{"fe8=R"},
-			&Promotion{
-				Normal:           &Normal{From: position.FromString("f"), To: position.FromString("e8")},
-				NewPieceNotation: piece.NotationRook,
-			},
+			NewPromotion(position.FromString("f"), position.FromString("e8"), piece.NotationRook),
 			false,
 		},
 		{
-			"check",
+			"with_check",
 			args{"d1=N+"},
-			&Promotion{
-				Normal:           &Normal{abstract: abstract{NewBoardState: state.Check}, To: position.FromString("d1")},
-				NewPieceNotation: piece.NotationKnight,
-			},
+			NewPromotion(position.NewEmpty(), position.FromString("d1"), piece.NotationKnight),
 			false,
 		},
 		{
-			"checkmate",
+			"with_checkmate",
 			args{"a8=R#"},
-			&Promotion{
-				Normal:           &Normal{abstract: abstract{NewBoardState: state.Checkmate}, To: position.FromString("a8")},
-				NewPieceNotation: piece.NotationRook,
-			},
+			NewPromotion(position.NewEmpty(), position.FromString("a8"), piece.NotationRook),
 			false,
 		},
 		{
 			"with_capture",
 			args{"xc8=B"},
-			&Promotion{
-				Normal:           &Normal{To: position.FromString("c8"), IsCapture: true},
-				NewPieceNotation: piece.NotationBishop,
-			},
+			NewPromotion(position.NewEmpty(), position.FromString("c8"), piece.NotationBishop),
 			false,
 		},
 		{
@@ -79,20 +63,14 @@ func TestNewPromotion(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := PromotionFromNotation(tt.args.notation)
+			got, err := PromotionFromString(tt.args.notation)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("PromotionFromNotation() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("PromotionFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
-			if tt.wantErr {
-				return
-			}
-
-			got.Normal.PieceNotation = piece.NotationPawn
-
-			if got.String() != tt.want.String() {
-				t.Errorf("PromotionFromNotation().String() = %v, want %v", got, tt.want)
+			if !tt.wantErr && *got != *tt.want {
+				t.Errorf("PromotionFromString() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -109,28 +87,17 @@ func TestPromotion_String(t *testing.T) {
 	}{
 		{
 			"promotion",
-			fields{&Promotion{
-				Normal:           &Normal{To: position.FromString("a1")},
-				NewPieceNotation: piece.NotationRook,
-			}},
+			fields{NewPromotion(position.NewEmpty(), position.FromString("a1"), piece.NotationRook)},
 			"a1=R",
 		},
 		{
 			"from_file",
-			fields{
-				&Promotion{
-					Normal:           &Normal{From: position.FromString("f"), To: position.FromString("e8")},
-					NewPieceNotation: piece.NotationRook,
-				},
-			},
+			fields{NewPromotion(position.FromString("f"), position.FromString("e8"), piece.NotationRook)},
 			"fe8=R",
 		},
 		{
 			"full_from",
-			fields{&Promotion{
-				Normal:           &Normal{From: position.FromString("b2"), To: position.FromString("b1")},
-				NewPieceNotation: piece.NotationKnight,
-			}},
+			fields{NewPromotion(position.FromString("b2"), position.FromString("b1"), piece.NotationKnight)},
 			"b2b1=N",
 		},
 	}

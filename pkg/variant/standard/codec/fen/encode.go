@@ -22,7 +22,7 @@ import (
 func Encode(board chess.Board) string {
 	return fmt.Sprintf(
 		"%s %s %v %v %v %d",
-		piecePlacements(board.Squares()),
+		EncodePiecePlacements(board.Squares()),
 		board.Turn(),
 		castlingAbility(board),
 		callMetric(standardmetric.EnPassantTargetSquare, board),
@@ -31,7 +31,7 @@ func Encode(board chess.Board) string {
 	)
 }
 
-func piecePlacements(squares *chess.Squares) string {
+func EncodePiecePlacements(squares *chess.Squares) string {
 	fen := ""
 	for _, row := range squares.IterByRows(true) {
 		rowStr := ""
@@ -48,7 +48,7 @@ func piecePlacements(squares *chess.Squares) string {
 			}
 			emptySquares = 0
 
-			rowStr += fmt.Sprintf("%s", piece)
+			rowStr += piece.String()
 		}
 
 		if emptySquares > 0 {

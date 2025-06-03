@@ -5,10 +5,9 @@ import (
 
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
-	"github.com/elaxer/chess/pkg/variant/standard/state/state"
 )
 
-func TestNormalFromNotation(t *testing.T) {
+func TestNormalFromString(t *testing.T) {
 	type args struct {
 		str string
 	}
@@ -55,47 +54,29 @@ func TestNormalFromNotation(t *testing.T) {
 			false,
 		},
 		{
-			"check",
-			args{"Rg1+"},
-			"Rg1+",
-			false,
+			"unknown_piece",
+			args{"Zk9"},
+			"",
+			true,
 		},
 		{
-			"checkmate",
-			args{"Be8#"},
-			"Be8#",
-			false,
+			"wrong_file",
+			args{"x3"},
+			"",
+			true,
 		},
 		{
-			"capture",
-			args{"Rxh7"},
-			"Rxh7",
-			false,
-		},
-		{
-			"capture_check",
-			args{"xb5+"},
-			"xb5+",
-			false,
-		},
-		{
-			"capture_checkmate",
-			args{"Qxh8#"},
-			"Qxh8#",
-			false,
-		},
-		{
-			"error",
-			args{"Ik9"},
+			"wrong_rank",
+			args{"d21"},
 			"",
 			true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NormalFromNotation(tt.args.str)
+			got, err := NormalFromString(tt.args.str)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("NormalFromNotation() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("NormalFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if tt.wantErr {
@@ -103,7 +84,7 @@ func TestNormalFromNotation(t *testing.T) {
 			}
 
 			if gotStr := got.String(); gotStr != tt.want {
-				t.Errorf("NormalFromNotation().String() = %v, want %v", gotStr, tt.want)
+				t.Errorf("NormalFromString().String() = %v, want %v", gotStr, tt.want)
 			}
 		})
 	}
@@ -116,62 +97,14 @@ func TestNormal_String(t *testing.T) {
 		want string
 	}{
 		{
-			"normal",
-			&Normal{
-				To:            position.FromString("a8"),
-				PieceNotation: piece.NotationQueen,
-				IsCapture:     false,
-			},
+			"queen",
+			NewNormal(position.NewEmpty(), position.FromString("a8"), piece.NotationQueen),
 			"Qa8",
 		},
 		{
 			"pawn",
-			&Normal{
-				To:            position.FromString("e4"),
-				PieceNotation: piece.NotationPawn,
-				IsCapture:     false,
-			},
+			NewNormal(position.NewEmpty(), position.FromString("e4"), piece.NotationPawn),
 			"e4",
-		},
-		{
-			"check",
-			&Normal{
-				abstract:      abstract{NewBoardState: state.Check},
-				To:            position.FromString("a1"),
-				PieceNotation: piece.NotationRook,
-				IsCapture:     false,
-			},
-			"Ra1+",
-		},
-		{
-			"checkmate",
-			&Normal{
-				abstract:      abstract{NewBoardState: state.Checkmate},
-				To:            position.FromString("a1"),
-				PieceNotation: piece.NotationBishop,
-				IsCapture:     false,
-			},
-			"Ba1#",
-		},
-		{
-			"check_with_capture",
-			&Normal{
-				abstract:      abstract{NewBoardState: state.Check},
-				To:            position.FromString("a1"),
-				PieceNotation: piece.NotationKnight,
-				IsCapture:     true,
-			},
-			"Nxa1+",
-		},
-		{
-			"checkmate_with_capture",
-			&Normal{
-				abstract:      abstract{NewBoardState: state.Checkmate},
-				To:            position.FromString("c5"),
-				PieceNotation: piece.NotationPawn,
-				IsCapture:     true,
-			},
-			"xc5#",
 		},
 	}
 	for _, tt := range tests {

@@ -33,7 +33,7 @@ type sliding struct {
 func (s *sliding) slide(from, direction position.Position, squares *chess.Squares) iter.Seq[position.Position] {
 	return func(yield func(position position.Position) bool) {
 		for move := range squares.IterByDirection(from, direction) {
-			piece, err := squares.GetByPosition(move)
+			piece, err := squares.FindByPosition(move)
 			canContinue := err == nil && piece == nil
 
 			if (s.canMove(piece, s.side) && !yield(move)) || !canContinue {
