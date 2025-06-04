@@ -190,37 +190,3 @@ func TestPosition_Validate(t *testing.T) {
 		})
 	}
 }
-
-func TestPosition_IsInRange(t *testing.T) {
-	type fields struct {
-		File File
-		Rank Rank
-	}
-	type args struct {
-		position Position
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   bool
-	}{
-		{
-			"invalid",
-			fields{FileI, Rank2},
-			args{New(FileH, Rank8)},
-			false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			p := Position{
-				File: tt.fields.File,
-				Rank: tt.fields.Rank,
-			}
-			if got := p.IsBoundaries(tt.args.position); got != tt.want {
-				t.Errorf("Position.IsInRange() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}

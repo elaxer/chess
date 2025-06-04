@@ -7,7 +7,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
 	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
-	"github.com/elaxer/chess/pkg/variant/standardtest"
+	"github.com/elaxer/chess/pkg/variant/standard/standardtest"
 )
 
 // todo добавить тесты с новым параметром Side

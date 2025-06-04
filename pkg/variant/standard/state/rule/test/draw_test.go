@@ -6,9 +6,9 @@ import (
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/position"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
+	"github.com/elaxer/chess/pkg/variant/standard/standardtest"
 	"github.com/elaxer/chess/pkg/variant/standard/state/rule"
 	"github.com/elaxer/chess/pkg/variant/standard/state/state"
-	"github.com/elaxer/chess/pkg/variant/standardtest"
 )
 
 func TestStalemate(t *testing.T) {

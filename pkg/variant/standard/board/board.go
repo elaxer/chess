@@ -59,6 +59,10 @@ func (b *board) Moves(side chess.Side) position.Set {
 
 func (b *board) LegalMoves(p chess.Piece) position.Set {
 	from := b.squares.GetByPiece(p)
+	if from.IsEmpty() {
+		return nil
+	}
+
 	pseudoMoves := p.PseudoMoves(from, b.squares)
 
 	if p.Side() != b.Turn() {
@@ -88,6 +92,10 @@ func (b *board) MakeMove(move chess.Move) (chess.MoveResult, error) {
 	b.turn = !b.turn
 
 	return moveResult, nil
+}
+
+func (b *board) UndoLastMove() (chess.MoveResult, error) {
+	return nil, nil
 }
 
 func (b *board) MarshalJSON() ([]byte, error) {

@@ -8,7 +8,7 @@ import (
 
 const (
 	// FileNull has a zero value and represents an empty file.
-	// This value considered valid.
+	// This value is considered valid.
 	FileNull File = iota
 
 	FileA
@@ -64,18 +64,18 @@ func (f File) IsNull() bool {
 	return f == FileNull
 }
 
-// Validate checks whether the file value exceeds FileMax.
+// Validate checks whether the file value is within the range from FileNull to FileMax.
 // Returns an error if the value is invalid; otherwise returns nil.
 // FileNull is considered valid.
 func (f File) Validate() error {
 	return validation.Errors{
-		"file": validation.Validate(int8(f), validation.Max(int8(FileMax))),
+		"file": validation.Validate(int8(f), validation.Min(int8(FileNull)), validation.Max(int8(FileMax))),
 	}.Filter()
 }
 
-// String transforms the file to string.
-// If a file have null value or is invalid then the function returns an empty string,
-// otherwise returns a string where file=1 will be "a", file=2 will be "b" and so on.
+// String returns the string representation of the file.
+// If the file is null or invalid, it returns an empty string.
+// Otherwise, it returns the alphabetic representation, e.g., "a" for FileA, "b" for FileB, and so on.
 func (f File) String() string {
 	if f.IsNull() || f.Validate() != nil {
 		return ""

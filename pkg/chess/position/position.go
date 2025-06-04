@@ -1,3 +1,6 @@
+// Package position provides functionality to work with chess positions.
+// It defines the Position type, which represents a square on a chessboard,
+// and provides methods to create, validate, and manipulate positions.
 package position
 
 import (
@@ -12,15 +15,21 @@ import (
 	mapset "github.com/deckarep/golang-set/v2"
 )
 
+// Regexp is a regular expression pattern used to parse chess positions.
+// It matches a string that represents a position on the chessboard,
+// such as "e4", "a1", or "h8". The pattern captures the file (a-h) and rank (1-8 or 10-16).
 var Regexp = regexp.MustCompile("^(?P<file>[a-p])?(?P<rank>1[0-6]|[1-9])?$")
 
+// Set is a set of chess positions.
+// It is implemented using the mapset package, which provides a set data structure.
+// The Set type is used to store unique positions on the chessboard.
 type Set = mapset.Set[Position]
 
 // Position represents the coordinates of a square on a chessboard.
 // Position consists of File and Rank.
 // Positions can have different states:
 //   - Full: File and Rank are filled and both values are not null.
-//   - Not empty: File or Rank has null value.
+//   - Partial, not empty: File or Rank has null value.
 //   - Empty: File and Rank both have null value.
 //   - Invalid: File or Rank is invalid (see File and Rank documentation).
 type Position struct {
@@ -39,7 +48,6 @@ func NewEmpty() Position {
 }
 
 // FromString creates a new position from chess notation.
-// For example, "e4" will be converted to Position{FileE, Rank4}.
 // If the string is invalid or it's empty, it returns an empty position.
 func FromString(str string) Position {
 	data, err := rgx.Group(Regexp, str)
@@ -50,17 +58,6 @@ func FromString(str string) Position {
 	rank, _ := strconv.Atoi(data["rank"])
 
 	return Position{FileFromString(data["file"]), Rank(rank)}
-}
-
-// IsBoundaries checks if the position is within the boundaries of the chessboard.
-// The boundaries are defined as follows:
-//   - File: from FileMin to position.File
-//   - Rank: from RankMin to position.Rank
-//
-// If the position is within the boundaries, it returns true, otherwise false.
-// Note: This method does not check if the position is full or empty.
-func (p Position) IsBoundaries(position Position) bool {
-	return p.File <= position.File && p.File >= FileMin && p.Rank <= position.Rank && p.Rank >= RankMin
 }
 
 // IsFull checks if the position contains both File and Rank not empty values.

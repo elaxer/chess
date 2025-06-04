@@ -45,7 +45,7 @@ func movePiece(move mv.Piece, movingPieceNotation string, board chess.Board) (re
 
 func newAbstractResult(board chess.Board) result.Abstract {
 	return result.Abstract{
-		Side:          board.Turn(),
-		BoardNewState: board.State(!board.Turn()),
+		MoveSide: board.Turn(),
+		NewState: board.State(!board.Turn()),
 	}
 }

@@ -3,7 +3,7 @@ package pgn
 import (
 	"testing"
 
-	"github.com/elaxer/chess/pkg/variant/standardtest"
+	"github.com/elaxer/chess/pkg/variant/standard/standardtest"
 )
 
 func TestEncode(t *testing.T) {

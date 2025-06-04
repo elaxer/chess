@@ -18,14 +18,14 @@ func (m Piece) Validate() error {
 	return validation.ValidateStruct(
 		&m,
 		validation.Field(&m.From),
-		validation.Field(&m.To, validation.By(position.RuleIsNotNull)),
+		validation.Field(&m.To, validation.By(position.ValidationRuleIsEmpty)),
 	)
 }
 
 func (m Piece) ValidateStrict() error {
 	return validation.ValidateStruct(
 		&m,
-		validation.Field(&m.From, validation.By(position.RuleIsNotNull)),
-		validation.Field(&m.To, validation.By(position.RuleIsNotNull)),
+		validation.Field(&m.From, validation.By(position.ValidationRuleIsEmpty)),
+		validation.Field(&m.To, validation.By(position.ValidationRuleIsEmpty)),
 	)
 }

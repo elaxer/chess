@@ -28,7 +28,7 @@ type Piece interface {
 	// It returns a set of positions that the piece can move to from the given position.
 	PseudoMoves(from position.Position, squares *Squares) position.Set
 	// Notation returns the algebraic notation of the piece.
-	// For example, for a pawn it returns "", for a knight it returns "N", etc.
+	// For example, for a pawn it could returns "", for a knight it returns "N", etc.
 	Notation() string
 	// Weight returns the weight of the piece.
 	// The weight is used to evaluate the piece's value in the game.

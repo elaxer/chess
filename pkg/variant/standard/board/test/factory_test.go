@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/elaxer/chess/pkg/variant/standard/codec/fen"
-	"github.com/elaxer/chess/pkg/variant/standardtest"
+	"github.com/elaxer/chess/pkg/variant/standard/standardtest"
 )
 
 func TestFactory_CreateFromMoves(t *testing.T) {

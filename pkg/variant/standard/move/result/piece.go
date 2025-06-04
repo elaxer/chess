@@ -19,7 +19,8 @@ func (r Piece) IsCapture() bool {
 
 func (r Piece) Validate() error {
 	return validation.ValidateStruct(&r,
-		validation.Field(&r.FromFull, validation.By(position.RuleIsNotNull)),
+		validation.Field(&r.Abstract),
+		validation.Field(&r.FromFull, validation.By(position.ValidationRuleIsEmpty)),
 		validation.Field(&r.FromShortened),
 	)
 }

@@ -49,7 +49,7 @@ func (r Rank) IsNull() bool {
 	return r == RankNull
 }
 
-// Validate checks whether the rank value exceeds RankMax.
+// Validate checks whether the rank value is within the range from Rank1 to RankMax.
 // Returns an error if the value is invalid; otherwise returns nil.
 // RankNull is considered valid.
 func (r Rank) Validate() error {

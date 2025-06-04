@@ -5,6 +5,7 @@ import (
 
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
+	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 type Castling struct {
@@ -14,6 +15,10 @@ type Castling struct {
 
 func (r *Castling) Move() chess.Move {
 	return r.Castling
+}
+
+func (r *Castling) Validate() error {
+	return validation.ValidateStruct(r, validation.Field(&r.Abstract))
 }
 
 func (r *Castling) String() string {

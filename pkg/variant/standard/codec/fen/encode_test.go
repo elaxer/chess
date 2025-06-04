@@ -5,7 +5,7 @@ import (
 
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/variant/standard/board"
-	"github.com/elaxer/chess/pkg/variant/standardtest"
+	"github.com/elaxer/chess/pkg/variant/standard/standardtest"
 )
 
 func TestEncode(t *testing.T) {

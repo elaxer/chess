@@ -8,7 +8,7 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
 	"github.com/elaxer/chess/pkg/variant/standard/move/resolver"
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
-	"github.com/elaxer/chess/pkg/variant/standardtest"
+	"github.com/elaxer/chess/pkg/variant/standard/standardtest"
 )
 
 func TestUnresolveFrom(t *testing.T) {
