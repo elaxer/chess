@@ -11,7 +11,7 @@ func RuleIsNotNull(position any) error {
 	}
 
 	if pos.IsEmpty() {
-		return errors.New("position can't be null")
+		return errors.New("position cannot be null")
 	}
 
 	return nil
