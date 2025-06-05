@@ -3,7 +3,6 @@ package chesstest
 
 import (
 	"strings"
-	"unicode"
 
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess/pkg/chess"
@@ -15,28 +14,8 @@ type PieceMock struct {
 	IsMovedValue     bool
 	NotationValue    string
 	WeightValue      uint8
+	StringValue      string
 	PseudoMovesValue position.Set
-}
-
-// NewPieceMock creates a new PieceMock instance based on the provided string representation.
-// The string should be a single character representing the piece notation (e.g., "P", "N", "B", "r", "q", "k").
-// The case of the character determines the side: uppercase for white, lowercase for black.
-func NewPieceMock(str string) chess.Piece {
-	side := chess.SideWhite
-	if unicode.IsLower([]rune(str)[0]) {
-		side = chess.SideBlack
-	}
-
-	notation := strings.ToUpper(str)
-	if notation == "P" {
-		notation = ""
-	}
-
-	return &PieceMock{
-		SideValue:        side,
-		NotationValue:    notation,
-		PseudoMovesValue: mapset.NewSet[position.Position](),
-	}
 }
 
 func (m *PieceMock) Side() chess.Side {
@@ -68,5 +47,15 @@ func (m *PieceMock) Weight() uint8 {
 }
 
 func (m *PieceMock) String() string {
-	return m.NotationValue
+	if m.StringValue != "" || m.NotationValue == "" {
+		return m.StringValue
+	}
+
+	notation := m.NotationValue
+
+	if m.SideValue == chess.SideBlack {
+		notation = strings.ToLower(notation)
+	}
+
+	return notation
 }

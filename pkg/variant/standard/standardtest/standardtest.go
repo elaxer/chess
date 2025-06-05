@@ -10,11 +10,6 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
-type Placement struct {
-	Piece    chess.Piece
-	Position position.Position
-}
-
 func NewEmpty(turn chess.Side) chess.Board {
 	board, _ := board.NewFactory().Create(turn, nil)
 

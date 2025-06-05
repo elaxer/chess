@@ -4,11 +4,17 @@ import (
 	"github.com/elaxer/chess/pkg/chess"
 	"github.com/elaxer/chess/pkg/chess/encoding/fen"
 	"github.com/elaxer/chess/pkg/chess/metric"
+	"github.com/elaxer/chess/pkg/variant/standard/board"
 	standardmetric "github.com/elaxer/chess/pkg/variant/standard/metric"
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
 )
 
 // NewEncoder creates a new FEN encoder for the standard chess variant.
+// Encoder.Encode() method will return a FEN string representing the current state of the board,
+// including the turn, castling rights, en passant target square, halfmove clock, and fullmove counter.
+//
+// See github.com/elaxer/chess/pkg/chess/encoding/fen/encoder for more details.
 func NewEncoder() *fen.Encoder {
 	return &fen.Encoder{
 		MetricFuncs: []metric.MetricFunc{
@@ -19,6 +25,12 @@ func NewEncoder() *fen.Encoder {
 			metric.FullmoveCounter,
 		},
 	}
+}
+
+// NewDecoder creates a new FEN decoder for the standard chess variant.
+// See github.com/elaxer/chess/pkg/chess/encoding/fen/decoder for more details.
+func NewDecoder() *fen.Decoder {
+	return &fen.Decoder{BoardFactory: board.NewFactory(), PieceFactory: piece.NewFactory()}
 }
 
 func turn(board chess.Board) metric.Metric {

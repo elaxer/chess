@@ -12,7 +12,7 @@ var edgePosition = position.FromString("h8")
 
 func TestSquares_FindByPosition(t *testing.T) {
 	squares := NewSquares(edgePosition)
-	king := chesstest.NewPieceMock("K")
+	king := chesstest.MustPieceFromString("K")
 
 	squares.PlacePiece(king, position.New(position.FileA, position.Rank4))
 	p, err := squares.FindByPosition(position.FromString("a4"))
@@ -26,8 +26,8 @@ func TestSquares_FindByPosition(t *testing.T) {
 }
 
 func TestSquares_MovePiece(t *testing.T) {
-	king := chesstest.NewPieceMock("K")
-	knight := chesstest.NewPieceMock("n")
+	king := chesstest.MustPieceFromString("K")
+	knight := chesstest.MustPieceFromString("n")
 
 	squares := NewSquares(edgePosition)
 	squares.PlacePiece(king, position.FromString("e1"))
@@ -49,7 +49,7 @@ func TestSquares_MovePiece(t *testing.T) {
 }
 
 func TestSquares_MovePieceTemporarily(t *testing.T) {
-	queen := chesstest.NewPieceMock("Q")
+	queen := chesstest.MustPieceFromString("Q")
 
 	squares := NewSquares(edgePosition)
 	squares.PlacePiece(queen, position.FromString("b4"))

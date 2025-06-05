@@ -28,8 +28,7 @@ var stateRules = []rule.Rule{
 	rule.FiftyMoves,
 }
 
-type factory struct {
-}
+type factory struct{}
 
 func NewFactory() chess.BoardFactory {
 	return &factory{}
@@ -56,8 +55,8 @@ func (f *factory) CreateFilled() chess.Board {
 	for i, notation := range firstRowPieceNotations {
 		file := position.File(i + 1)
 
-		board.Squares().PlacePiece(piece.New(notation, chess.SideWhite), position.New(file, position.Rank1))
-		board.Squares().PlacePiece(piece.NewPawn(chess.SideWhite), position.New(file, position.Rank1+1))
+		board.Squares().PlacePiece(piece.New(notation, chess.SideWhite), position.New(file, position.RankMin))
+		board.Squares().PlacePiece(piece.NewPawn(chess.SideWhite), position.New(file, position.RankMin+1))
 
 		board.Squares().PlacePiece(piece.New(notation, chess.SideBlack), position.New(file, edgePosition.Rank))
 		board.Squares().PlacePiece(piece.NewPawn(chess.SideBlack), position.New(file, edgePosition.Rank-1))
