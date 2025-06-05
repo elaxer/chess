@@ -1,6 +1,6 @@
 package visualizer
 
-import "github.com/elaxer/chess/pkg/metric"
+import "github.com/elaxer/chess/pkg/chess/metric"
 
 type OptionOrientation uint8
 

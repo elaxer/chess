@@ -8,8 +8,10 @@ import (
 	"github.com/elaxer/chess/pkg/variant/standard/standardtest"
 )
 
-func TestEncode(t *testing.T) {
+func TestEncoder_Encode(t *testing.T) {
 	factory := board.NewFactory()
+	encoder := NewEncoder()
+
 	type args struct {
 		board chess.Board
 	}
@@ -41,8 +43,8 @@ func TestEncode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Encode(tt.args.board); got != tt.want {
-				t.Errorf("EncodeFEN() = \n%v want\n%v", got, tt.want)
+			if got := encoder.Encode(tt.args.board); got != tt.want {
+				t.Errorf("Encoder.Encode() = \n%v want\n%v", got, tt.want)
 			}
 		})
 	}

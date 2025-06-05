@@ -3,7 +3,7 @@ package board_test
 import (
 	"testing"
 
-	"github.com/elaxer/chess/pkg/variant/standard/codec/fen"
+	"github.com/elaxer/chess/pkg/chess/encoding/fen"
 	"github.com/elaxer/chess/pkg/variant/standard/standardtest"
 )
 
@@ -70,10 +70,11 @@ func TestFactory_CreateFromMoves(t *testing.T) {
 				"Nc6+", "Qxc6+",
 				"Qxc6", "Rd6",
 			}},
-			"8/4kpp1/1KQrP3/6P1/5p2/8/P7/8 w - - 1 51",
+			"8/4kpp1/1KQrP3/6P1/5p2/8/P7/8",
 		},
 	}
 
+	var encoder fen.Encoder
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			board, err := standardtest.NewFromMoves(tt.args.moves)
@@ -82,7 +83,7 @@ func TestFactory_CreateFromMoves(t *testing.T) {
 				return
 			}
 
-			if fen := fen.Encode(board); fen != tt.wantFEN {
+			if fen := encoder.Encode(board); fen != tt.wantFEN {
 				t.Errorf("Expected position \"%s\", got - %s", tt.wantFEN, fen)
 			}
 		})

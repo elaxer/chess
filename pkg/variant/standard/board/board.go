@@ -14,9 +14,6 @@ import (
 
 var edgePosition = position.New(position.FileH, position.Rank8)
 
-// board - эта структура описывает шахматную доску и ее состояние.
-// Реализует логику стандартных шахмат.
-// Реализует интерфейс board из пакета chess.
 type board struct {
 	turn           chess.Side
 	squares        *chess.Squares

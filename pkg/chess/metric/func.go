@@ -3,16 +3,11 @@ package metric
 import "github.com/elaxer/chess/pkg/chess"
 
 var AllFuncs = []MetricFunc{
-	OppositeState,
 	HalfmoveCounter,
 	FullmoveCounter,
 	LastMove,
 	Material,
 	MaterialDifference,
-}
-
-func OppositeState(board chess.Board) Metric {
-	return New("Opposite state", board.State(!board.Turn()))
 }
 
 func HalfmoveCounter(board chess.Board) Metric {

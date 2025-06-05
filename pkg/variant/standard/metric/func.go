@@ -2,8 +2,8 @@ package metric
 
 import (
 	"github.com/elaxer/chess/pkg/chess"
+	"github.com/elaxer/chess/pkg/chess/metric"
 	"github.com/elaxer/chess/pkg/chess/position"
-	"github.com/elaxer/chess/pkg/metric"
 	"github.com/elaxer/chess/pkg/variant/standard/move/move"
 	"github.com/elaxer/chess/pkg/variant/standard/move/result"
 	"github.com/elaxer/chess/pkg/variant/standard/move/validator"
@@ -40,7 +40,6 @@ func CastlingAbility(board chess.Board) metric.Metric {
 	return metric.New("Castling ability", castlings)
 }
 
-// todo переделать
 func EnPassantTargetSquare(board chess.Board) metric.Metric {
 	if len(board.MovesHistory()) == 0 {
 		return nil
