@@ -25,11 +25,11 @@ func TestCheckmate(t *testing.T) {
 		{
 			"checkmate",
 			args{
-				standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
-					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromString("a1")},
-					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromString("h8")},
-					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromString("a8")},
-					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromString("b8")},
+				standardtest.MustNew(chess.SideWhite, map[position.Position]chess.Piece{
+					position.FromString("a1"): piece.NewKing(chess.SideWhite),
+					position.FromString("h8"): piece.NewKing(chess.SideBlack),
+					position.FromString("a8"): piece.NewRook(chess.SideBlack),
+					position.FromString("b8"): piece.NewRook(chess.SideBlack),
 				}),
 				chess.SideWhite,
 			},
@@ -39,11 +39,11 @@ func TestCheckmate(t *testing.T) {
 			// no checkmate because the black king can capture the threatening rook
 			"no_checkmate",
 			args{
-				standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
-					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromString("a1")},
-					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromString("h8")},
-					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromString("a2")},
-					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromString("b8")},
+				standardtest.MustNew(chess.SideWhite, map[position.Position]chess.Piece{
+					position.FromString("a1"): piece.NewKing(chess.SideWhite),
+					position.FromString("h8"): piece.NewKing(chess.SideBlack),
+					position.FromString("a2"): piece.NewRook(chess.SideBlack),
+					position.FromString("b8"): piece.NewRook(chess.SideBlack),
 				}),
 				chess.SideWhite,
 			},

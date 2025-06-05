@@ -12,10 +12,10 @@ import (
 )
 
 func TestPromotion_Make(t *testing.T) {
-	board := standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-		{Piece: standardtest.NewPiece("P"), Position: position.FromString("d7")},
-		{Piece: standardtest.NewPiece("K"), Position: position.FromString("a1")},
-		{Piece: standardtest.NewPiece("k"), Position: position.FromString("a8")},
+	board := standardtest.MustNew(SideWhite, map[position.Position]Piece{
+		position.FromString("d7"): standardtest.NewPiece("P"),
+		position.FromString("a1"): standardtest.NewPiece("K"),
+		position.FromString("a8"): standardtest.NewPiece("k"),
 	})
 
 	promotion := move.NewPromotion(position.NewEmpty(), position.FromString("d8"), piece.NotationQueen)

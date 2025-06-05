@@ -17,10 +17,12 @@ func (e *Encoder) Encode(board chess.Board) string {
 	var fen strings.Builder
 	fmt.Fprint(&fen, encodePiecePlacement(board.Squares()))
 
-	if e.MetricFuncs != nil {
-		for _, metricFunc := range e.MetricFuncs {
-			fmt.Fprintf(&fen, " %v", callMetric(metricFunc, board))
-		}
+	if e.MetricFuncs == nil {
+		return fen.String()
+	}
+
+	for _, metricFunc := range e.MetricFuncs {
+		fmt.Fprintf(&fen, " %v", callMetricFunc(metricFunc, board))
 	}
 
 	return fen.String()
@@ -56,7 +58,7 @@ func encodePiecePlacement(squares *chess.Squares) string {
 	return fen[:len(fen)-1]
 }
 
-func callMetric(metricFunc metric.MetricFunc, board chess.Board) any {
+func callMetricFunc(metricFunc metric.MetricFunc, board chess.Board) any {
 	metric := metricFunc(board)
 	if metric == nil {
 		return "-"

@@ -24,10 +24,10 @@ func TestStalemate(t *testing.T) {
 		{
 			"stalemate",
 			args{
-				standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
-					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromString("a8")},
-					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromString("b6")},
-					{Piece: piece.NewQueen(chess.SideBlack), Position: position.FromString("c7")},
+				standardtest.MustNew(chess.SideWhite, map[position.Position]chess.Piece{
+					position.FromString("a8"): piece.NewKing(chess.SideWhite),
+					position.FromString("b6"): piece.NewKing(chess.SideBlack),
+					position.FromString("c7"): piece.NewQueen(chess.SideBlack),
 				}),
 				chess.SideWhite,
 			},
@@ -36,10 +36,10 @@ func TestStalemate(t *testing.T) {
 		{
 			"no_stalemate",
 			args{
-				standardtest.NewEmpty(chess.SideBlack, []standardtest.Placement{
-					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromString("a8")},
-					{Piece: piece.NewQueen(chess.SideWhite), Position: position.FromString("c7")},
-					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromString("b6")},
+				standardtest.MustNew(chess.SideBlack, map[position.Position]chess.Piece{
+					position.FromString("a8"): piece.NewKing(chess.SideWhite),
+					position.FromString("c7"): piece.NewQueen(chess.SideWhite),
+					position.FromString("b6"): piece.NewKing(chess.SideBlack),
 				}),
 				chess.SideBlack,
 			},

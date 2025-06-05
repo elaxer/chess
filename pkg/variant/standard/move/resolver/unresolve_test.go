@@ -26,9 +26,9 @@ func TestUnresolveFrom(t *testing.T) {
 			"same_file",
 			args{
 				move.NewPiece(position.FromString("d1"), position.FromString("d4")),
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewQueen(SideWhite), Position: position.FromString("d1")},
-					{Piece: piece.NewQueen(SideWhite), Position: position.FromString("d8")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("d1"): piece.NewQueen(SideWhite),
+					position.FromString("d8"): piece.NewQueen(SideWhite),
 				}),
 			},
 			position.Position{Rank: position.Rank1},
@@ -38,9 +38,9 @@ func TestUnresolveFrom(t *testing.T) {
 			"same_rank",
 			args{
 				move.NewPiece(position.FromString("a1"), position.FromString("d1")),
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewRook(SideBlack), Position: position.FromString("a1")},
-					{Piece: piece.NewRook(SideBlack), Position: position.FromString("g1")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("a1"): piece.NewRook(SideBlack),
+					position.FromString("g1"): piece.NewRook(SideBlack),
 				}),
 			},
 			position.Position{File: position.FileA},
@@ -50,10 +50,10 @@ func TestUnresolveFrom(t *testing.T) {
 			"same_file_and_rank",
 			args{
 				move.NewPiece(position.FromString("b7"), position.FromString("d5")),
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewBishop(SideWhite), Position: position.FromString("b7")},
-					{Piece: piece.NewBishop(SideWhite), Position: position.FromString("f7")},
-					{Piece: piece.NewBishop(SideWhite), Position: position.FromString("b3")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("b7"): piece.NewBishop(SideWhite),
+					position.FromString("f7"): piece.NewBishop(SideWhite),
+					position.FromString("b3"): piece.NewBishop(SideWhite),
 				}),
 			},
 			position.FromString("b7"),
@@ -63,9 +63,9 @@ func TestUnresolveFrom(t *testing.T) {
 			"no_same_file_and_rank",
 			args{
 				move.NewPiece(position.FromString("g1"), position.FromString("e2")),
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewKnight(SideWhite), Position: position.FromString("c3")},
-					{Piece: piece.NewKnight(SideWhite), Position: position.FromString("g1")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("c3"): piece.NewKnight(SideWhite),
+					position.FromString("g1"): piece.NewKnight(SideWhite),
 				}),
 			},
 			position.FromString("g"),
@@ -75,9 +75,9 @@ func TestUnresolveFrom(t *testing.T) {
 			"no_same_moves",
 			args{
 				move.NewPiece(position.FromString("e2"), position.FromString("e4")),
-				standardtest.NewEmpty(SideBlack, []standardtest.Placement{
-					{Piece: piece.NewPawn(SideBlack), Position: position.FromString("e2")},
-					{Piece: piece.NewPawn(SideBlack), Position: position.FromString("f2")},
+				standardtest.MustNew(SideBlack, map[position.Position]Piece{
+					position.FromString("e2"): piece.NewPawn(SideBlack),
+					position.FromString("f2"): piece.NewPawn(SideBlack),
 				}),
 			},
 			position.NewEmpty(),
@@ -87,9 +87,9 @@ func TestUnresolveFrom(t *testing.T) {
 			"single_pawn_capture",
 			args{
 				move.NewPiece(position.FromString("b7"), position.FromString("c8")),
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewPawn(SideWhite), Position: position.FromString("b7")},
-					{Piece: piece.NewPawn(SideBlack), Position: position.FromString("c8")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("b7"): piece.NewPawn(SideWhite),
+					position.FromString("c8"): piece.NewPawn(SideBlack),
 				}),
 			},
 			position.NewEmpty(),

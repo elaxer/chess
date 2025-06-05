@@ -24,10 +24,10 @@ func TestCheck(t *testing.T) {
 		{
 			"check",
 			args{
-				standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
-					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromString("a1")},
-					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromString("h8")},
-					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromString("a8")},
+				standardtest.MustNew(chess.SideWhite, map[position.Position]chess.Piece{
+					position.FromString("a1"): piece.NewKing(chess.SideWhite),
+					position.FromString("h8"): piece.NewKing(chess.SideBlack),
+					position.FromString("a8"): piece.NewRook(chess.SideBlack),
 				}),
 				chess.SideWhite,
 			},
@@ -36,10 +36,10 @@ func TestCheck(t *testing.T) {
 		{
 			"check_bishop",
 			args{
-				standardtest.NewEmpty(chess.SideBlack, []standardtest.Placement{
-					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromString("e1")},
-					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromString("h8")},
-					{Piece: piece.NewBishop(chess.SideWhite), Position: position.FromString("b4")},
+				standardtest.MustNew(chess.SideBlack, map[position.Position]chess.Piece{
+					position.FromString("e1"): piece.NewKing(chess.SideBlack),
+					position.FromString("h8"): piece.NewKing(chess.SideWhite),
+					position.FromString("b4"): piece.NewBishop(chess.SideWhite),
 				}),
 				chess.SideBlack,
 			},
@@ -48,10 +48,10 @@ func TestCheck(t *testing.T) {
 		{
 			"check_pawns",
 			args{
-				standardtest.NewEmpty(chess.SideBlack, []standardtest.Placement{
-					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromString("d4")},
-					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromString("c3")},
-					{Piece: piece.NewBishop(chess.SideWhite), Position: position.FromString("e3")},
+				standardtest.MustNew(chess.SideBlack, map[position.Position]chess.Piece{
+					position.FromString("d4"): piece.NewKing(chess.SideBlack),
+					position.FromString("c3"): piece.NewKing(chess.SideWhite),
+					position.FromString("e3"): piece.NewBishop(chess.SideWhite),
 				}),
 				chess.SideBlack,
 			},
@@ -60,10 +60,10 @@ func TestCheck(t *testing.T) {
 		{
 			"no_check",
 			args{
-				standardtest.NewEmpty(chess.SideWhite, []standardtest.Placement{
-					{Piece: piece.NewKing(chess.SideWhite), Position: position.FromString("d4")},
-					{Piece: piece.NewKing(chess.SideBlack), Position: position.FromString("h8")},
-					{Piece: piece.NewRook(chess.SideBlack), Position: position.FromString("a1")},
+				standardtest.MustNew(chess.SideWhite, map[position.Position]chess.Piece{
+					position.FromString("d4"): piece.NewKing(chess.SideWhite),
+					position.FromString("h8"): piece.NewKing(chess.SideBlack),
+					position.FromString("a1"): piece.NewRook(chess.SideBlack),
 				}),
 				chess.SideWhite,
 			},

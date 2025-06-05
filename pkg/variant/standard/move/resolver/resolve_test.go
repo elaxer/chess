@@ -26,10 +26,10 @@ func TestResolveFrom(t *testing.T) {
 			"empty_from",
 			args{
 				move: move.NewNormal(position.NewEmpty(), position.FromString("e4"), piece.NotationPawn),
-				board: standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewPawn(SideWhite), Position: position.FromString("d2")},
-					{Piece: piece.NewPawn(SideWhite), Position: position.FromString("e2")},
-					{Piece: piece.NewPawn(SideWhite), Position: position.FromString("f2")},
+				board: standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("d2"): piece.NewPawn(SideWhite),
+					position.FromString("e2"): piece.NewPawn(SideWhite),
+					position.FromString("f2"): piece.NewPawn(SideWhite),
 				}),
 			},
 			position.FromString("e2"),
@@ -39,9 +39,9 @@ func TestResolveFrom(t *testing.T) {
 			"same_file",
 			args{
 				move: move.NewNormal(position.FromString("a"), position.FromString("b8"), piece.NotationRook),
-				board: standardtest.NewEmpty(SideBlack, []standardtest.Placement{
-					{Piece: piece.NewRook(SideBlack), Position: position.FromString("f8")},
-					{Piece: piece.NewRook(SideBlack), Position: position.FromString("a8")},
+				board: standardtest.MustNew(SideBlack, map[position.Position]Piece{
+					position.FromString("f8"): piece.NewRook(SideBlack),
+					position.FromString("a8"): piece.NewRook(SideBlack),
 				}),
 			},
 			position.FromString("a8"),
@@ -51,9 +51,9 @@ func TestResolveFrom(t *testing.T) {
 			"knights",
 			args{
 				move: move.NewNormal(position.FromString("g"), position.FromString("e2"), piece.NotationKnight),
-				board: standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewKnight(SideWhite), Position: position.FromString("g1")},
-					{Piece: piece.NewKnight(SideWhite), Position: position.FromString("c3")},
+				board: standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("g1"): piece.NewKnight(SideWhite),
+					position.FromString("c3"): piece.NewKnight(SideWhite),
 				}),
 			},
 			position.FromString("g1"),
@@ -63,9 +63,9 @@ func TestResolveFrom(t *testing.T) {
 			"same_rank",
 			args{
 				move: move.NewNormal(position.FromString("1"), position.FromString("a5"), piece.NotationRook),
-				board: standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: piece.NewRook(SideWhite), Position: position.FromString("a1")},
-					{Piece: piece.NewRook(SideWhite), Position: position.FromString("a8")},
+				board: standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("a1"): piece.NewRook(SideWhite),
+					position.FromString("a8"): piece.NewRook(SideWhite),
 				}),
 			},
 			position.FromString("a1"),
@@ -75,10 +75,10 @@ func TestResolveFrom(t *testing.T) {
 			"full_from",
 			args{
 				move: move.NewNormal(position.FromString("f2"), position.FromString("d4"), piece.NotationBishop),
-				board: standardtest.NewEmpty(SideBlack, []standardtest.Placement{
-					{Piece: piece.NewBishop(SideBlack), Position: position.FromString("b2")},
-					{Piece: piece.NewBishop(SideBlack), Position: position.FromString("f2")},
-					{Piece: piece.NewBishop(SideBlack), Position: position.FromString("b6")},
+				board: standardtest.MustNew(SideBlack, map[position.Position]Piece{
+					position.FromString("b2"): piece.NewBishop(SideBlack),
+					position.FromString("f2"): piece.NewBishop(SideBlack),
+					position.FromString("b6"): piece.NewBishop(SideBlack),
 				}),
 			},
 			position.FromString("f2"),

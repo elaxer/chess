@@ -22,7 +22,7 @@ func TestEncoder_Encode(t *testing.T) {
 	}{
 		{
 			"empty",
-			args{factory.CreateEmpty(chess.SideWhite)},
+			args{standardtest.NewEmpty(chess.SideWhite)},
 			"8/8/8/8/8/8/8/8 w - - 0 1",
 		},
 		{

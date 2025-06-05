@@ -15,10 +15,16 @@ type Placement struct {
 	Position position.Position
 }
 
-func NewEmpty(turn chess.Side, placements []Placement) chess.Board {
-	board := board.NewFactory().CreateEmpty(turn)
-	for _, placement := range placements {
-		board.Squares().PlacePiece(placement.Piece, placement.Position)
+func NewEmpty(turn chess.Side) chess.Board {
+	board, _ := board.NewFactory().Create(turn, nil)
+
+	return board
+}
+
+func MustNew(turn chess.Side, placement map[position.Position]chess.Piece) chess.Board {
+	board, err := board.NewFactory().Create(turn, placement)
+	if err != nil {
+		panic(err)
 	}
 
 	return board

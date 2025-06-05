@@ -43,6 +43,26 @@ func NewSquares(edgePosition position.Position) *Squares {
 	return &Squares{squares, edgePosition}
 }
 
+// SquaresFromPlacement creates a new Squares instance from a given placement map.
+// The placement map is a mapping of position to Piece, where each Piece is placed at its corresponding position.
+// If the placement is nil or empty, it returns an empty Squares instance with the specified edge position.
+// If any piece in the placement is out of boundaries defined by the edge position, it returns an error.
+// If edgePosition is not bounded by the maximum supported position, it panics.
+func SquaresFromPlacement(edgePosition position.Position, placement map[position.Position]Piece) (*Squares, error) {
+	squares := NewSquares(edgePosition)
+	if placement == nil {
+		return squares, nil
+	}
+
+	for position, piece := range placement {
+		if err := squares.PlacePiece(piece, position); err != nil {
+			return nil, err
+		}
+	}
+
+	return squares, nil
+}
+
 // EdgePosition returns the edge position of the squares.
 func (s *Squares) EdgePosition() position.Position {
 	return s.edgePosition

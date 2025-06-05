@@ -27,12 +27,12 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"short",
 			fields{
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
-					{Piece: standardtest.NewPiece("Q"), Position: position.FromString("g8")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
-					{Piece: standardtest.NewPiece("r"), Position: position.FromString("b6")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("e1"): standardtest.NewPiece("K"),
+					position.FromString("g8"): standardtest.NewPiece("Q"),
+					position.FromString("a1"): standardtest.NewPiece("R"),
+					position.FromString("h1"): standardtest.NewPiece("R"),
+					position.FromString("b6"): standardtest.NewPiece("r"),
 				}),
 			},
 			args{move.CastlingShort},
@@ -41,11 +41,11 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"long",
 			fields{
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
-					{Piece: standardtest.NewPiece("r"), Position: position.FromString("g6")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("e1"): standardtest.NewPiece("K"),
+					position.FromString("a1"): standardtest.NewPiece("R"),
+					position.FromString("h1"): standardtest.NewPiece("R"),
+					position.FromString("g6"): standardtest.NewPiece("r"),
 				}),
 			},
 			args{move.CastlingLong},
@@ -54,10 +54,10 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"king_is_walked",
 			fields{
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPieceW("K"), Position: position.FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("e1"): standardtest.NewPieceW("K"),
+					position.FromString("a1"): standardtest.NewPiece("R"),
+					position.FromString("h1"): standardtest.NewPiece("R"),
 				}),
 			},
 			args{move.CastlingShort},
@@ -66,10 +66,10 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"rook_is_walked",
 			fields{
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
-					{Piece: standardtest.NewPieceW("R"), Position: position.FromString("h1")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("e1"): standardtest.NewPiece("K"),
+					position.FromString("a1"): standardtest.NewPiece("R"),
+					position.FromString("h1"): standardtest.NewPieceW("R"),
 				}),
 			},
 			args{move.CastlingShort},
@@ -78,11 +78,11 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"let",
 			fields{
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
-					{Piece: standardtest.NewPiece("N"), Position: position.FromString("g1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("e1"): standardtest.NewPiece("K"),
+					position.FromString("a1"): standardtest.NewPiece("R"),
+					position.FromString("g1"): standardtest.NewPiece("N"),
+					position.FromString("h1"): standardtest.NewPiece("R"),
 				}),
 			},
 			args{move.CastlingShort},
@@ -91,11 +91,11 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"obstacle",
 			fields{
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
-					{Piece: standardtest.NewPiece("n"), Position: position.FromString("g1")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("e1"): standardtest.NewPiece("K"),
+					position.FromString("a1"): standardtest.NewPiece("R"),
+					position.FromString("h1"): standardtest.NewPiece("R"),
+					position.FromString("g1"): standardtest.NewPiece("n"),
 				}),
 			},
 			args{move.CastlingShort},
@@ -104,11 +104,11 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"future_check",
 			fields{
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
-					{Piece: standardtest.NewPiece("r"), Position: position.FromString("g8")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("e1"): standardtest.NewPiece("K"),
+					position.FromString("a1"): standardtest.NewPiece("R"),
+					position.FromString("h1"): standardtest.NewPiece("R"),
+					position.FromString("g8"): standardtest.NewPiece("r"),
 				}),
 			},
 			args{move.CastlingShort},
@@ -117,11 +117,11 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"attacked_castling_square",
 			fields{
-				standardtest.NewEmpty(SideWhite, []standardtest.Placement{
-					{Piece: standardtest.NewPiece("K"), Position: position.FromString("e1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("a1")},
-					{Piece: standardtest.NewPiece("R"), Position: position.FromString("h1")},
-					{Piece: standardtest.NewPiece("r"), Position: position.FromString("f8")},
+				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+					position.FromString("e1"): standardtest.NewPiece("K"),
+					position.FromString("a1"): standardtest.NewPiece("R"),
+					position.FromString("h1"): standardtest.NewPiece("R"),
+					position.FromString("f8"): standardtest.NewPiece("r"),
 				}),
 			},
 			args{move.CastlingShort},

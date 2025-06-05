@@ -35,19 +35,24 @@ func NewFactory() chess.BoardFactory {
 	return &factory{}
 }
 
-func (f *factory) CreateEmpty(turn chess.Side) chess.Board {
+func (f *factory) Create(turn chess.Side, placement map[position.Position]chess.Piece) (chess.Board, error) {
+	squares, err := chess.SquaresFromPlacement(edgePosition, placement)
+	if err != nil {
+		return nil, err
+	}
+
 	return &board{
 		turn:           turn,
-		squares:        chess.NewSquares(edgePosition),
+		squares:        squares,
 		movesHistory:   make([]chess.MoveResult, 0, 128),
 		capturedPieces: make([]chess.Piece, 0, 30),
 
 		stateRules: stateRules,
-	}
+	}, nil
 }
 
 func (f *factory) CreateFilled() chess.Board {
-	board := f.CreateEmpty(chess.SideWhite)
+	board, _ := f.Create(chess.SideWhite, nil)
 	for i, notation := range firstRowPieceNotations {
 		file := position.File(i + 1)
 
