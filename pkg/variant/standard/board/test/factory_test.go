@@ -77,12 +77,7 @@ func TestFactory_CreateFromMoves(t *testing.T) {
 	var encoder fen.Encoder
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			board, err := standardtest.NewFromMoves(tt.args.moves)
-			if err != nil {
-				t.Errorf("Failed to create board from moves: %v", err)
-				return
-			}
-
+			board := standardtest.NewBoardFromMoves(tt.args.moves...)
 			if fen := encoder.Encode(board); fen != tt.wantFEN {
 				t.Errorf("Expected position \"%s\", got - %s", tt.wantFEN, fen)
 			}

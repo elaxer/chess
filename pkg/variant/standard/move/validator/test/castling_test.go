@@ -27,7 +27,7 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"short",
 			fields{
-				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+				standardtest.NewBoard(SideWhite, map[position.Position]Piece{
 					position.FromString("e1"): standardtest.NewPiece("K"),
 					position.FromString("g8"): standardtest.NewPiece("Q"),
 					position.FromString("a1"): standardtest.NewPiece("R"),
@@ -41,7 +41,7 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"long",
 			fields{
-				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+				standardtest.NewBoard(SideWhite, map[position.Position]Piece{
 					position.FromString("e1"): standardtest.NewPiece("K"),
 					position.FromString("a1"): standardtest.NewPiece("R"),
 					position.FromString("h1"): standardtest.NewPiece("R"),
@@ -54,8 +54,8 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"king_is_walked",
 			fields{
-				standardtest.MustNew(SideWhite, map[position.Position]Piece{
-					position.FromString("e1"): standardtest.NewPieceW("K"),
+				standardtest.NewBoard(SideWhite, map[position.Position]Piece{
+					position.FromString("e1"): standardtest.NewPieceM("K"),
 					position.FromString("a1"): standardtest.NewPiece("R"),
 					position.FromString("h1"): standardtest.NewPiece("R"),
 				}),
@@ -66,10 +66,10 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"rook_is_walked",
 			fields{
-				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+				standardtest.NewBoard(SideWhite, map[position.Position]Piece{
 					position.FromString("e1"): standardtest.NewPiece("K"),
 					position.FromString("a1"): standardtest.NewPiece("R"),
-					position.FromString("h1"): standardtest.NewPieceW("R"),
+					position.FromString("h1"): standardtest.NewPieceM("R"),
 				}),
 			},
 			args{move.CastlingShort},
@@ -78,7 +78,7 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"let",
 			fields{
-				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+				standardtest.NewBoard(SideWhite, map[position.Position]Piece{
 					position.FromString("e1"): standardtest.NewPiece("K"),
 					position.FromString("a1"): standardtest.NewPiece("R"),
 					position.FromString("g1"): standardtest.NewPiece("N"),
@@ -91,7 +91,7 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"obstacle",
 			fields{
-				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+				standardtest.NewBoard(SideWhite, map[position.Position]Piece{
 					position.FromString("e1"): standardtest.NewPiece("K"),
 					position.FromString("a1"): standardtest.NewPiece("R"),
 					position.FromString("h1"): standardtest.NewPiece("R"),
@@ -104,7 +104,7 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"future_check",
 			fields{
-				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+				standardtest.NewBoard(SideWhite, map[position.Position]Piece{
 					position.FromString("e1"): standardtest.NewPiece("K"),
 					position.FromString("a1"): standardtest.NewPiece("R"),
 					position.FromString("h1"): standardtest.NewPiece("R"),
@@ -117,7 +117,7 @@ func TestValidateCastling(t *testing.T) {
 		{
 			"attacked_castling_square",
 			fields{
-				standardtest.MustNew(SideWhite, map[position.Position]Piece{
+				standardtest.NewBoard(SideWhite, map[position.Position]Piece{
 					position.FromString("e1"): standardtest.NewPiece("K"),
 					position.FromString("a1"): standardtest.NewPiece("R"),
 					position.FromString("h1"): standardtest.NewPiece("R"),

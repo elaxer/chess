@@ -12,7 +12,7 @@ import (
 )
 
 func TestPromotion_Make(t *testing.T) {
-	board := standardtest.MustNew(SideWhite, map[position.Position]Piece{
+	board := standardtest.NewBoard(SideWhite, map[position.Position]Piece{
 		position.FromString("d7"): standardtest.NewPiece("P"),
 		position.FromString("a1"): standardtest.NewPiece("K"),
 		position.FromString("a8"): standardtest.NewPiece("k"),

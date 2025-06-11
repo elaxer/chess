@@ -83,7 +83,7 @@ func TestCastling_Make_Black(t *testing.T) {
 
 func TestCastling_Make_Negative(t *testing.T) {
 	_, err := new(mover.Castling).Make(move.CastlingShort,
-		standardtest.MustNew(chess.SideWhite, map[position.Position]chess.Piece{
+		standardtest.NewBoard(chess.SideWhite, map[position.Position]chess.Piece{
 			position.FromString("e1"): standardtest.NewPiece("K"),
 			position.FromString("h1"): standardtest.NewPiece("R"),
 			position.FromString("f1"): standardtest.NewPiece("N"),

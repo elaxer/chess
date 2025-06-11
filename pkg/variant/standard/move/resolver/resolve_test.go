@@ -26,7 +26,7 @@ func TestResolveFrom(t *testing.T) {
 			"empty_from",
 			args{
 				move: move.NewNormal(position.NewEmpty(), position.FromString("e4"), piece.NotationPawn),
-				board: standardtest.MustNew(SideWhite, map[position.Position]Piece{
+				board: standardtest.NewBoard(SideWhite, map[position.Position]Piece{
 					position.FromString("d2"): piece.NewPawn(SideWhite),
 					position.FromString("e2"): piece.NewPawn(SideWhite),
 					position.FromString("f2"): piece.NewPawn(SideWhite),
@@ -39,7 +39,7 @@ func TestResolveFrom(t *testing.T) {
 			"same_file",
 			args{
 				move: move.NewNormal(position.FromString("a"), position.FromString("b8"), piece.NotationRook),
-				board: standardtest.MustNew(SideBlack, map[position.Position]Piece{
+				board: standardtest.NewBoard(SideBlack, map[position.Position]Piece{
 					position.FromString("f8"): piece.NewRook(SideBlack),
 					position.FromString("a8"): piece.NewRook(SideBlack),
 				}),
@@ -51,7 +51,7 @@ func TestResolveFrom(t *testing.T) {
 			"knights",
 			args{
 				move: move.NewNormal(position.FromString("g"), position.FromString("e2"), piece.NotationKnight),
-				board: standardtest.MustNew(SideWhite, map[position.Position]Piece{
+				board: standardtest.NewBoard(SideWhite, map[position.Position]Piece{
 					position.FromString("g1"): piece.NewKnight(SideWhite),
 					position.FromString("c3"): piece.NewKnight(SideWhite),
 				}),
@@ -63,7 +63,7 @@ func TestResolveFrom(t *testing.T) {
 			"same_rank",
 			args{
 				move: move.NewNormal(position.FromString("1"), position.FromString("a5"), piece.NotationRook),
-				board: standardtest.MustNew(SideWhite, map[position.Position]Piece{
+				board: standardtest.NewBoard(SideWhite, map[position.Position]Piece{
 					position.FromString("a1"): piece.NewRook(SideWhite),
 					position.FromString("a8"): piece.NewRook(SideWhite),
 				}),
@@ -75,7 +75,7 @@ func TestResolveFrom(t *testing.T) {
 			"full_from",
 			args{
 				move: move.NewNormal(position.FromString("f2"), position.FromString("d4"), piece.NotationBishop),
-				board: standardtest.MustNew(SideBlack, map[position.Position]Piece{
+				board: standardtest.NewBoard(SideBlack, map[position.Position]Piece{
 					position.FromString("b2"): piece.NewBishop(SideBlack),
 					position.FromString("f2"): piece.NewBishop(SideBlack),
 					position.FromString("b6"): piece.NewBishop(SideBlack),
