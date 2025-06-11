@@ -23,15 +23,19 @@ var Regexp = regexp.MustCompile(`(?i)^(?P<placement>(((1[0-6]|[1-9])|[PNBRQK])+/
 // Decoder decodes a FEN string into a chess board.
 // It uses a board factory to create the board and a piece factory to create pieces.
 type Decoder struct {
-	BoardFactory chess.BoardFactory
-	PieceFactory chess.PieceFactory
+	boardFactory chess.BoardFactory
+	pieceFactory chess.PieceFactory
+}
+
+func NewDecoder(boardFactory chess.BoardFactory, pieceFactory chess.PieceFactory) *Decoder {
+	return &Decoder{boardFactory, pieceFactory}
 }
 
 // Decode decodes a FEN string into a chess board.
 // The FEN string should match the regular expression defined in Regexp.
 // It returns an error if the FEN string is invalid or if there is an error creating the board or pieces.
 func (d *Decoder) Decode(fen string) (chess.Board, error) {
-	if d.BoardFactory == nil || d.PieceFactory == nil {
+	if d.boardFactory == nil || d.pieceFactory == nil {
 		return nil, fmt.Errorf("%w: board factory and piece factory must be provided", ErrDecoding)
 	}
 
@@ -45,7 +49,7 @@ func (d *Decoder) Decode(fen string) (chess.Board, error) {
 	rows := strings.Split(data["placement"], "/")
 	slices.Reverse(rows)
 	for i, row := range rows {
-		rowPlacement, err := d.placementFromRow(row, position.Rank(i+1), d.PieceFactory)
+		rowPlacement, err := d.placementFromRow(row, position.Rank(i+1))
 		if err != nil {
 			return nil, err
 		}
@@ -53,10 +57,10 @@ func (d *Decoder) Decode(fen string) (chess.Board, error) {
 		maps.Copy(placement, rowPlacement)
 	}
 
-	return d.BoardFactory.Create(d.side(data["side"]), placement)
+	return d.boardFactory.Create(d.side(data["side"]), placement)
 }
 
-func (d *Decoder) placementFromRow(row string, rank position.Rank, pieceFactory chess.PieceFactory) (map[position.Position]chess.Piece, error) {
+func (d *Decoder) placementFromRow(row string, rank position.Rank) (map[position.Position]chess.Piece, error) {
 	placement := make(map[position.Position]chess.Piece, 16)
 
 	pos := position.New(position.FileMin, rank)
@@ -72,7 +76,7 @@ func (d *Decoder) placementFromRow(row string, rank position.Rank, pieceFactory 
 			continue
 		}
 
-		piece, err := pieceFactory.CreateFromString(string(char))
+		piece, err := d.pieceFactory.CreateFromString(string(char))
 		if err != nil {
 			return nil, err
 		}

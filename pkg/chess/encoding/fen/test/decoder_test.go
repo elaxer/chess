@@ -135,7 +135,7 @@ func TestDecoder_Decode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			boardFactory := &chesstest.FactoryMock{EdgePosition: tt.args.edgePosition}
-			decoder := &fen.Decoder{BoardFactory: boardFactory, PieceFactory: pieceFactory}
+			decoder := fen.NewDecoder(boardFactory, pieceFactory)
 			got, err := decoder.Decode(tt.args.fen)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Decoder.Decode() error = %v, wantErr %v", err, tt.wantErr)

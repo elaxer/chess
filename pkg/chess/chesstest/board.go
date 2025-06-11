@@ -6,7 +6,6 @@ import (
 	"github.com/elaxer/chess/pkg/chess/position"
 )
 
-// todo use everywhere
 type BoardMock struct {
 	SquaresValue      *chess.Squares
 	TurnValue         chess.Side
@@ -59,12 +58,16 @@ func (s *BoardMock) MakeMove(move chess.Move) (chess.MoveResult, error) {
 		return s.MakeMoveFunc(move)
 	}
 
-	return &MoveResultMock{
+	result := &MoveResultMock{
 		MoveValue:          move,
 		SideValue:          s.TurnValue,
 		BoardNewStateValue: s.State(!s.TurnValue),
 		StringValue:        move.String(),
-	}, nil
+	}
+	s.MovesHistoryValue = append(s.MovesHistoryValue, result)
+	s.TurnValue = !s.TurnValue
+
+	return result, nil
 }
 
 func (s *BoardMock) UndoLastMove() (chess.MoveResult, error) {

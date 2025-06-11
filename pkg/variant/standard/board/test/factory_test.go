@@ -70,7 +70,7 @@ func TestFactory_CreateFromMoves(t *testing.T) {
 				"Nc6+", "Qxc6+",
 				"Qxc6", "Rd6",
 			}},
-			"8/4kpp1/1KQrP3/6P1/5p2/8/P7/8",
+			"8/4kpp1/1KQrP3/6P1/5p2/8/P7/8 w",
 		},
 	}
 

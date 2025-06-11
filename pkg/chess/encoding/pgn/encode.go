@@ -1,3 +1,6 @@
+// Package pgn provides functionality to encode/decode chess games in the Portable Game Notation (PGN) format.
+// It includes encoding headers, moves, and results into a PGN string.
+// It also provides a way to decode PGN strings into headers and moves.
 package pgn
 
 import (
@@ -7,9 +10,15 @@ import (
 	"github.com/elaxer/chess/pkg/chess"
 )
 
-func Encode(board chess.Board, headers []Header) string {
+// Encode encodes the given headers and board state into a PGN string.
+// It formats the headers, moves, and result according to the PGN standard.
+// The headers are encoded as a string with each header on a new line.
+// The moves are encoded as a single line with move numbers and piece notations.
+// The result is appended at the end of the PGN string.
+func Encode(headers []Header, board chess.Board) string {
 	var pgn strings.Builder
 	fmt.Fprintln(&pgn, EncodeHeaders(headers))
+	fmt.Fprintln(&pgn)
 
 	movesStr := wrapText(EncodeMoves(board.MovesHistory()), 79)
 	fmt.Fprint(&pgn, movesStr)
@@ -17,15 +26,23 @@ func Encode(board chess.Board, headers []Header) string {
 	return pgn.String() + " " + result(board)
 }
 
+// EncodeHeaders encodes the given headers into a PGN string.
+// Each header is formatted as "[name "value"]" and joined by newlines.
 func EncodeHeaders(headers []Header) string {
-	var str strings.Builder
+	headerStrings := make([]string, 0, len(headers))
 	for _, header := range headers {
-		fmt.Fprintln(&str, header)
+		headerStrings = append(headerStrings, header.String())
 	}
 
-	return str.String()
+	return strings.Join(headerStrings, "\n")
 }
 
+// EncodeMoves encodes the given moves into a PGN string.
+// It formats the moves with move numbers and piece notations.
+// Each move is separated by a space, and move numbers are added every two moves.
+// The first move is considered move 1, and the second move is considered move 1 as well (for white and black).
+// The move number is incremented for every two moves (one for white and one for black).
+// The moves are formatted as "1. e4 1... e5 2. Nf3 2... Nc6" for example.
 func EncodeMoves(moves []chess.MoveResult) string {
 	var str strings.Builder
 	currentMoveNumber := 0

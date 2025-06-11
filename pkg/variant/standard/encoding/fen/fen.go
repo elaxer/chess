@@ -18,7 +18,6 @@ import (
 func NewEncoder() *fen.Encoder {
 	return &fen.Encoder{
 		MetricFuncs: []metric.MetricFunc{
-			turn,
 			castlingMetric,
 			standardmetric.EnPassantTargetSquare,
 			standardmetric.HalfmoveClock,
@@ -30,11 +29,7 @@ func NewEncoder() *fen.Encoder {
 // NewDecoder creates a new FEN decoder for the standard chess variant.
 // See github.com/elaxer/chess/pkg/chess/encoding/fen/decoder for more details.
 func NewDecoder() *fen.Decoder {
-	return &fen.Decoder{BoardFactory: board.NewFactory(), PieceFactory: piece.NewFactory()}
-}
-
-func turn(board chess.Board) metric.Metric {
-	return metric.New("Turn", board.Turn())
+	return fen.NewDecoder(board.NewFactory(), piece.NewFactory())
 }
 
 func castlingMetric(board chess.Board) metric.Metric {

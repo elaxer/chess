@@ -41,6 +41,7 @@ func (s *state) Type() StateType {
 	return s.stateType
 }
 
+// String returns the name of the state.
 func (s *state) String() string {
 	return s.name
 }

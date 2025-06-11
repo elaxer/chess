@@ -3,11 +3,11 @@ package pgn
 import (
 	"testing"
 
-	"github.com/elaxer/chess/pkg/variant/standard/standardtest"
+	"github.com/elaxer/chess/pkg/chess/chesstest"
 )
 
 func TestEncode(t *testing.T) {
-	board := standardtest.MustNewFromMoves([]string{
+	board := chesstest.BoardFromMoves(
 		"e4", "c6",
 		"d4", "d5",
 		"e5", "Bf5",
@@ -23,16 +23,16 @@ func TestEncode(t *testing.T) {
 		"Bxd4", "Nxd4",
 		"Qxd4", "Nc6",
 		"Qf2", "Bb4",
-		"0-0-0", "Bxc3",
+		"O-O-O", "Bxc3",
 		"bxc3", "Qa5",
 		"Rxd5", "Qxc3",
 		"Qc5", "Qxc5",
-		"Rxc5", "0-0",
+		"Rxc5", "O-O",
 		"Bxc6", "bxc6",
 		"Rd1", "Rab8",
 		"c4", "Rfd8",
 		"Rd6", "Kf8",
-		"Rcc6", "Rdc8",
+		"Rcxc6", "Rdc8",
 		"Kc2", "h4",
 		"Rxc8+", "Rxc8",
 		"Kc3", "a5",
@@ -58,9 +58,9 @@ func TestEncode(t *testing.T) {
 		"c8=Q+", "Ke7",
 		"Nc6+", "Qxc6+",
 		"Qxc6", "Rd6",
-	})
+	)
 
-	pgn := Encode(board, []Header{
+	pgn := Encode([]Header{
 		NewHeader("Event", "Saint Louis Rapid 2017"),
 		NewHeader("Site", "Saint Louis USA"),
 		NewHeader("Date", "2017.08.14"),
@@ -70,7 +70,7 @@ func TestEncode(t *testing.T) {
 		NewHeader("Result", "*"),
 		NewHeader("TimeControl", ""),
 		NewHeader("Link", "https://www.chess.com/games/view/14842105"),
-	})
+	}, board)
 	expectedPGN := `[Event "Saint Louis Rapid 2017"]
 [Site "Saint Louis USA"]
 [Date "2017.08.14"]
@@ -92,5 +92,24 @@ h1=Q 47. Re8+ Kxe8 48. c8=Q+ Ke7 49. Nc6+ Qxc6+ 50. Qxc6 Rd6 *`
 
 	if pgn != expectedPGN {
 		t.Errorf("Unexpected PGN:\n%s", pgn)
+	}
+}
+
+func TestEncodeHeaders(t *testing.T) {
+	headers := []Header{
+		NewHeader("my", "header"),
+		NewHeader("anoth", "er header"),
+		NewHeader("foo", "bar"),
+		NewHeader("", "empty"),
+		NewHeader("", ""),
+	}
+
+	const expected = `[my "header"]
+[anoth "er header"]
+[foo "bar"]
+[ "empty"]
+[ ""]`
+	if got := EncodeHeaders(headers); got != expected {
+		t.Errorf("EncodeHeaders() = \n%v want\n%v", got, expected)
 	}
 }
