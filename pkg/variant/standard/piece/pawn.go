@@ -17,8 +17,6 @@ type Pawn struct {
 	*abstract
 }
 
-// PawnRankDirection возвращает направление движения пешки для указанной стороны.
-// Для белых движение будет идти вверх (+1), для черных - вниз (-1).
 func PawnRankDirection(side chess.Side) position.Rank {
 	if side == chess.SideBlack {
 		return -1
@@ -45,8 +43,6 @@ func (p *Pawn) Weight() uint8 {
 	return WeightPawn
 }
 
-// movesForward возвращает возможные ходы вперед для пешки.
-// Пешка может двигаться на одну или две клетки вперед, если она не была перемещена ранее.
 func (p *Pawn) movesForward(from position.Position, direction position.Rank, squares *chess.Squares) position.Set {
 	moves := mapset.NewSetWithSize[position.Position](2)
 	positions := [2]position.Position{
@@ -65,9 +61,6 @@ func (p *Pawn) movesForward(from position.Position, direction position.Rank, squ
 	return moves
 }
 
-// movesDiagonal возвращает возможные диагональные ходы для пешки.
-// Пешка может бить противника по диагонали на одну клетку вперед.
-// Если на диагонали нет противника, то возвращается пустой массив.
 func (p *Pawn) movesDiagonal(from position.Position, direction position.Rank, squares *chess.Squares) position.Set {
 	moves := mapset.NewSetWithSize[position.Position](2)
 	positions := [2]position.Position{
