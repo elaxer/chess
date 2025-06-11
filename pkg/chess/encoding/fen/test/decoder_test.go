@@ -8,7 +8,7 @@ import (
 	"github.com/elaxer/chess/pkg/chess/chesstest"
 	"github.com/elaxer/chess/pkg/chess/encoding/fen"
 	"github.com/elaxer/chess/pkg/chess/position"
-	"github.com/elaxer/chess/pkg/visualizer"
+	"github.com/elaxer/chess/pkg/chess/visualizer"
 )
 
 func TestDecoder_Decode(t *testing.T) {
