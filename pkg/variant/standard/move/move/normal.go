@@ -50,7 +50,6 @@ func (m *Normal) Validate() error {
 	)
 }
 
-// todo if p.Notation() == piece.NotationPawn && move.IsCapture
 func (m *Normal) String() string {
 	return fmt.Sprintf("%s%s%s", m.PieceNotation, m.From, m.To)
 }

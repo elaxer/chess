@@ -1,97 +1,94 @@
 package mover_test
 
-//todo tests
+import (
+	"testing"
 
-// func TestBoard_CastleShort(t *testing.T) {
-// 	b := standard.NewFactory().CreateEmpty(SideWhite)
-// 	squares := b.Squares()
+	"github.com/elaxer/chess/pkg/chess"
+	"github.com/elaxer/chess/pkg/chess/position"
+	"github.com/elaxer/chess/pkg/variant/standard/board"
+	"github.com/elaxer/chess/pkg/variant/standard/move/move"
+	"github.com/elaxer/chess/pkg/variant/standard/move/mover"
+	"github.com/elaxer/chess/pkg/variant/standard/piece"
+	"github.com/elaxer/chess/pkg/variant/standard/standardtest"
+)
 
-// 	kingSquare, _ := squares.GetByPosition(position.FromNotation("e1"))
-// 	rookSquare, _ := squares.GetByPosition(position.FromNotation("h1"))
+func TestCastling_Make_Short(t *testing.T) {
+	b, _ := board.NewFactory().Create(chess.SideWhite, nil)
 
-// 	kingSquare = piece.NewKing(SideWhite)
-// 	rookSquare = piece.NewRook(SideWhite)
+	king := piece.NewKing(chess.SideWhite)
+	rook := piece.NewRook(chess.SideWhite)
 
-// 	if _, err := new(mover.Castling).Make(move.CastlingShort, b); err != nil {
-// 		t.Fatalf("castling failed: %v", err)
-// 	}
+	b.Squares().PlacePiece(king, position.FromString("e1"))
+	b.Squares().PlacePiece(rook, position.FromString("h1"))
 
-// 	if kingSquare != nil {
-// 		t.Fatalf("the king square should be empty")
-// 	}
-// 	if !rookSquare.IsEmpty() {
-// 		t.Fatalf("the rook square should be empty")
-// 	}
+	if got, err := new(mover.Castling).Make(move.CastlingShort, b); err != nil {
+		t.Fatalf("castling failed: %v", err)
+	} else if got == nil {
+		t.Fatalf("expected a valid move result, got nil")
+	}
 
-// 	kingSquareCastled := squares.GetByPosition(position.FromNotation("g1"))
-// 	if kingSquareCastled.IsEmpty() {
-// 		t.Fatalf("the king didn't castled")
-// 	}
+	if pos := b.Squares().GetByPiece(king); pos != position.FromString("g1") {
+		t.Errorf("king should be on g1, got %s", pos)
+	}
+	if pos := b.Squares().GetByPiece(rook); pos != position.FromString("f1") {
+		t.Errorf("rook should be on f1, got %s", pos)
+	}
+}
 
-// 	rookSquareCastled := squares.GetByPosition(position.FromNotation("f1"))
-// 	if rookSquareCastled.IsEmpty() {
-// 		t.Errorf("the rook didn't castled")
-// 	}
-// }
+func TestCastling_Make_Long(t *testing.T) {
+	b, _ := board.NewFactory().Create(chess.SideWhite, nil)
 
-// func TestBoard_CastleLong(t *testing.T) {
-// 	b := standard.NewFactory().CreateEmpty(SideWhite)
-// 	squares := b.Squares()
+	king := piece.NewKing(chess.SideWhite)
+	rook := piece.NewRook(chess.SideWhite)
 
-// 	kingSquare := squares.GetByPosition(position.FromNotation("e1"))
-// 	rookSquare := squares.GetByPosition(position.FromNotation("a1"))
+	b.Squares().PlacePiece(king, position.FromString("e1"))
+	b.Squares().PlacePiece(rook, position.FromString("a1"))
 
-// 	kingSquare.SetPiece(piece.NewKing(SideWhite))
-// 	rookSquare.SetPiece(piece.NewRook(SideWhite))
+	if got, err := new(mover.Castling).Make(move.CastlingLong, b); err != nil {
+		t.Fatalf("castling failed: %v", err)
+	} else if got == nil {
+		t.Fatalf("expected a valid move result, got nil")
+	}
 
-// 	if _, err := new(mover.Castling).Make(move.CastlingLong, b); err != nil {
-// 		t.Fatalf("castling failed: %v", err)
-// 	}
+	if pos := b.Squares().GetByPiece(king); pos != position.FromString("c1") {
+		t.Errorf("king should be on c1, got %s", pos)
+	}
+	if pos := b.Squares().GetByPiece(rook); pos != position.FromString("d1") {
+		t.Errorf("rook should be on d1, got %s", pos)
+	}
+}
 
-// 	if !kingSquare.IsEmpty() {
-// 		t.Fatalf("kingSquare should be empty")
-// 	}
-// 	if !rookSquare.IsEmpty() {
-// 		t.Fatalf("rookSquare should be empty")
-// 	}
+func TestCastling_Make_Black(t *testing.T) {
+	b, _ := board.NewFactory().Create(chess.SideBlack, nil)
 
-// 	if kingSquareCastled := squares.GetByPosition(position.FromNotation("c1")); kingSquareCastled.IsEmpty() {
-// 		t.Fatalf("the king didn't castled")
-// 	}
-// 	if rookSquareCastled := squares.GetByPosition(position.FromNotation("d1")); rookSquareCastled.IsEmpty() {
-// 		t.Errorf("the rook didn't castled")
-// 	}
-// }
+	king := piece.NewKing(chess.SideBlack)
+	rook := piece.NewRook(chess.SideBlack)
 
-// func TestBoard_CastleBlack(t *testing.T) {
-// 	b := standard.NewFactory().CreateEmpty(SideBlack)
+	b.Squares().PlacePiece(king, position.FromString("e8"))
+	b.Squares().PlacePiece(rook, position.FromString("h8"))
 
-// 	squares := b.Squares()
+	if got, err := new(mover.Castling).Make(move.CastlingShort, b); err != nil {
+		t.Fatalf("castling failed: %v", err)
+	} else if got == nil {
+		t.Fatalf("expected a valid move result, got nil")
+	}
 
-// 	kingSquare := squares.GetByPosition(position.FromNotation("e8"))
-// 	rookSquare := squares.GetByPosition(position.FromNotation("h8"))
+	if pos := b.Squares().GetByPiece(king); pos != position.FromString("g8") {
+		t.Errorf("king should be on g8, got %s", pos)
+	}
+	if pos := b.Squares().GetByPiece(rook); pos != position.FromString("f8") {
+		t.Errorf("rook should be on f8, got %s", pos)
+	}
+}
 
-// 	kingSquare.SetPiece(piece.NewKing(SideBlack))
-// 	rookSquare.SetPiece(piece.NewRook(SideBlack))
-
-// 	if _, err := new(mover.Castling).Make(move.CastlingShort, b); err != nil {
-// 		t.Fatalf("castling failed: %v", err)
-// 	}
-
-// 	if !kingSquare.IsEmpty() {
-// 		t.Fatalf("the king square should be empty")
-// 	}
-// 	if !rookSquare.IsEmpty() {
-// 		t.Fatalf("the rook square should be empty")
-// 	}
-
-// 	kingSquareCastled := squares.GetByPosition(position.FromNotation("g8"))
-// 	if kingSquareCastled.IsEmpty() {
-// 		t.Fatalf("the king didn't castled")
-// 	}
-
-// 	rookSquareCastled := squares.GetByPosition(position.FromNotation("f8"))
-// 	if rookSquareCastled.IsEmpty() {
-// 		t.Errorf("the rook didn't castled")
-// 	}
-// }
+func TestCastling_Make_Negative(t *testing.T) {
+	_, err := new(mover.Castling).Make(move.CastlingShort,
+		standardtest.MustNew(chess.SideWhite, map[position.Position]chess.Piece{
+			position.FromString("e1"): standardtest.NewPiece("K"),
+			position.FromString("h1"): standardtest.NewPiece("R"),
+			position.FromString("f1"): standardtest.NewPiece("N"),
+		}))
+	if err == nil {
+		t.Errorf("Castling.Make() should have returned an error, got nil")
+	}
+}

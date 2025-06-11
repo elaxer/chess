@@ -45,7 +45,6 @@ func (f *FactoryMock) CreateFilled() chess.Board {
 		return f.CreateFilledFunc()
 	}
 
-	// todo
 	board, _ := f.Create(chess.SideWhite, nil)
 	for i, notation := range []string{"R", "N", "B", "Q", "K", "B", "N", "R"} {
 		file := position.File(i + 1)

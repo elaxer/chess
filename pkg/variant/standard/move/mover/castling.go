@@ -34,7 +34,6 @@ func (m *Castling) Make(castlingType move.Castling, board chess.Board) (chess.Mo
 	return &result.Castling{Abstract: newAbstractResult(board), Castling: castlingType}, nil
 }
 
-// todo
 func (m *Castling) rookPosition(direction position.File, squares *chess.Squares, kingPosition position.Position) (position.Position, error) {
 	for position, p := range squares.IterByDirection(kingPosition, position.New(direction, 0)) {
 		if p != nil && p.Notation() == piece.NotationRook {
@@ -45,7 +44,6 @@ func (m *Castling) rookPosition(direction position.File, squares *chess.Squares,
 	return position.NewEmpty(), fmt.Errorf("%w: rook wasn't found", validator.ErrCastling)
 }
 
-// todo
 func fileDirection(castlingType move.Castling) position.File {
 	return map[move.Castling]position.File{
 		move.CastlingShort: 1,

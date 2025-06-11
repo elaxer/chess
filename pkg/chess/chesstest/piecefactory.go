@@ -28,7 +28,6 @@ func (f *PieceFactoryMock) CreateFromString(str string) (chess.Piece, error) {
 	}
 
 	if len(str) != 1 {
-		// todo
 		return nil, errors.New("piece string must be a single character")
 	}
 

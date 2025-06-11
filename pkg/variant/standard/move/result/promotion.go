@@ -10,7 +10,6 @@ import (
 
 type Promotion struct {
 	Piece
-	// todo разобраться с указатели
 	InputMove move.Promotion `json:"input"`
 }
 
