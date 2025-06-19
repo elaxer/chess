@@ -1,8 +1,8 @@
 package pgn
 
 import (
-	"reflect"
 	"regexp"
+	"slices"
 	"testing"
 
 	"github.com/elaxer/chess"
@@ -29,6 +29,49 @@ func TestDecoder_Decode(t *testing.T) {
 		wantMoves   []chess.Move
 		wantErr     bool
 	}{
+		{
+			"only_headers",
+			fields{regexpHeaders, regexpMoves},
+			args{`[Event "It (open)"]
+[Site "Sevilla (Spain)"]
+[Date "1992.??.??"]
+[Round "?"]
+[White "Gonzalez Raul"]
+[Black "Mikhail Tal"]
+[Result "0-1"]
+[TimeControl ""]
+[Link "https://www.chess.com/games/view/4082964"]`},
+			[]Header{
+				NewHeader("Event", "It (open)"),
+				NewHeader("Site", "Sevilla (Spain)"),
+				NewHeader("Date", "1992.??.??"),
+				NewHeader("Round", "?"),
+				NewHeader("White", "Gonzalez Raul"),
+				NewHeader("Black", "Mikhail Tal"),
+				NewHeader("Result", "0-1"),
+				NewHeader("TimeControl", ""),
+				NewHeader("Link", "https://www.chess.com/games/view/4082964"),
+			},
+			[]chess.Move{},
+			false,
+		},
+		{
+			"only_moves",
+			fields{regexpHeaders, regexpMoves},
+			args{`1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 Qb6 5. Nb3 Nf6 6. Nc3 e6 7. Be3 Qc7 8. a3
+a6 9. Be2 b5 10. O-O Be7 11. Bd3 O-O 12. f4 d6 13. Nd2 Bb7 14. Nf3 Rad8 15. Ng5
+h6 16. Nh3 d5 17. e5 Ne4 18. Bxe4 dxe4 19. Qg4 Nd4 20. Bxd4 Rxd4 21. Rad1 Rxd1
+22. Rxd1 Bxa3 23. Nxe4 Bxe4 24. bxa3 Qxc2 25. Nf2 Bd5 26. Nd3 h5`},
+			[]Header{},
+			chesstest.MoveStrings(
+				"e4", "c5", "Nf3", "Nc6", "d4", "cxd4", "Nxd4", "Qb6", "Nb3", "Nf6", "Nc3",
+				"e6", "Be3", "Qc7", "a3", "a6", "Be2", "b5", "O-O", "Be7", "Bd3", "O-O",
+				"f4", "d6", "Nd2", "Bb7", "Nf3", "Rad8", "Ng5", "h6", "Nh3", "d5", "e5", "Ne4",
+				"Bxe4", "dxe4", "Qg4", "Nd4", "Bxd4", "Rxd4", "Rad1", "Rxd1", "Rxd1", "Bxa3", "Nxe4",
+				"Bxe4", "bxa3", "Qxc2", "Nf2", "Bd5", "Nd3", "h5",
+			),
+			false,
+		},
 		{
 			"raul_vs_tal",
 			fields{regexpHeaders, regexpMoves},
@@ -169,13 +212,13 @@ h6 60. Nd7 h5 61. Ne5 h4 62. Nf3# 1-0`},
 				return
 			}
 
-			if !reflect.DeepEqual(gotHeaders, tt.wantHeaders) {
-				t.Errorf("Decoder.Decode() got1 =\n%v, want\n%v", gotMoves, tt.wantHeaders)
+			if !slices.Equal(gotHeaders, tt.wantHeaders) {
+				t.Errorf("Decoder.Decode() gotHeaders =\n%v, want\n%v", gotHeaders, tt.wantHeaders)
 				return
 			}
 
-			if !reflect.DeepEqual(gotMoves, tt.wantMoves) {
-				t.Errorf("Decoder.Decode() got =\n%v, want\n%v", gotMoves, tt.wantMoves)
+			if !slices.Equal(gotMoves, tt.wantMoves) {
+				t.Errorf("Decoder.Decode() gotMoves =\n%v, want\n%v", gotMoves, tt.wantMoves)
 			}
 		})
 	}

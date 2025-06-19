@@ -23,15 +23,8 @@ func NewDecoder(headersRegexp, movesRegexp *regexp.Regexp) *Decoder {
 // If there is an error during decoding, it returns an error.
 // The PGN string should match the regular expressions defined in headersRegexp and movesRegexp.
 func (d *Decoder) Decode(pgn string) ([]Header, []chess.Move, error) {
-	headers, err := d.decodeHeaders(pgn)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	moves, err := d.decodeMoves(pgn)
-	if err != nil {
-		return nil, nil, err
-	}
+	headers, _ := d.decodeHeaders(pgn)
+	moves, _ := d.decodeMoves(pgn)
 
 	return headers, moves, nil
 }
