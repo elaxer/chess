@@ -1,6 +1,9 @@
 package chess
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 var (
 	// StateClear represents a clear state of the chess board.
@@ -44,4 +47,11 @@ func (s *state) Type() StateType {
 // String returns the name of the state.
 func (s *state) String() string {
 	return s.name
+}
+
+func (s *state) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]any{
+		"name": s.name,
+		"type": s.stateType,
+	})
 }
