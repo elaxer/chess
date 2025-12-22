@@ -24,9 +24,8 @@ func NewDecoder(headersRegexp, movesRegexp *regexp.Regexp) *Decoder {
 // The PGN string should match the regular expressions defined in headersRegexp and movesRegexp.
 func (d *Decoder) Decode(pgn string) ([]Header, []chess.Move, error) {
 	headers, _ := d.decodeHeaders(pgn)
-	moves, _ := d.decodeMoves(pgn)
 
-	return headers, moves, nil
+	return headers, d.decodeMoves(pgn), nil
 }
 
 func (d *Decoder) decodeHeaders(pgn string) ([]Header, error) {
@@ -44,7 +43,7 @@ func (d *Decoder) decodeHeaders(pgn string) ([]Header, error) {
 	return headers, nil
 }
 
-func (d *Decoder) decodeMoves(pgn string) ([]chess.Move, error) {
+func (d *Decoder) decodeMoves(pgn string) []chess.Move {
 	moves := make([]chess.Move, 0)
 	data := d.movesRegexp.FindAllString(pgn, -1)
 
@@ -52,5 +51,5 @@ func (d *Decoder) decodeMoves(pgn string) ([]chess.Move, error) {
 		moves = append(moves, chess.StringMove(move))
 	}
 
-	return moves, nil
+	return moves
 }

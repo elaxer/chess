@@ -15,13 +15,6 @@ func HalfmoveCounter(board chess.Board) Metric {
 }
 
 func FullmoveCounter(board chess.Board) Metric {
-	moves := len(board.MovesHistory())
-	fullmove := moves / 2
-
-	if moves%2 != 0 || moves == 0 {
-		fullmove++
-	}
-
 	return New("Full moves", len(board.MovesHistory())/2+1)
 }
 

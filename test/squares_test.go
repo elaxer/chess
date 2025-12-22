@@ -14,7 +14,9 @@ func TestSquares_FindByPosition(t *testing.T) {
 	squares := NewSquares(edgePosition)
 	king := chesstest.NewPiece("K")
 
-	squares.PlacePiece(king, position.New(position.FileA, position.Rank4))
+	if err := squares.PlacePiece(king, position.New(position.FileA, position.Rank4)); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	p, err := squares.FindByPosition(position.FromString("a4"))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -30,8 +32,12 @@ func TestSquares_MovePiece(t *testing.T) {
 	knight := chesstest.NewPiece("n")
 
 	squares := NewSquares(edgePosition)
-	squares.PlacePiece(king, position.FromString("e1"))
-	squares.PlacePiece(knight, position.FromString("e2"))
+	if err := squares.PlacePiece(king, position.FromString("e1")); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if err := squares.PlacePiece(knight, position.FromString("e2")); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 
 	capturedPiece, err := squares.MovePiece(position.FromString("e1"), position.FromString("e2"))
 	if err != nil {
@@ -52,16 +58,25 @@ func TestSquares_MovePieceTemporarily(t *testing.T) {
 	queen := chesstest.NewPiece("Q")
 
 	squares := NewSquares(edgePosition)
-	squares.PlacePiece(queen, position.FromString("b4"))
+	if err := squares.PlacePiece(queen, position.FromString("b4")); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 
-	squares.MovePieceTemporarily(position.FromString("b4"), position.FromString("f8"), func() {
-		if piece, _ := squares.FindByPosition(position.FromString("b4")); piece != nil {
-			t.Errorf("expected nil, got %v", piece)
-		}
-		if piece, _ := squares.FindByPosition(position.FromString("f8")); piece != queen {
-			t.Errorf("expected %s, got %v", queen, piece)
-		}
-	})
+	err := squares.MovePieceTemporarily(
+		position.FromString("b4"),
+		position.FromString("f8"),
+		func() {
+			if piece, _ := squares.FindByPosition(position.FromString("b4")); piece != nil {
+				t.Errorf("expected nil, got %v", piece)
+			}
+			if piece, _ := squares.FindByPosition(position.FromString("f8")); piece != queen {
+				t.Errorf("expected %s, got %v", queen, piece)
+			}
+		},
+	)
+	if err != nil {
+		t.Fatalf("unexpected temporarily piece movement error: %v", err)
+	}
 
 	if piece, _ := squares.FindByPosition(position.FromString("b4")); piece != queen {
 		t.Errorf("expected %s, got %v", queen, piece)

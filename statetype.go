@@ -25,7 +25,7 @@ const (
 // - StateTypeClear
 // - StateTypeThreat
 // - StateTypeTerminal
-// - StateTypeDraw
+// - StateTypeDraw.
 type StateType uint8
 
 // IsClear checks if the state type is clear.

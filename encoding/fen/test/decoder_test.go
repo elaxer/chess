@@ -67,21 +67,30 @@ func TestDecoder_Decode(t *testing.T) {
 		},
 		{
 			"10x10",
-			args{"1n2r1b1qk/3p3p1p/2n5B1/3P1N2r1/4Q3P1/3b1K3P/4p2B2/3q2P3/R3P1r3/2N2k4", position.FromString("j10")},
+			args{
+				"1n2r1b1qk/3p3p1p/2n5B1/3P1N2r1/4Q3P1/3b1K3P/4p2B2/3q2P3/R3P1r3/2N2k4",
+				position.FromString("j10"),
+			},
 			"1n2r1b1qk/3p3p1p/2n5B1/3P1N2r1/4Q3P1/3b1K3P/4p2B2/3q2P3/R3P1r3/2N2k4",
 			chess.SideWhite,
 			false,
 		},
 		{
 			"12x8",
-			args{"2r1k2bnq1p/3p4p1P1/2n3B1P3/1P1b2N3p1/2Q1P1p3R1/3K3P2N1/1p2B2P2p1/12", position.FromString("l8")},
+			args{
+				"2r1k2bnq1p/3p4p1P1/2n3B1P3/1P1b2N3p1/2Q1P1p3R1/3K3P2N1/1p2B2P2p1/12",
+				position.FromString("l8"),
+			},
 			"2r1k2bnq1p/3p4p1P1/2n3B1P3/1P1b2N3p1/2Q1P1p3R1/3K3P2N1/1p2B2P2p1/12",
 			chess.SideWhite,
 			false,
 		},
 		{
 			"7x13",
-			args{"1q2b2/2p1P1n/1r2B2/2N2pk/3r1PB/1Q2n1K/3P3/1P3r1/2N1k1P/2p1bP1/1R2K2/2q2p1/2B1n2", position.FromString("g13")},
+			args{
+				"1q2b2/2p1P1n/1r2B2/2N2pk/3r1PB/1Q2n1K/3P3/1P3r1/2N1k1P/2p1bP1/1R2K2/2q2p1/2B1n2",
+				position.FromString("g13"),
+			},
 			"1q2b2/2p1P1n/1r2B2/2N2pk/3r1PB/1Q2n1K/3P3/1P3r1/2N1k1P/2p1bP1/1R2K2/2q2p1/2B1n2",
 			chess.SideWhite,
 			false,
@@ -139,6 +148,7 @@ func TestDecoder_Decode(t *testing.T) {
 			got, err := decoder.Decode(tt.args.fen)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Decoder.Decode() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
 

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestNewFile(t *testing.T) {
+func TestFileFromString(t *testing.T) {
 	type args struct {
 		str string
 	}
@@ -42,7 +42,7 @@ func TestNewFile(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := FileFromString(tt.args.str); got != tt.want {
-				t.Errorf("NewFile() got = %v, wantErr %v", got, tt.want)
+				t.Errorf("FileFromString() got = %v, wantErr %v", got, tt.want)
 			}
 		})
 	}

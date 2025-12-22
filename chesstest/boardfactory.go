@@ -18,7 +18,10 @@ type FactoryMock struct {
 	CreateFromMovesFunc func(moves []chess.Move) (chess.Board, error)
 }
 
-func (f *FactoryMock) Create(turn chess.Side, placement map[position.Position]chess.Piece) (chess.Board, error) {
+func (f *FactoryMock) Create(
+	turn chess.Side,
+	placement map[position.Position]chess.Piece,
+) (chess.Board, error) {
 	if f.CreateFunc != nil {
 		return f.CreateFunc(turn, placement)
 	}
@@ -46,6 +49,7 @@ func (f *FactoryMock) CreateFilled() chess.Board {
 
 	board, _ := f.Create(chess.SideWhite, nil)
 	for i, notation := range []string{"R", "N", "B", "Q", "K", "B", "N", "R"} {
+		//nolint:gosec
 		file := position.File(i + 1)
 
 		if f.PieceFactory == nil {
@@ -54,13 +58,13 @@ func (f *FactoryMock) CreateFilled() chess.Board {
 
 		wP, _ := f.PieceFactory.CreateFromNotation(notation, chess.SideWhite)
 		wPawn, _ := f.PieceFactory.CreateFromString("P")
-		board.Squares().PlacePiece(wP, position.New(file, position.RankMin))
-		board.Squares().PlacePiece(wPawn, position.New(file, position.RankMin+1))
+		must(board.Squares().PlacePiece(wP, position.New(file, position.RankMin)))
+		must(board.Squares().PlacePiece(wPawn, position.New(file, position.RankMin+1)))
 
 		bP, _ := f.PieceFactory.CreateFromNotation(notation, chess.SideBlack)
 		bPawn, _ := f.PieceFactory.CreateFromString("p")
-		board.Squares().PlacePiece(bP, position.New(file, f.EdgePosition.Rank))
-		board.Squares().PlacePiece(bPawn, position.New(file, f.EdgePosition.Rank-1))
+		must(board.Squares().PlacePiece(bP, position.New(file, f.EdgePosition.Rank)))
+		must(board.Squares().PlacePiece(bPawn, position.New(file, f.EdgePosition.Rank-1)))
 	}
 
 	return board
@@ -79,4 +83,10 @@ func (f *FactoryMock) CreateFromMoves(moves []chess.Move) (chess.Board, error) {
 	}
 
 	return board, nil
+}
+
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
 }

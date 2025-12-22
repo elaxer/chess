@@ -11,7 +11,7 @@ var (
 	StateClear = NewState("clear", StateTypeClear)
 )
 
-// StateType represents the type of a board state.
+// State represents the type of a board state.
 // It is used to categorize the state of the chess board.
 type State interface {
 	fmt.Stringer

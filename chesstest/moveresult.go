@@ -35,12 +35,20 @@ func (m *MoveResultMock) String() string {
 	if m.StringValue != "" {
 		return m.StringValue
 	}
-	return fmt.Sprintf("Move: %v, Side: %v, Captured piece: %v, State: %v", m.MoveValue, m.SideValue, m.CapturedPieceValue, m.BoardNewStateValue)
+
+	return fmt.Sprintf(
+		"Move: %v, Side: %v, Captured piece: %v, State: %v",
+		m.MoveValue,
+		m.SideValue,
+		m.CapturedPieceValue,
+		m.BoardNewStateValue,
+	)
 }
 
 func (m *MoveResultMock) Validate() error {
 	if m.ValidateFunc != nil {
 		return m.ValidateFunc()
 	}
+
 	return nil
 }

@@ -55,8 +55,12 @@ func FileFromString(str string) File {
 	}
 
 	idx := strings.Index(files, strings.ToLower(str))
+	if idx == -1 {
+		return FileNull
+	}
 
-	return File(idx + 1)
+	//nolint:gosec
+	return File(min(idx+1, int(FileMax)))
 }
 
 // IsNull reports whether the file is FileNull.
@@ -69,7 +73,11 @@ func (f File) IsNull() bool {
 // FileNull is considered valid.
 func (f File) Validate() error {
 	return validation.Errors{
-		"file": validation.Validate(int8(f), validation.Min(int8(FileNull)), validation.Max(int8(FileMax))),
+		"file": validation.Validate(
+			int8(f),
+			validation.Min(int8(FileNull)),
+			validation.Max(int8(FileMax)),
+		),
 	}.Filter()
 }
 

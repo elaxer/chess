@@ -13,6 +13,7 @@ func ValidationRuleIsEmpty(position any) error {
 	}
 
 	if pos.IsEmpty() {
+		//nolint:err113
 		return errors.New("position cannot be null")
 	}
 

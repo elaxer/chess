@@ -17,8 +17,15 @@ import (
 // ErrDecoding is returned when there is an error decoding a FEN string.
 var ErrDecoding = errors.New("error decoding FEN string")
 
+var errSquaresNumOverflowed = fmt.Errorf(
+	"%w: number of squares in one row is overflowed",
+	ErrDecoding,
+)
+
 // Regexp is a regular expression that matches a FEN string for a chess board.
-var Regexp = regexp.MustCompile(`(?i)^(?P<placement>(((1[0-6]|[1-9])|[PNBRQK])+/){5,15}((1[0-6]|[1-9])|[PNBRQK])+)\s?(?P<side>[WB])?`)
+var Regexp = regexp.MustCompile(
+	`(?i)^(?P<placement>(((1[0-6]|[1-9])|[PNBRQK])+/){5,15}((1[0-6]|[1-9])|[PNBRQK])+)\s?(?P<side>[WB])?`,
+)
 
 // Decoder decodes a FEN string into a chess board.
 // It uses a board factory to create the board and a piece factory to create pieces.
@@ -47,8 +54,12 @@ func (d *Decoder) Decode(fen string) (chess.Board, error) {
 	placement := make(map[position.Position]chess.Piece, 256)
 
 	rows := strings.Split(data["placement"], "/")
+	if len(rows) > int(position.RankMax) {
+		return nil, fmt.Errorf("%w: number of rows are overflowed", ErrDecoding)
+	}
 	slices.Reverse(rows)
 	for i, row := range rows {
+		//nolint:gosec
 		rowPlacement, err := d.placementFromRow(row, position.Rank(i+1))
 		if err != nil {
 			return nil, err
@@ -60,19 +71,29 @@ func (d *Decoder) Decode(fen string) (chess.Board, error) {
 	return d.boardFactory.Create(d.side(data["side"]), placement)
 }
 
-func (d *Decoder) placementFromRow(row string, rank position.Rank) (map[position.Position]chess.Piece, error) {
+func (d *Decoder) placementFromRow(
+	row string,
+	rank position.Rank,
+) (map[position.Position]chess.Piece, error) {
 	placement := make(map[position.Position]chess.Piece, 16)
 
-	pos := position.New(position.FileMin, rank)
 	rowRunes := []rune(row)
+	if len(rowRunes) > int(position.FileMax) {
+		return nil, errSquaresNumOverflowed
+	}
+
+	pos := position.New(position.FileMin, rank)
 	for i, char := range rowRunes {
 		if i+1 < len(rowRunes) && d.isArabDigit(rowRunes[i]) && d.isArabDigit(rowRunes[i+1]) {
-			emptySquares, _ := strconv.Atoi(string(rowRunes[i : i+2]))
-			pos.File += position.File(emptySquares)
+			emptySquaresLen, _ := strconv.Atoi(string(rowRunes[i : i+2]))
+			//nolint:gosec
+			pos.File += position.File(emptySquaresLen)
+
 			continue
 		}
 		if d.isArabDigit(char) {
 			pos.File += position.File(char - '0')
+
 			continue
 		}
 
@@ -83,6 +104,10 @@ func (d *Decoder) placementFromRow(row string, rank position.Rank) (map[position
 
 		placement[pos] = piece
 		pos.File++
+	}
+
+	if len(placement) > int(position.FileMax) {
+		return nil, errSquaresNumOverflowed
 	}
 
 	return placement, nil

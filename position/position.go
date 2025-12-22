@@ -32,6 +32,8 @@ type Set = mapset.Set[Position]
 //   - Partial, not empty: File or Rank has null value.
 //   - Empty: File and Rank both have null value.
 //   - Invalid: File or Rank is invalid (see File and Rank documentation).
+//
+//nolint:recvcheck
 type Position struct {
 	File File `json:"file"`
 	Rank Rank `json:"rank"`
@@ -55,9 +57,15 @@ func FromString(str string) Position {
 		return NewEmpty()
 	}
 
-	rank, _ := strconv.Atoi(data["rank"])
+	file := FileFromString(data["file"])
+	rank := RankNull
 
-	return Position{FileFromString(data["file"]), Rank(rank)}
+	rankInt, _ := strconv.Atoi(data["rank"])
+	if rankInt >= int(RankMin) && rankInt <= int(RankMax) {
+		rank = Rank(rankInt)
+	}
+
+	return Position{file, rank}
 }
 
 // IsFull checks if the position contains both File and Rank not empty values.

@@ -31,7 +31,8 @@ type Squares struct {
 // The edge position defines the size of the squares, which is the maximum rank and file.
 // If the edge position exceeds the maximum supported position by the engine, it panics.
 func NewSquares(edgePosition position.Position) *Squares {
-	if edgePosition.File > MaxSupportedPosition.File || edgePosition.Rank > MaxSupportedPosition.Rank {
+	if edgePosition.File > MaxSupportedPosition.File ||
+		edgePosition.Rank > MaxSupportedPosition.Rank {
 		panic("cannot create squares with size greater than max size")
 	}
 
@@ -48,7 +49,10 @@ func NewSquares(edgePosition position.Position) *Squares {
 // If the placement is nil or empty, it returns an empty Squares instance with the specified edge position.
 // If any piece in the placement is out of boundaries defined by the edge position, it returns an error.
 // If edgePosition is not bounded by the maximum supported position, it panics.
-func SquaresFromPlacement(edgePosition position.Position, placement map[position.Position]Piece) (*Squares, error) {
+func SquaresFromPlacement(
+	edgePosition position.Position,
+	placement map[position.Position]Piece,
+) (*Squares, error) {
 	squares := NewSquares(edgePosition)
 	if placement == nil {
 		return squares, nil
@@ -74,6 +78,7 @@ func (s *Squares) Iter() iter.Seq2[position.Position, Piece] {
 	return func(yield func(position position.Position, piece Piece) bool) {
 		for rank, row := range s.rows {
 			for file, piece := range row {
+				//nolint:gosec
 				if !yield(position.New(position.File(file+1), position.Rank(rank+1)), piece) {
 					return
 				}
@@ -86,7 +91,9 @@ func (s *Squares) Iter() iter.Seq2[position.Position, Piece] {
 // It yields each row starting from the top (Rank1) to the bottom (edgePosition.Rank).
 // If backward is true, it iterates from the bottom to the top.
 // Each row is yielded as a sequence of file and their corresponding piece.
-func (s *Squares) IterByRows(backward bool) iter.Seq2[position.Rank, iter.Seq2[position.File, Piece]] {
+func (s *Squares) IterByRows(
+	backward bool,
+) iter.Seq2[position.Rank, iter.Seq2[position.File, Piece]] {
 	rows := slices.Clone(s.rows)
 	if backward {
 		slices.Reverse(rows)
@@ -94,6 +101,7 @@ func (s *Squares) IterByRows(backward bool) iter.Seq2[position.Rank, iter.Seq2[p
 
 	return func(yield func(position.Rank, iter.Seq2[position.File, Piece]) bool) {
 		for rank, row := range rows {
+			//nolint:gosec
 			isContinue := yield(position.Rank(rank+1), func(yield func(position.File, Piece) bool) {
 				for file, piece := range row {
 					if !yield(position.File(file+1), piece) {
@@ -114,7 +122,9 @@ func (s *Squares) IterByRows(backward bool) iter.Seq2[position.Rank, iter.Seq2[p
 // The direction is defined by a position.Position, which indicates the change in file and rank.
 // It yields each position and the piece at that position until it goes out of boundaries.
 // The boundaries are defined by the edgePosition of the squares.
-func (s *Squares) IterByDirection(from, direction position.Position) iter.Seq2[position.Position, Piece] {
+func (s *Squares) IterByDirection(
+	from, direction position.Position,
+) iter.Seq2[position.Position, Piece] {
 	return func(yield func(position position.Position, piece Piece) bool) {
 		position := position.New(from.File+direction.File, from.Rank+direction.Rank)
 		for s.isBoundaries(position) {
@@ -145,6 +155,7 @@ func (s *Squares) GetByPiece(piece Piece) position.Position {
 	for rank, row := range s.rows {
 		for file := range row {
 			if row[file] == piece {
+				//nolint:gosec
 				return position.New(position.File(file+1), position.Rank(rank+1))
 			}
 		}

@@ -101,11 +101,16 @@ func TestPosition_UnmarshalJSON(t *testing.T) {
 			position := NewEmpty()
 			if err := position.UnmarshalJSON([]byte(tt.args.data)); (err != nil) != tt.wantErr {
 				t.Errorf("Position.UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
 
 			if position.File != tt.fields.File || position.Rank != tt.fields.Rank {
-				t.Errorf("Position is %v, expected %v", position, Position{tt.fields.File, tt.fields.Rank})
+				t.Errorf(
+					"Position is %v, expected %v",
+					position,
+					Position{tt.fields.File, tt.fields.Rank},
+				)
 			}
 		})
 	}

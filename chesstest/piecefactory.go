@@ -14,7 +14,10 @@ type PieceFactoryMock struct {
 	CreateFromStringFunc   func(str string) (chess.Piece, error)
 }
 
-func (f *PieceFactoryMock) CreateFromNotation(notation string, side chess.Side) (chess.Piece, error) {
+func (f *PieceFactoryMock) CreateFromNotation(
+	notation string,
+	side chess.Side,
+) (chess.Piece, error) {
 	if f.CreateFromNotationFunc != nil {
 		return f.CreateFromNotationFunc(notation, side)
 	}
@@ -28,6 +31,7 @@ func (f *PieceFactoryMock) CreateFromString(str string) (chess.Piece, error) {
 	}
 
 	if len(str) != 1 {
+		//nolint:err113
 		return nil, errors.New("piece string must be a single character")
 	}
 

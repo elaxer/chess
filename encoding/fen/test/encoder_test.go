@@ -48,7 +48,12 @@ func TestEncoder_Encode(t *testing.T) {
 		},
 		{
 			"12x8",
-			args{chesstest.DecodeFEN("2r1k2bnq1p/3p4p1P1/2n3B1P3/1P1b2N3p1/2Q1P1p3R1/3K3P2N1/1p2B2P2p1/12", position.FromString("l8"))},
+			args{
+				chesstest.DecodeFEN(
+					"2r1k2bnq1p/3p4p1P1/2n3B1P3/1P1b2N3p1/2Q1P1p3R1/3K3P2N1/1p2B2P2p1/12",
+					position.FromString("l8"),
+				),
+			},
 			"2r1k2bnq1p/3p4p1P1/2n3B1P3/1P1b2N3p1/2Q1P1p3R1/3K3P2N1/1p2B2P2p1/12 w",
 		},
 		{

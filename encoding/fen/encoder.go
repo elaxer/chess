@@ -46,9 +46,11 @@ func (e *Encoder) Encode(board chess.Board) string {
 // Each row is represented by a string of piece string representation, with empty squares represented by numbers.
 func EncodePiecePlacement(squares *chess.Squares) string {
 	fen := ""
+	var fenSb49 strings.Builder
 	for _, row := range squares.IterByRows(true) {
-		fen += encodeRow(row) + "/"
+		fenSb49.WriteString(encodeRow(row) + "/")
 	}
+	fen += fenSb49.String()
 
 	return fen[:len(fen)-1]
 }

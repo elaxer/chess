@@ -2,16 +2,16 @@ package visualizer
 
 import "github.com/elaxer/chess/metric"
 
-type OptionOrientation uint8
-
 const (
 	OptionOrientationDefault OptionOrientation = iota
 	OptionOrientationReversed
 	OptionOrientationByTurn
 )
 
+type OptionOrientation uint8
+
 type Options struct {
-	Orientation   OptionOrientation
-	ShowPositions bool
-	MetricFuncs   []metric.MetricFunc
+	Orientation      OptionOrientation
+	DisplayPositions bool
+	MetricFuncs      []metric.MetricFunc
 }

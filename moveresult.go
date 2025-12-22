@@ -9,7 +9,8 @@ import (
 // MoveResult is an interface that represents the result of a move made on the chessboard.
 // It includes additional methods for retrieving the move itself and validating the result.
 // It is used to encapsulate the details of a move, including the side that made the move,
-// the new state of the board after the move, and can includes any additional information such as captured pieces or castling details.
+// the new state of the board after the move,
+// and can includes any additional information such as captured pieces or castling details.
 // The MoveResult interface requires a String method for string representation,
 // a Validate method for validation purposes, and a Move method to retrieve the move that was made.
 type MoveResult interface {
