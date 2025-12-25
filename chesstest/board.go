@@ -32,7 +32,7 @@ func (s *BoardMock) State(side chess.Side) chess.State {
 	return chess.StateClear
 }
 
-func (s *BoardMock) MovesHistory() []chess.MoveResult {
+func (s *BoardMock) MoveHistory() []chess.MoveResult {
 	return s.MovesHistoryValue
 }
 

@@ -434,8 +434,6 @@ state := board.State(board.Turn())
 
 Use this built in metric functions for getting the metrics:
 ```go
-// The current turn side in the letter representation like "w" or "b"
-metr := metric.TurnLetter(board)
 // The number of half-moves made in the game
 metr = metric.HalfmoveCounter(board)
 // The number of full moves made in the game

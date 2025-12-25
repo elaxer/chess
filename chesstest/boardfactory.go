@@ -56,13 +56,13 @@ func (f *FactoryMock) CreateFilled() chess.Board {
 			f.PieceFactory = &PieceFactoryMock{}
 		}
 
-		wP, _ := f.PieceFactory.CreateFromNotation(notation, chess.SideWhite)
-		wPawn, _ := f.PieceFactory.CreateFromString("P")
+		wP, _ := f.PieceFactory.Create(notation, chess.SideWhite)
+		wPawn, _ := f.PieceFactory.Create("p", chess.SideWhite)
 		must(board.Squares().PlacePiece(wP, position.New(file, position.RankMin)))
 		must(board.Squares().PlacePiece(wPawn, position.New(file, position.RankMin+1)))
 
-		bP, _ := f.PieceFactory.CreateFromNotation(notation, chess.SideBlack)
-		bPawn, _ := f.PieceFactory.CreateFromString("p")
+		bP, _ := f.PieceFactory.Create(notation, chess.SideBlack)
+		bPawn, _ := f.PieceFactory.Create("p", chess.SideBlack)
 		must(board.Squares().PlacePiece(bP, position.New(file, f.EdgePosition.Rank)))
 		must(board.Squares().PlacePiece(bPawn, position.New(file, f.EdgePosition.Rank-1)))
 	}

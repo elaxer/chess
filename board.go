@@ -21,9 +21,9 @@ type Board interface {
 	// Returns chess.StateClear if the board is in a clear state.
 	// Should not return nil.
 	State(side Side) State
-	// MovesHistory returns the history of moves made on the board.
+	// MoveHistory returns the history of moves made on the board.
 	// It returns a slice of MoveResult, which contains the details of each move.
-	MovesHistory() []MoveResult
+	MoveHistory() []MoveResult
 	// Moves returns a set of legal moves for the specified side.
 	Moves(side Side) position.Set
 	// LegalMoves returns a set of legal moves for the specified piece.

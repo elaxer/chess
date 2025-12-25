@@ -87,11 +87,11 @@ func (s *Squares) Iter() iter.Seq2[position.Position, Piece] {
 	}
 }
 
-// IterByRows iterates over the squares by rows.
+// IterOverRows iterates over the squares by rows.
 // It yields each row starting from the top (Rank1) to the bottom (edgePosition.Rank).
 // If backward is true, it iterates from the bottom to the top.
 // Each row is yielded as a sequence of file and their corresponding piece.
-func (s *Squares) IterByRows(
+func (s *Squares) IterOverRows(
 	backward bool,
 ) iter.Seq2[position.Rank, iter.Seq2[position.File, Piece]] {
 	rows := slices.Clone(s.rows)

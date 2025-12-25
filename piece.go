@@ -17,6 +17,12 @@ type Piece interface {
 	fmt.Stringer
 	// Side returns the side of the piece.
 	Side() Side
+	// Notation returns the algebraic notation of the piece.
+	// For example, for a pawn it could returns "", for a knight it returns "N", etc.
+	Notation() string
+	// Weight returns the weight of the piece.
+	// The weight is used to evaluate the piece's value in the game.
+	Weight() uint8
 	// IsMoved returns true if the piece has been moved.
 	// This is can be used to determine if the piece can perform castling or en passant.
 	IsMoved() bool
@@ -27,10 +33,4 @@ type Piece interface {
 	// but only considers the piece's movement capabilities.
 	// It returns a set of positions that the piece can move to from the given position.
 	PseudoMoves(from position.Position, squares *Squares) position.Set
-	// Notation returns the algebraic notation of the piece.
-	// For example, for a pawn it could returns "", for a knight it returns "N", etc.
-	Notation() string
-	// Weight returns the weight of the piece.
-	// The weight is used to evaluate the piece's value in the game.
-	Weight() uint8
 }

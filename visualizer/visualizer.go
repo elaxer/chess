@@ -1,3 +1,7 @@
+// Package visualizer renders a human-readable textual representation of a chess.Board.
+// It supports orientation options, optional display of rank/file indices, and the inclusion
+// of metric functions to show additional information below the board. Visualizer is
+// intended for debugging, tests, or simple CLI display.
 package visualizer
 
 import (
@@ -7,15 +11,19 @@ import (
 	"github.com/elaxer/chess"
 )
 
+// Visualizer renders a chess board to an io.Writer according to the provided Options.
+// It prints ranks and files as text and optionally shows metrics below the board.
 type Visualizer struct {
 	Options Options
 }
 
+// Visualize writes a textual representation of the board to the provided writer.
+// The output format depends on the Visualizer Options (orientation, positions display and metrics).
 func (v *Visualizer) Visualize(board chess.Board, writer io.Writer) {
 	backward := (v.Options.Orientation == OptionOrientationDefault) ||
 		(v.Options.Orientation == OptionOrientationByTurn && board.Turn() == chess.SideWhite)
 
-	for rank, row := range board.Squares().IterByRows(backward) {
+	for rank, row := range board.Squares().IterOverRows(backward) {
 		if v.Options.DisplayPositions {
 			//nolint:errcheck
 			fmt.Fprintf(writer, "%d ", rank)

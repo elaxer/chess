@@ -2,8 +2,6 @@ package chesstest
 
 import (
 	"github.com/elaxer/chess"
-	"github.com/elaxer/chess/encoding/fen"
-	"github.com/elaxer/chess/position"
 )
 
 // NewPiece creates a new PieceMock instance based on the provided string representation.
@@ -47,20 +45,4 @@ func MoveStrings(moveStrings ...string) []chess.Move {
 	}
 
 	return moves
-}
-
-// DecodeFEN8x8 decodes a FEN string into a chess.Board instance with an 8x8 edge position.
-func DecodeFEN8x8(str string) chess.Board {
-	return DecodeFEN(str, defaultEdgePosition)
-}
-
-// DecodeFEN decodes a FEN string into a chess.Board instance with the specified edge position.
-func DecodeFEN(str string, edgePosition position.Position) chess.Board {
-	decoder := fen.NewDecoder(&FactoryMock{EdgePosition: edgePosition}, new(PieceFactoryMock))
-	board, err := decoder.Decode(str)
-	if err != nil {
-		panic(err)
-	}
-
-	return board
 }

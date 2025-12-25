@@ -14,7 +14,7 @@ type PieceFactoryMock struct {
 	CreateFromStringFunc   func(str string) (chess.Piece, error)
 }
 
-func (f *PieceFactoryMock) CreateFromNotation(
+func (f *PieceFactoryMock) Create(
 	notation string,
 	side chess.Side,
 ) (chess.Piece, error) {
@@ -42,5 +42,5 @@ func (f *PieceFactoryMock) CreateFromString(str string) (chess.Piece, error) {
 
 	f.stringValue = str
 
-	return f.CreateFromNotation(strings.ToUpper(str), side)
+	return f.Create(strings.ToUpper(str), side)
 }
