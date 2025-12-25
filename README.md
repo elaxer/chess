@@ -1,4 +1,4 @@
-A small, well-tested Go library that implements core chess primitives: board and square management, pieces and moves, position handling, FEN/PGN encoding/decoding, simple metrics and a textual visualizer.
+A small, well-tested Go library that implements core chess primitives: board and square management, pieces and moves, position handling, simple metrics and a textual visualizer.
 
 # Requirements
 
@@ -239,6 +239,7 @@ A rank can be in the range between the values ​​of `position.RankNull` and `
 The engine doesn't expect you to use values out this ranges.
 
 ### Files
+
 There is a special type for the files representation:
 ```go
 type File int8
@@ -450,11 +451,46 @@ fmt.Printf("Metric \"%s\" shows: %v\n", metr.Name(), metr.Value())
 
 ... or create your own:
 ```go
-func TurnMetricFunc(board chess.Board) Metric {
+func TurnMetric(board chess.Board) Metric {
     return metric.New("Turn", board.Turn())
 }
 ```
 > Note that a **metric func** should implement the `metric.MetricFunc` type
+
+## Visualizer
+
+Use the `visualizer` package for displaying your board in the ascii format.
+It's very useful for debugging your code.
+Here is a quick example:
+```go
+
+// Thus the white side will be at the bottom and the black side at the top
+var orientation visualizer.OptionOrientation = visualizer.OptionOrientationDefault
+// The black side will be at the bottom and the white side at the top
+orientation = visualizer.OptionOrientationReversed
+// The white side will be at the bottom if the current turn is White,
+// otherwise the black side will be at the bottom
+orientation = visualizer.OptionOrientationByTurn
+
+var vis visualizer.Visualizer{
+    Options: visualizer.Options{
+        Orientation: orientation,
+        // If it is true then the visualizer will show ranks at the left and files at the bottom
+        DisplayPositions: true,
+        // Metric funcs for displaying the board metrics 
+        MetricFuncs: [
+            metric.HalfmoveCounterFunc,
+            metric.LastMove,
+            metric.MaterialDifference,
+        ],
+    }
+}
+
+var board chess.Board
+
+// It will show the board in the terminal
+vis.Visualize(board, os.Stdout)
+```
 
 # The engine implementations
 
