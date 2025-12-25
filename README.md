@@ -10,6 +10,47 @@ Install with:
 go get github.com/elaxer/chess
 ```
 
+# About
+
+## What this library is NOT
+
+This library is not:
+- A ready-to-play chess game with UI
+- A full-featured chess engine with AI, evaluation, or search algorithms
+- A beginner-friendly “learn chess by coding” toolkit
+
+There is no GUI, no bots, no minimax, no magic. This package focuses strictly on core chess primitives and rules infrastructure.
+
+## Who this library is for
+
+This library is designed for developers who:
+- Want to build their own chess engine or experiment with custom rules
+- Need a clean, testable, low-level chess model (board, moves, states)
+- Care about explicit state management and invariants
+- Are comfortable working with interfaces and composing their own implementations
+
+## Engine implementations
+
+This package is intentionally **engine-agnostic**. It defines rules primitives, board mechanics, move validation, states, and metrics, but it does not enforce any specific chess rule set.
+
+A reference implementation of **standard chess rules** built on top of this library is provided here:
+
+**github.com/elaxer/standardchess**
+
+That package contains:
+- concrete implementations of `chess.BoardFactory` and `chess.PieceFactory`
+- standard chess pieces and their movement logic
+- turn handling, castling, en passant, promotion, and check/checkmate rules
+
+Think of this repository as the *core*, and `standardchess` as a *canonical engine* that demonstrates how the core is meant to be composed.
+
+If you want to implement:
+- chess variants
+- custom board sizes
+- alternative rule sets
+
+this library stays the same, while the engine implementation changes.
+
 # Documentation
 ## Creation of a board factory and the board itself
 
@@ -172,7 +213,7 @@ You can move a piece from one position to another:
 ```go
 capturedPiece, err := squares.MovePiece(position.FromString("c3"), position.FromString("h8"))
 if capturedPiece != nil {
-    // If it true, then there was a piece on the "h8" square
+    // If it is true, then there was a piece on the "h8" square
 }
 ```
 
@@ -491,11 +532,6 @@ var board chess.Board
 // It will show the board in the terminal
 vis.Visualize(board, os.Stdout)
 ```
-
-# The engine implementations
-
-This package provides rich functionality for the implementation of specific chess engines.
-Here is an engine which implements **standard chess** rules: [github.com/elaxer/standardchess](github.com/elaxer/standardchess)
 
 # License
 
