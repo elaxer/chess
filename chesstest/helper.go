@@ -1,8 +1,6 @@
 package chesstest
 
-import (
-	"github.com/elaxer/chess"
-)
+import "github.com/elaxer/chess"
 
 // NewPiece creates a new PieceMock instance based on the provided string representation.
 // The string should be a single character representing the piece notation (e.g., "P", "N", "B", "r", "q", "k").

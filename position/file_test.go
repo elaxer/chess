@@ -1,8 +1,6 @@
 package position
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestFileFromString(t *testing.T) {
 	type args struct {

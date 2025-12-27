@@ -1,8 +1,6 @@
 package position
 
-import (
-	"errors"
-)
+import "errors"
 
 // ValidationRuleIsEmpty checks if the position is empty.
 // It implements validation rule for ozzo-validation.

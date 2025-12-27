@@ -1,8 +1,6 @@
 package position
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestNewNull(t *testing.T) {
 	position := NewEmpty()

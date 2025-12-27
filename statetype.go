@@ -12,11 +12,6 @@ const (
 	// such as checkmate or stalemate, where no further moves can be made.
 	// This state is used to signify the end of the game.
 	StateTypeTerminal
-	// StateTypeDraw indicates that the game has ended in a draw,
-	// which can occur due to different conditions.
-	// This state type also considers state type Terminal as a draw,
-	// as it represents a situation where the game cannot continue.
-	StateTypeDraw
 )
 
 // StateType represents the type of a chess board state.
@@ -24,8 +19,7 @@ const (
 // The StateType can be one of the following:
 // - StateTypeClear
 // - StateTypeThreat
-// - StateTypeTerminal
-// - StateTypeDraw.
+// - StateTypeTerminal.
 type StateType uint8
 
 // IsClear checks if the state type is clear.
@@ -38,12 +32,7 @@ func (t StateType) IsThreat() bool {
 	return t == StateTypeThreat
 }
 
-// IsTerminal checks if the state type indicates a terminal state or draw.
+// IsTerminal checks if the state type indicates a terminal state.
 func (t StateType) IsTerminal() bool {
-	return t == StateTypeTerminal || t == StateTypeDraw
-}
-
-// IsDraw checks if the state type indicates a draw.
-func (t StateType) IsDraw() bool {
-	return t == StateTypeDraw
+	return t == StateTypeTerminal
 }
