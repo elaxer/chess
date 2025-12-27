@@ -17,9 +17,9 @@ type Visualizer struct {
 	Options Options
 }
 
-// Visualize writes a textual representation of the board to the provided writer.
+// Fprint writes a textual representation of the board to the provided writer.
 // The output format depends on the Visualizer Options (orientation, positions display and metrics).
-func (v *Visualizer) Visualize(board chess.Board, writer io.Writer) {
+func (v *Visualizer) Fprint(writer io.Writer, board chess.Board) {
 	backward := (v.Options.Orientation == OptionOrientationDefault) ||
 		(v.Options.Orientation == OptionOrientationByTurn && board.Turn() == chess.SideWhite)
 
@@ -47,7 +47,11 @@ func (v *Visualizer) Visualize(board chess.Board, writer io.Writer) {
 	}
 
 	v.displayMetrics(board, writer)
+}
 
+// Fprintln is like Fprint but adds a newline after the board representation.
+func (v *Visualizer) Fprintln(writer io.Writer, board chess.Board) {
+	v.Fprint(writer, board)
 	//nolint:errcheck
 	fmt.Fprintln(writer)
 }
