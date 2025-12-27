@@ -24,17 +24,6 @@ func NewPieceM(str string) chess.Piece {
 	return piece
 }
 
-// BoardFromMoves creates a new chess.Board instance from the provided move strings.
-// Provided move strings will be assigned to the board's moves history.
-func BoardFromMoves(moveStrings ...string) chess.Board {
-	board, err := new(FactoryMock).CreateFromMoves(MoveStrings(moveStrings...))
-	if err != nil {
-		panic(err)
-	}
-
-	return board
-}
-
 // MoveStrings converts a list of move strings into a slice of chess.Move instances.
 func MoveStrings(moveStrings ...string) []chess.Move {
 	moves := make([]chess.Move, 0, len(moveStrings))
