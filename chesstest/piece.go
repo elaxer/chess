@@ -6,7 +6,6 @@ import (
 
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess"
-	"github.com/elaxer/chess/position"
 )
 
 type PieceMock struct {
@@ -15,7 +14,7 @@ type PieceMock struct {
 	NotationValue    string
 	WeightValue      uint8
 	StringValue      string
-	PseudoMovesValue position.Set
+	PseudoMovesValue chess.PositionSet
 }
 
 func (m *PieceMock) Side() chess.Side {
@@ -30,9 +29,9 @@ func (m *PieceMock) MarkMoved() {
 	m.IsMovedValue = true
 }
 
-func (m *PieceMock) PseudoMoves(from position.Position, squares *chess.Squares) position.Set {
+func (m *PieceMock) PseudoMoves(from chess.Position, squares *chess.Squares) chess.PositionSet {
 	if m.PseudoMovesValue == nil {
-		m.PseudoMovesValue = mapset.NewSet[position.Position]()
+		m.PseudoMovesValue = mapset.NewSet[chess.Position]()
 	}
 
 	return m.PseudoMovesValue

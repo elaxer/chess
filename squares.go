@@ -5,15 +5,13 @@ import (
 	"fmt"
 	"iter"
 	"slices"
-
-	"github.com/elaxer/chess/position"
 )
 
 // MaxSupportedPosition is the maximum supported position for the chess board.
 // It represents the bottom-right corner of the board, which is typically the
 // highest rank and file in standard chess notation.
 // The engine does not support positions greater than this value.
-var MaxSupportedPosition = position.New(position.FileMax, position.RankMax)
+var MaxSupportedPosition = NewPosition(FileMax, RankMax)
 
 // ErrSquareOutOfRange is returned when given square position is out of the valid range.
 var ErrSquareOutOfRange = errors.New("square position is out of range")
@@ -24,13 +22,13 @@ var ErrSquareOutOfRange = errors.New("square position is out of range")
 // get pieces by type and side, move pieces, and place pieces on the squares.
 type Squares struct {
 	rows         [][]Piece
-	edgePosition position.Position
+	edgePosition Position
 }
 
 // NewSquares creates a new Squares instance with the specified edge position.
 // The edge position defines the size of the squares, which is the maximum rank and file.
 // If the edge position exceeds the maximum supported position by the engine, it panics.
-func NewSquares(edgePosition position.Position) *Squares {
+func NewSquares(edgePosition Position) *Squares {
 	if edgePosition.File > MaxSupportedPosition.File ||
 		edgePosition.Rank > MaxSupportedPosition.Rank {
 		panic("cannot create squares with size greater than max size")
@@ -50,8 +48,8 @@ func NewSquares(edgePosition position.Position) *Squares {
 // If any piece in the placement is out of boundaries defined by the edge position, it returns an error.
 // If edgePosition is not bounded by the maximum supported position, it panics.
 func SquaresFromPlacement(
-	edgePosition position.Position,
-	placement map[position.Position]Piece,
+	edgePosition Position,
+	placement map[Position]Piece,
 ) (*Squares, error) {
 	squares := NewSquares(edgePosition)
 	if placement == nil {
@@ -68,18 +66,18 @@ func SquaresFromPlacement(
 }
 
 // EdgePosition returns the edge position of the squares.
-func (s *Squares) EdgePosition() position.Position {
+func (s *Squares) EdgePosition() Position {
 	return s.edgePosition
 }
 
 // Iter iterates over all squares and yields each position and the piece at that position.
 // It starts from the top-left corner (FileA, Rank1) and goes to the bottom-right corner (edgePosition).
-func (s *Squares) Iter() iter.Seq2[position.Position, Piece] {
-	return func(yield func(position position.Position, piece Piece) bool) {
+func (s *Squares) Iter() iter.Seq2[Position, Piece] {
+	return func(yield func(Position, Piece) bool) {
 		for rank, row := range s.rows {
 			for file, piece := range row {
 				//nolint:gosec
-				if !yield(position.New(position.File(file+1), position.Rank(rank+1)), piece) {
+				if !yield(NewPosition(File(file+1), Rank(rank+1)), piece) {
 					return
 				}
 			}
@@ -88,23 +86,23 @@ func (s *Squares) Iter() iter.Seq2[position.Position, Piece] {
 }
 
 // IterOverRows iterates over the squares by rows.
-// It yields each row starting from the top (Rank1) to the bottom (edgePosition.Rank).
+// It yields each row starting from the top (Rank1) to the bottom (edgeRank).
 // If backward is true, it iterates from the bottom to the top.
 // Each row is yielded as a sequence of file and their corresponding piece.
 func (s *Squares) IterOverRows(
 	backward bool,
-) iter.Seq2[position.Rank, iter.Seq2[position.File, Piece]] {
+) iter.Seq2[Rank, iter.Seq2[File, Piece]] {
 	rows := slices.Clone(s.rows)
 	if backward {
 		slices.Reverse(rows)
 	}
 
-	return func(yield func(position.Rank, iter.Seq2[position.File, Piece]) bool) {
+	return func(yield func(Rank, iter.Seq2[File, Piece]) bool) {
 		for rank, row := range rows {
 			//nolint:gosec
-			isContinue := yield(position.Rank(rank+1), func(yield func(position.File, Piece) bool) {
+			isContinue := yield(Rank(rank+1), func(yield func(File, Piece) bool) {
 				for file, piece := range row {
-					if !yield(position.File(file+1), piece) {
+					if !yield(File(file+1), piece) {
 						return
 					}
 				}
@@ -119,21 +117,21 @@ func (s *Squares) IterOverRows(
 
 // IterByDirection iterates over the squares in a specific direction from a given position.
 // From is the starting position, and direction is the step to take in each iteration.
-// The direction is defined by a position.Position, which indicates the change in file and rank.
+// The direction is defined by a Position, which indicates the change in file and rank.
 // It yields each position and the piece at that position until it goes out of boundaries.
 // The boundaries are defined by the edgePosition of the squares.
 func (s *Squares) IterByDirection(
-	from, direction position.Position,
-) iter.Seq2[position.Position, Piece] {
-	return func(yield func(position position.Position, piece Piece) bool) {
-		position := position.New(from.File+direction.File, from.Rank+direction.Rank)
-		for s.isBoundaries(position) {
-			if !yield(position, s.rows[position.Rank-1][position.File-1]) {
+	from, direction Position,
+) iter.Seq2[Position, Piece] {
+	return func(yield func(Position, Piece) bool) {
+		pos := NewPosition(from.File+direction.File, from.Rank+direction.Rank)
+		for s.isBoundaries(pos) {
+			if !yield(pos, s.rows[pos.Rank-1][pos.File-1]) {
 				return
 			}
 
-			position.File += direction.File
-			position.Rank += direction.Rank
+			pos.File += direction.File
+			pos.Rank += direction.Rank
 		}
 	}
 }
@@ -141,35 +139,35 @@ func (s *Squares) IterByDirection(
 // FindByPosition finds a piece by its position on the squares.
 // If the position is out of boundaries, it returns ErrSquareOutOfRange.
 // If the position is valid, it returns the piece at that position or nil if no piece is found.
-func (s *Squares) FindByPosition(position position.Position) (Piece, error) {
-	if !s.isBoundaries(position) {
-		return nil, fmt.Errorf("%w (%s)", ErrSquareOutOfRange, position)
+func (s *Squares) FindByPosition(pos Position) (Piece, error) {
+	if !s.isBoundaries(pos) {
+		return nil, fmt.Errorf("%w (%s)", ErrSquareOutOfRange, pos)
 	}
 
-	return s.rows[position.Rank-1][position.File-1], nil
+	return s.rows[pos.Rank-1][pos.File-1], nil
 }
 
 // GetByPiece returns the position of the occupied square by the given piece.
 // If the piece is not found on the squares or it is nil, it returns an empty position.
-func (s *Squares) GetByPiece(piece Piece) position.Position {
+func (s *Squares) GetByPiece(piece Piece) Position {
 	for rank, row := range s.rows {
 		for file := range row {
 			if row[file] == piece {
 				//nolint:gosec
-				return position.New(position.File(file+1), position.Rank(rank+1))
+				return NewPosition(File(file+1), Rank(rank+1))
 			}
 		}
 	}
 
-	return position.NewEmpty()
+	return NewEmptyPosition()
 }
 
 // FindPiece finds the first piece of a given type for a specific side and returns it along with its position.
 // If no piece is found, it returns nil and an empty position.
-func (s *Squares) FindPiece(notation string, side Side) (Piece, position.Position) {
+func (s *Squares) FindPiece(notation string, side Side) (Piece, Position) {
 	pieces := s.GetPieces(notation, side)
 	if len(pieces) == 0 {
-		return nil, position.NewEmpty()
+		return nil, NewEmptyPosition()
 	}
 
 	return pieces[0], s.GetByPiece(pieces[0])
@@ -208,12 +206,12 @@ func (s *Squares) GetAllPieces(side Side) []Piece {
 // If the position is out of boundaries, it returns ErrSquareOutOfRange.
 // The piece is placed at the given position, and any existing piece at that position is overwritten.
 // If the piece is nil, it will overwrite the existing piece at that position with nil.
-func (s *Squares) PlacePiece(piece Piece, position position.Position) error {
-	if !s.isBoundaries(position) {
+func (s *Squares) PlacePiece(piece Piece, pos Position) error {
+	if !s.isBoundaries(pos) {
 		return ErrSquareOutOfRange
 	}
 
-	s.rows[position.Rank-1][position.File-1] = piece
+	s.rows[pos.Rank-1][pos.File-1] = piece
 
 	return nil
 }
@@ -224,7 +222,7 @@ func (s *Squares) PlacePiece(piece Piece, position position.Position) error {
 // The piece at the 'from' position is moved to the 'to' position, and the 'from' position is set to nil.
 // If the 'to' position already has a piece, it is captured and returned.
 // If the 'from' position is empty, it returns nil and no error.
-func (s *Squares) MovePiece(from, to position.Position) (capturedPiece Piece, err error) {
+func (s *Squares) MovePiece(from, to Position) (capturedPiece Piece, err error) {
 	if !s.isBoundaries(from) || !s.isBoundaries(to) {
 		return nil, ErrSquareOutOfRange
 	}
@@ -244,7 +242,7 @@ func (s *Squares) MovePiece(from, to position.Position) (capturedPiece Piece, er
 // After the callback is executed, the piece is moved back to its original position.
 // If the move is out of boundaries, it returns ErrSquareOutOfRange.
 // This is useful for testing or simulating moves without permanently changing the squares position.
-func (s *Squares) MovePieceTemporarily(from, to position.Position, callback func()) error {
+func (s *Squares) MovePieceTemporarily(from, to Position, callback func()) error {
 	if !s.isBoundaries(from) || !s.isBoundaries(to) {
 		return ErrSquareOutOfRange
 	}
@@ -263,7 +261,7 @@ func (s *Squares) MovePieceTemporarily(from, to position.Position, callback func
 	return nil
 }
 
-func (s *Squares) isBoundaries(pos position.Position) bool {
-	return pos.File >= position.FileMin && pos.File <= s.edgePosition.File &&
-		pos.Rank >= position.RankMin && pos.Rank <= s.edgePosition.Rank
+func (s *Squares) isBoundaries(pos Position) bool {
+	return pos.File >= FileMin && pos.File <= s.edgePosition.File &&
+		pos.Rank >= RankMin && pos.Rank <= s.edgePosition.Rank
 }

@@ -6,8 +6,6 @@
 // It is intended for use in chess applications, engines, and libraries that require chess logic.
 package chess
 
-import "github.com/elaxer/chess/position"
-
 // Board represents a chessboard with its squares, pieces, and board state.
 // It provides methods to access the current turn, state of the board, and to make moves.
 type Board interface {
@@ -25,10 +23,10 @@ type Board interface {
 	// It returns a slice of MoveResult, which contains the details of each move.
 	MoveHistory() []MoveResult
 	// Moves returns a set of legal moves for the specified side.
-	Moves(side Side) position.Set
+	Moves(side Side) PositionSet
 	// LegalMoves returns a set of legal moves for the specified piece.
 	// If the piece is nil or not found, it returns an empty set.
-	LegalMoves(piece Piece) position.Set
+	LegalMoves(piece Piece) PositionSet
 	// MakeMove applies a move to the board and returns the result of the move.
 	// It returns a MoveResult which contains the details of the move made.
 	// If the move is invalid or cannot be made, it returns an error.

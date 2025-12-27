@@ -2,47 +2,6 @@ package position
 
 import "testing"
 
-func TestNewNull(t *testing.T) {
-	position := NewEmpty()
-	if !position.IsEmpty() {
-		t.Errorf("NewNull() = %v, want Position().IsNull() = true", position)
-	}
-}
-
-func TestFromString(t *testing.T) {
-	type args struct {
-		notation string
-	}
-	tests := []struct {
-		name string
-		args args
-		want Position
-	}{
-		{
-			"full",
-			args{"e4"},
-			Position{FileE, Rank4},
-		},
-		{
-			"file",
-			args{"c"},
-			Position{File: FileC},
-		},
-		{
-			"rank",
-			args{"3"},
-			Position{Rank: Rank3},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := FromString(tt.args.notation); got != tt.want {
-				t.Errorf("FromString() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestPosition_UnmarshalJSON(t *testing.T) {
 	type fields struct {
 		File File
@@ -96,7 +55,7 @@ func TestPosition_UnmarshalJSON(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			position := NewEmpty()
+			position := Position{}
 			if err := position.UnmarshalJSON([]byte(tt.args.data)); (err != nil) != tt.wantErr {
 				t.Errorf("Position.UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
 
@@ -152,7 +111,7 @@ func TestPosition_String(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := New(tt.fields.File, tt.fields.Rank).String(); got != tt.want {
+			if got := (Position{File: tt.fields.File, Rank: tt.fields.Rank}).String(); got != tt.want {
 				t.Errorf("Position.String() = %v, want %v", got, tt.want)
 			}
 		})
@@ -187,7 +146,7 @@ func TestPosition_Validate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := New(tt.fields.File, tt.fields.Rank).Validate(); (err != nil) != tt.wantErr {
+			if err := (Position{File: tt.fields.File, Rank: tt.fields.Rank}).Validate(); (err != nil) != tt.wantErr {
 				t.Errorf("Position.Validate() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

@@ -17,7 +17,7 @@ type State interface {
 	fmt.Stringer
 	// Type returns the type of the state.
 	// The type can be one of the predefined StateType values,
-	// such as StateTypeClear, StateTypeThreat, StateTypeTerminal, or StateTypeDraw.
+	// such as StateTypeClear, StateTypeThreat or StateTypeTerminal.
 	Type() StateType
 }
 

@@ -38,7 +38,6 @@ A reference implementation of **standard chess rules** built on top of this libr
 **github.com/elaxer/standardchess**
 
 That package contains:
-- concrete implementations of `chess.BoardFactory` and `chess.PieceFactory`
 - standard chess pieces and their movement logic
 - turn handling, castling, en passant, promotion, and check/checkmate rules
 
@@ -52,34 +51,6 @@ If you want to implement:
 this library stays the same, while the engine implementation changes.
 
 # Documentation
-## Creation of a board factory and the board itself
-
-Create your board factory:
-```go
-// Here should be your implementation of the factory
-var factory chess.BoardFactory
-```
-
-Create your board:
-```go
-// Creates a new filled board with the standard chess setup
-board := factory.CreateFilled()
-```
-
-... or create a board in other ways:
-```go
-// Creates a new empty board
-board := factory.CreateEmpty()
-```
-```go
-// Creates a new board from moves list
-board, err := factory.CreateFromMoves([]chess.Move{
-    chess.StringMove("e4"),
-    chess.StringMove("e5"),
-    chess.StringMove("f4"),
-})
-```
-
 ## Board information
 
 You can get the information the board stores. See examples below:
@@ -105,16 +76,15 @@ var moveHistory []chess.MoveResult = board.MoveHistory()
 
 You can easily get available or potential moves on the board:
 ```go
-// (github.com/elaxer/chess/position)
-var availableMoves position.Set = board.Moves(board.Turn())
-var potentialMoves position.Set = board.Moves(!board.Turn())
+var availableMoves chess.PositionSet = board.Moves(board.Turn())
+var potentialMoves chess.PositionSet = board.Moves(!board.Turn())
 ```
 > `board.Moves` method returns the set of positions to which the pieces of a given side can move. Each piece has method `PseudoMoves`, so the `board.Moves` method returns just a set of filtered moves of the pieces.
 
 You can also get a filtered set of moves for a specific piece:
 ```go
-var piece chess.Piece = board.Squares().FindByPosition(position.FromString("e2"))
-var pieceLegalMoves position.Set = board.LegalMoves(piece)
+var piece chess.Piece = board.Squares().FindByPosition(chess.PositionFromString("e2"))
+var pieceLegalMoves chess.PositionSet = board.LegalMoves(piece)
 ```
 
 Here the question arises, what do **legal** and **pseudo** moves mean?
@@ -147,7 +117,7 @@ var squares *chess.Square = board.Squares()
 ```
 ... or you can create your own:
 ```go
-edgePosition := position.New(position.FileH, position.Rank8)
+edgePosition := chess.NewPosition(chess.FileH, chess.Rank8)
 squares = chess.NewSquares(edgePosition)
 ```
 
@@ -159,21 +129,21 @@ You can also create squares with placed pieces:
 ```go
 // Here should be your implementation of the piece
 var piece chess.Piece
-squares, err := SquaresFromPlacement(edgePosition, map[position.Position]Piece{
-    position.FromString("g3"): piece,
+squares, err := SquaresFromPlacement(edgePosition, map[chess.Position]Piece{
+    chess.PositionFromString("g3"): piece,
 })
 ```
 
 ... or you can place a piece on the existed field:
 ```go
-err := squares.PlacePiece(piece, position.FromString("g3"))
+err := squares.PlacePiece(piece, chess.PositionFromString("g3"))
 ```
 
 ### Finding pieces, positions
 
 You can find your placed pieces:
 ```go
-piece, err := squares.FindByPosition(position.FromString("g3"))
+piece, err := squares.FindByPosition(chess.PositionFromString("g3"))
 if piece != nil {
     // The piece is found
 }
@@ -211,7 +181,7 @@ if !pos.IsNull() {
 
 You can move a piece from one position to another:
 ```go
-capturedPiece, err := squares.MovePiece(position.FromString("c3"), position.FromString("h8"))
+capturedPiece, err := squares.MovePiece(chess.PositionFromString("c3"), chess.PositionFromString("h8"))
 if capturedPiece != nil {
     // If it is true, then there was a piece on the "h8" square
 }
@@ -219,7 +189,7 @@ if capturedPiece != nil {
 
 ... or you can move the piece, call the callback, then return to the original position of the board:
 ```go
-err := squares.MovePiece(position.FromString("c3"), position.FromString("h8"), func () {
+err := squares.MovePiece(chess.PositionFromString("c3"), chess.PositionFromString("h8"), func () {
     // Do things within this new temporary position
 })
 ```
@@ -246,7 +216,7 @@ for rank, row := range square.Iter(backwards) {
             // There is an existed piece
         }
 
-        pos := position.New(file, rank)
+        pos := chess.NewPosition(file, rank)
     }
 }
 ```
@@ -254,16 +224,16 @@ for rank, row := range square.Iter(backwards) {
 ... or iterate over squares in a given direction:
 ```go
 // Go through squares on the same file and the next rank
-dir1 := position.New(position.FileNull, position.Rank1)
+dir1 := chess.NewPosition(chess.FileNull, chess.Rank1)
 // Go through squares on the previous file and the same rank
-dir2 := position.New(-position.FileA, position.RankNull)
+dir2 := chess.NewPosition(-chess.FileA, chess.RankNull)
 // Go through diagonally down and to the right of the squares
-dir3 := position.New(position.FileA, position.Rank1)
+dir3 := chess.NewPosition(chess.FileA, chess.Rank1)
 // Go through diagonally up and to the left of the squares
-dir4 := position.New(-position.FileA, -position.Rank1)
+dir4 := chess.NewPosition(-chess.FileA, -chess.Rank1)
 // and so on...
 
-fromPos := position.FromString("d4")
+fromPos := chess.PositionFromString("d4")
 for pos, piece := range square.IterByDirection(fromPos, dir1) {
     if piece != nil {
         // There is a piece on the position
@@ -273,10 +243,10 @@ for pos, piece := range square.IterByDirection(fromPos, dir1) {
 
 ## Positions, files, ranks
 
-There is `position.Position` structure for working with positions. It contains two fields: `File` and `Rank`.
-The fields correspond to types `position.File` and `position.Rank` respectively.
-A file can be in the range between the values ​​of `position.FileNull` and `position.FileMax`.
-A rank can be in the range between the values ​​of `position.RankNull` and `position.RankMax`.
+There is the `chess.Position` structure for working with positions. It contains two fields: `File` and `Rank`.
+The fields correspond to types `chess.File` and `chess.Rank` respectively.
+A file can be in the range between the values ​​of `chess.FileNull` and `chess.FileMax`.
+A rank can be in the range between the values ​​of `chess.RankNull` and `chess.RankMax`.
 The engine doesn't expect you to use values out this ranges.
 
 ### Files
@@ -286,17 +256,12 @@ There is a special type for the files representation:
 type File int8
 ```
 
-Also there are several built-in file constants which you should to use: `position.FileNull`, `position.FileMin` which equals to `position.FileA`, `position.FileB` ..., `position.FileP` which equals to `position.FileMax`.
-`position.FileNull` means zero value and doesn't mean it is invalid.
-
-If you are working with dynamic values, you can use this helpers:
-```go
-file := position.File(2) // position.FileB
-file = position.FileFromString("d") // position.FileD
-```
+Also there are several built-in file constants which you should to use: `chess.FileNull`, `chess.FileMin` which equals to `chess.FileA`, `chess.FileB` ..., `chess.FileP` which equals to `chess.FileMax`.
+`chess.FileNull` means zero value and doesn't mean it is invalid.
 
 You can check if the file has zero value:
 ```go
+var file chess.File
 if file.IsNull() {
     // ...
 }
@@ -313,7 +278,7 @@ You can also get the text representation of the file:
 ```go
 fileStr := file.String()
 ```
-> An empty string for zero value or invalid files, and letters for other files (`position.FileA.String() == "A"`, `position.FileG.String() == "G"` etc.)
+> An empty string for zero value or invalid files, and letters for other files (`chess.FileA.String() == "A"`, `chess.FileG.String() == "G"` etc.)
 
 ### Ranks
 
@@ -322,12 +287,12 @@ There is a special type for the ranks representation:
 type Rank int8
 ```
 
-Also there are several built-in rank constants which you should to use: `position.RankNull`, `position.RankMin` which equals to `position.Rank1`, `position.Rank2` ..., `position.Rank16` which equals to `position.RankMax`.
-`position.RankNull` means zero value and doesn't mean it is invalid.
+Also there are several built-in rank constants which you should to use: `chess.RankNull`, `chess.RankMin` which equals to `chess.Rank1`, `chess.Rank2` ..., `chess.Rank16` which equals to `chess.RankMax`.
+`chess.RankNull` means zero value and doesn't mean it is invalid.
 
 You can check if the rank has zero value:
 ```go
-var rank position.Rank
+var rank chess.Rank
 if rank.IsNull() {
     // ...
 }
@@ -344,58 +309,47 @@ You can also get the text representation of the rank:
 ```go
 rankStr := rank.String()
 ```
-> An empty string for zero value or invalid ranks, and numbers for other ranks (`position.Rank1.String() == "1"`, `position.Rank10.String() == "10"` etc.)
+> An empty string for zero value or invalid ranks, and numbers for other ranks (`chess.Rank1.String() == "1"`, `chess.Rank10.String() == "10"` etc.)
 
 ### Positions
 
 Create position in any way convenient for you:
 ```go
 // Create empty position: 
-pos := position.Position{}
-pos = position.NewEmpty()
-pos = position.New(position.FileNull, position.RankNull)
-pos = position.FromString("")
+pos := chess.Position{}
+pos = chess.NewEmptyPosition()
+pos = chess.NewPosition(chess.FileNull, chess.RankNull)
+pos = chess.PositionFromString("")
 
 // ... or half-filled position:
-pos = position.Position{File: position.FileA}
-pos = position.New(position.FileNull, position.Rank8)
-pos = position.FromString("g")
-pos = position.FromString("7")
+pos = chess.Position{File: chess.FileA}
+pos = chess.NewPosition(chess.FileNull, chess.Rank8)
+pos = chess.PositionFromString("g")
+pos = chess.PositionFromString("7")
 
 // ... or full filled positions:
-pos = position.Position{File: position.FileA, Rank: position.Rank8}
-pos = position.New(position.FileD, position.Rank2)
-pos = position.FromString("j3")
+pos = chess.Position{File: chess.FileA, Rank: chess.Rank8}
+pos = chess.NewPosition(chess.FileD, chess.Rank2)
+pos = chess.PositionFromString("j3")
 ```
 
 Get the string representation of the position:
 ```go
-position.New(position.FileNull, position.RankNull) == ""
-position.New(position.FileG, position.RankNull) == "g"
-position.New(position.FileNull, position.Rank7) == "7"
-position.New(position.FileJ, position.Rank3) == "j3"
+chess.NewPosition(chess.FileNull, chess.RankNull) == ""
+chess.NewPosition(chess.FileG, chess.RankNull) == "g"
+chess.NewPosition(chess.FileNull, chess.Rank7) == "7"
+chess.NewPosition(chess.FileJ, chess.Rank3) == "j3"
 ```
 
 Position may has several states:
 ```go
-position.FromString("j3").IsFull() == true
-position.NewEmpty().IsEmpty() == true
-position.FromString("g").IsValid() == true // It is not empty and full but still valid
-position.FromString("z22").IsValid() == false // Invalid
+chess.PositionFromString("j3").IsFull() == true
+chess.NewEmptyPosition().IsEmpty() == true
+chess.PositionFromString("g").IsValid() == true // It is not empty and full but still valid
+chess.PositionFromString("z22").IsValid() == false // Invalid
 ```
 
 ## Pieces
-
-It is should be easy to create a piece via `chess.PieceFactory`:
-```go
-// Here should be your implementation
-var pieceFactory chess.PieceFactory
-
-// Create a white piece with the "A" notation:
-pieceA, err := pieceFactory.Create("A", chess.SideWhite)
-// Create a black piece with the "B" notation:
-pieceB, err := pieceFactory.Create("B", chess.SideBlack)
-```
 
 You can get the piece side:
 ```go
@@ -430,12 +384,12 @@ piece.IsMove() == true
 ```go
 piecePosition := squares.GetByPiece(piece)
 
-var pseudoMoves position.Set = piece.PseudoMoves(piecePosition, squares)
+var pseudoMoves chess.PositionSet = piece.PseudoMoves(piecePosition, squares)
 ```
 
 ## States, state types
 
-There are 4 board state types: `chess.StateTypeClear`, `chess.StateTypeThreat`, `chess.StateTypeTerminal`, `chess.StateTypeDraw`.
+There are 3 board state types: `chess.StateTypeClear`, `chess.StateTypeThreat`, `chess.StateTypeTerminal`.
 
 `chess.StateTypeClear` indicates that the chess board is in a clear state,
 meaning there are no threats or special conditions affecting the game. This is the default state of the board.
@@ -444,9 +398,6 @@ meaning there are no threats or special conditions affecting the game. This is t
 
 `chess.StateTypeTerminal` indicates that the game has reached a terminal state, such as checkmate or stalemate,
 where no further moves can be made. This state is used to signify the end of the game.
-
-`chess.StateTypeDraw` indicates that the game has ended in a draw, which can occur due to different conditions.
-This state type also considers state type Terminal as a draw, as it represents a situation where the game cannot continue.
 
 There are **states** which built on **state types**. There is the `chess.State` interface which has string representation and contains a state type.
 The difference between the **state** and the **state type** is **state type** is more abstract while **state** represents a concrete case of the board state.

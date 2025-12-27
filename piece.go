@@ -1,10 +1,6 @@
 package chess
 
-import (
-	"fmt"
-
-	"github.com/elaxer/chess/position"
-)
+import "fmt"
 
 // Piece interface describes a chess piece.
 // It provides methods to get the piece's side, check if it has been moved,
@@ -32,5 +28,5 @@ type Piece interface {
 	// Pseudo-move is a move that does not check for checks or other game rules,
 	// but only considers the piece's movement capabilities.
 	// It returns a set of positions that the piece can move to from the given position.
-	PseudoMoves(from position.Position, squares *Squares) position.Set
+	PseudoMoves(from Position, squares *Squares) PositionSet
 }

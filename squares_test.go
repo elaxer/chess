@@ -1,12 +1,8 @@
 package chess
 
-import (
-	"testing"
+import "testing"
 
-	"github.com/elaxer/chess/position"
-)
-
-var edgePosition = position.FromString("h8")
+var edgePosition = PositionFromString("h8")
 
 func TestNewSquares(t *testing.T) {
 	squares := NewSquares(edgePosition)

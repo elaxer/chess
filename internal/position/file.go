@@ -7,8 +7,6 @@ import (
 )
 
 const (
-	// FileNull has a zero value and represents an empty file.
-	// This value is considered valid.
 	FileNull File = iota
 
 	FileA
@@ -29,21 +27,13 @@ const (
 	FileO
 	FileP
 
-	// FileMin is the minimum file value after FileNull.
 	FileMin = FileA
 
-	// FileMax is the maximum file value supported by the engine.
-	// File values greater than FileMax are considered invalid.
 	FileMax = FileP
 )
 
 const files = "abcdefghijklmnop"
 
-// File represents the horizontal coordinate on the board.
-// It takes values from 1 to 16, where 1 corresponds to FileA and 16 to FileP.
-// FileNull is a special value representing an uninitialized file, but is still considered valid.
-//
-// A file may be valid or invalid.
 type File int8
 
 // FileFromString returns a File from the specified string.

@@ -2,8 +2,6 @@ package position
 
 import "errors"
 
-// ValidationRuleIsEmpty checks if the position is empty.
-// It implements validation rule for ozzo-validation.
 func ValidationRuleIsEmpty(position any) error {
 	pos, ok := position.(Position)
 	if !ok {
