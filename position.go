@@ -64,15 +64,15 @@ const (
 )
 
 var (
-	DirectionTop    = NewPosition(File(1), RankNull)
-	DirectionBottom = NewPosition(File(-1), RankNull)
-	DirectionLeft   = NewPosition(FileNull, Rank(-1))
-	DirectionRight  = NewPosition(FileNull, Rank(1))
+	DirectionTop    = NewPosition(FileNull, Rank(1))
+	DirectionBottom = NewPosition(FileNull, Rank(-1))
+	DirectionLeft   = NewPosition(File(-1), RankNull)
+	DirectionRight  = NewPosition(File(1), RankNull)
 
-	DirectionTopLeft     = NewPosition(File(1), Rank(-1))
+	DirectionTopLeft     = NewPosition(File(-1), Rank(1))
 	DirectionTopRight    = NewPosition(File(1), Rank(1))
 	DirectionBottomLeft  = NewPosition(File(-1), Rank(-1))
-	DirectionBottomRight = NewPosition(File(-1), Rank(1))
+	DirectionBottomRight = NewPosition(File(1), Rank(-1))
 )
 
 // regexpPosition is a regular expression pattern used to parse chess positions.
