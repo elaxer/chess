@@ -112,9 +112,9 @@ func NewPosition(file File, rank Rank) Position {
 	return Position{File: file, Rank: rank}
 }
 
-// NewEmptyPosition creates a new empty position.
+// NewPositionEmpty creates a new empty position.
 // File and rank will have null values.
-func NewEmptyPosition() Position {
+func NewPositionEmpty() Position {
 	return Position{}
 }
 
@@ -123,7 +123,7 @@ func NewEmptyPosition() Position {
 func PositionFromString(str string) Position {
 	data, err := rgx.Group(regexpPosition, str)
 	if err != nil {
-		return NewEmptyPosition()
+		return NewPositionEmpty()
 	}
 
 	file := position.FileFromString(data["file"])

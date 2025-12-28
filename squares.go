@@ -159,7 +159,7 @@ func (s *Squares) GetByPiece(piece Piece) Position {
 		}
 	}
 
-	return NewEmptyPosition()
+	return NewPositionEmpty()
 }
 
 // FindPiece finds the first piece of a given type for a specific side and returns it along with its position.
@@ -167,7 +167,7 @@ func (s *Squares) GetByPiece(piece Piece) Position {
 func (s *Squares) FindPiece(notation string, side Side) (Piece, Position) {
 	pieces := s.GetPieces(notation, side)
 	if len(pieces) == 0 {
-		return nil, NewEmptyPosition()
+		return nil, NewPositionEmpty()
 	}
 
 	return pieces[0], s.GetByPiece(pieces[0])

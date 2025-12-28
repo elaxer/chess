@@ -3,7 +3,7 @@ package chess
 import "testing"
 
 func TestNewEmptyPosition(t *testing.T) {
-	position := NewEmptyPosition()
+	position := NewPositionEmpty()
 	if !position.IsEmpty() {
 		t.Errorf("NewEmpty() = %v, want Position().IsEmpty() = true", position)
 	}
