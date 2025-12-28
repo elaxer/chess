@@ -63,6 +63,18 @@ const (
 	Rank16 = position.Rank16
 )
 
+var (
+	DirectionTop    = NewPosition(File(1), RankNull)
+	DirectionBottom = NewPosition(File(-1), RankNull)
+	DirectionLeft   = NewPosition(FileNull, Rank(-1))
+	DirectionRight  = NewPosition(FileNull, Rank(1))
+
+	DirectionTopLeft     = NewPosition(File(1), Rank(-1))
+	DirectionTopRight    = NewPosition(File(1), Rank(1))
+	DirectionBottomLeft  = NewPosition(File(-1), Rank(-1))
+	DirectionBottomRight = NewPosition(File(-1), Rank(1))
+)
+
 // regexpPosition is a regular expression pattern used to parse chess positions.
 // It matches a string that represents a position on the chessboard,
 // such as "e4", "a1", or "h8". The pattern captures the file (a-h) and rank (1-8 or 10-16).

@@ -224,13 +224,15 @@ for rank, row := range square.Iter(backwards) {
 ... or iterate over squares in a given direction:
 ```go
 // Go through squares on the same file and the next rank
-dir1 := chess.NewPosition(chess.FileNull, chess.Rank1)
+dir1 := chess.DirectionTop
 // Go through squares on the previous file and the same rank
-dir2 := chess.NewPosition(-chess.FileA, chess.RankNull)
+dir2 := chess.DirectionBottom
 // Go through diagonally down and to the right of the squares
-dir3 := chess.NewPosition(chess.FileA, chess.Rank1)
+dir3 := chess.DirectionTopRight
 // Go through diagonally up and to the left of the squares
-dir4 := chess.NewPosition(-chess.FileA, -chess.Rank1)
+dir4 := chess.DirectionBottomLeft
+// Go through your own direction
+dir5 := position.New(chess.File(2), chess.Rank(1))
 // and so on...
 
 fromPos := chess.PositionFromString("d4")

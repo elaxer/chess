@@ -19,6 +19,8 @@ type Board interface {
 	// Returns chess.StateClear if the board is in a clear state.
 	// Should not return nil.
 	State(side Side) State
+	// CapturedPieces returns a slice of pieces that have been captured on the board.
+	CapturedPieces() []Piece
 	// MoveHistory returns the history of moves made on the board.
 	// It returns a slice of MoveResult, which contains the details of each move.
 	MoveHistory() []MoveResult

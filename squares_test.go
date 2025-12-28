@@ -2,9 +2,9 @@ package chess
 
 import "testing"
 
-var edgePosition = PositionFromString("h8")
-
 func TestNewSquares(t *testing.T) {
+	edgePosition := PositionFromString("h8")
+
 	squares := NewSquares(edgePosition)
 	if len(squares.rows) != int(edgePosition.Rank) {
 		t.Fatalf("expected 8 rows, got %d", len(squares.rows))
