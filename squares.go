@@ -98,11 +98,18 @@ func (s *Squares) IterOverRows(
 	}
 
 	return func(yield func(Rank, iter.Seq2[File, Piece]) bool) {
-		for rank, row := range rows {
+		for i, row := range rows {
 			//nolint:gosec
-			isContinue := yield(Rank(rank+1), func(yield func(File, Piece) bool) {
-				for file, piece := range row {
-					if !yield(File(file+1), piece) {
+			rank := Rank(i + 1)
+			if backward {
+				//nolint:gosec
+				rank = Rank(int(s.edgePosition.Rank) - i)
+			}
+
+			isContinue := yield(rank, func(yield func(File, Piece) bool) {
+				for j, piece := range row {
+					//nolint:gosec
+					if !yield(File(j+1), piece) {
 						return
 					}
 				}
