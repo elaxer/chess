@@ -1,6 +1,8 @@
+# chess - core chess primitives
+
 A small, well-tested Go library that implements core chess primitives: board and square management, pieces and moves, position handling, simple metrics and a textual visualizer.
 
-# Requirements
+## Requirements
 
 - Go 1.23 or newer
 
@@ -10,9 +12,9 @@ Install with:
 go get github.com/elaxer/chess
 ```
 
-# About
+## About
 
-## What this library is NOT
+### What this library is NOT
 
 This library is not:
 - A ready-to-play chess game with UI
@@ -21,39 +23,36 @@ This library is not:
 
 There is no GUI, no bots, no minimax, no magic. This package focuses strictly on core chess primitives and rules infrastructure.
 
-## Who this library is for
+### Who this library is for
 
 This library is designed for developers who:
-- Want to build their own chess engine or experiment with custom rules
-- Need a clean, testable, low-level chess model (board, moves, states)
-- Care about explicit state management and invariants
-- Are comfortable working with interfaces and composing their own implementations
+- want to build their own chess engine or experiment with custom rules
+- need a clean, testable, low-level chess model (board, moves, states)
+- care about explicit state management and invariants
+- are comfortable working with interfaces and composing their own implementations
 
-## Engine implementations
+### Engine implementations
 
-This package is intentionally **engine-agnostic**. It defines rules primitives, board mechanics, move validation, states, and metrics, but it does not enforce any specific chess rule set.
+This package is intentionally engine-agnostic. It defines chess primitives such as board representation, positions, directions, move semantics, states, and metrics, without enforcing any concrete rule set or starting position.
 
-A reference implementation of **standard chess rules** built on top of this library is provided here:
+Concrete rule implementations are provided as separate engines built on top of this core:
+- [github.com/elaxer/standardchess](https://github.com/elaxer/standardchess)
+- [github.com/elaxer/fischerchess](https://github.com/elaxer/fischerchess)
 
-**github.com/elaxer/standardchess**
+Think of this repository as the core mechanics layer, while standardchess and fischerchess are engine-level compositions that define concrete rules and constraints.
 
-That package contains:
-- standard chess pieces and their movement logic
-- turn handling, castling, en passant, promotion, and check/checkmate rules
-
-Think of this repository as the *core*, and `standardchess` as a *canonical engine* that demonstrates how the core is meant to be composed.
-
-If you want to implement:
+If you want to implement any of the following:
 - chess variants
-- custom board sizes
-- alternative rule sets
+- alternative starting positions
+- custom rule sets
+- non-standard boards
 
-this library stays the same, while the engine implementation changes.
+this library remains unchanged, while the engine implementation varies.
 
-# Documentation
-## Board information
+## Documentation
+### Board information
 
-You can get the information the board stores. See examples below:
+You can retrieve information stored in the board. See examples below:
 
 Get the current turn:
 ```go
@@ -72,14 +71,14 @@ Get a list of executed moves on the board:
 var moveHistory []chess.MoveResult = board.MoveHistory()
 ```
 
-## Moves
+### Moves
 
 You can easily get available or potential moves on the board:
 ```go
 var availableMoves chess.PositionSet = board.Moves(board.Turn())
 var potentialMoves chess.PositionSet = board.Moves(!board.Turn())
 ```
-> `board.Moves` method returns the set of positions to which the pieces of a given side can move. Each piece has method `PseudoMoves`, so the `board.Moves` method returns just a set of filtered moves of the pieces.
+> The `board.Moves` method returns the set of positions to which the pieces of a given side can move. Each piece has a method `PseudoMoves`, so `board.Moves` returns a filtered set of the pieces' moves.
 
 You can also get a filtered set of moves for a specific piece:
 ```go
@@ -87,11 +86,11 @@ var piece chess.Piece = board.Squares().FindByPosition(chess.PositionFromString(
 var pieceLegalMoves chess.PositionSet = board.LegalMoves(piece)
 ```
 
-Here the question arises, what do **legal** and **pseudo** moves mean?
+Here the question arises: what do **legal** and **pseudo** moves mean?
 
-Legal moves are moves that can be made without breaking the rules of the board. Pseudo moves are moves that include moves that would be considered illegal. For example, according to the rules of standard chess, illegal moves are those after which the opponent gets the opportunity to capture the main piece - the king. `board.Moves` and `board.LegalMoves` both return legal moves.
+Legal moves are moves that can be made without breaking the board's rules. Pseudo moves include moves that would be considered illegal. For example, in standard chess, an illegal move is one after which the opponent can capture the king. `board.Moves` and `board.LegalMoves` both return legal moves.
 
-## Moves making
+### Making moves
 
 You can make moves:
 ```go
@@ -100,7 +99,7 @@ var moveResult chess.MoveResult
 
 moveResult, err := board.MakeMove(move)
 ```
-The result of the method execution is an interface `chess.MoveResult`. This value stores the given input move `MoveResult.Move`, also the value has methods which returns a captured piece (if it has, otherwise `nil`) `MoveResult.CapturedPiece`, the side of the input move executor `MoveResult.Side` and the new board state after move execution `MoveResult.BoardNewState`. Also the method returns an `error` if it exists, for example if the input move is incorrect or impossible etc.
+The method returns a `chess.MoveResult` and an `error`. `MoveResult` contains the input move (`MoveResult.Move`) and provides methods to get the captured piece (if any) via `MoveResult.CapturedPiece`, the side that made the move (`MoveResult.Side`), and the new board state after the move (`MoveResult.BoardNewState`). The `error` is non‑nil if the move was incorrect or impossible.
 
 You can also undo the last move:
 ```go
@@ -109,9 +108,9 @@ var lastMoveResult chess.MoveResult
 lastMoveResult, err := board.UndoMove()
 ```
 
-## Working with squares
+### Working with squares
 
-Work with chess squares and the arrangement of pieces on the board are encapsulated in a separate structure `chess.Square`. Your board contains it:
+Operations on chess squares and piece arrangement are encapsulated in the `chess.Square` structure. Your board contains it:
 ```go
 var squares *chess.Square = board.Squares()
 ```
@@ -121,9 +120,9 @@ edgePosition := chess.NewPosition(chess.FileH, chess.Rank8)
 squares = chess.NewSquares(edgePosition)
 ```
 
-> "Edge position" means the most extreme square on the board, also it means the size of the board. In our example we created a 8x8 field
+> "Edge position" refers to the most extreme square on the board and defines the board's size. In our example we created an 8x8 field.
 
-**NOTE**: It is impossible to create squares larger than the value specified in `chess.MaxSupportedPosition`
+**NOTE**: It is impossible to create squares larger than the value specified by `chess.MaxSupportedPosition`.
 
 You can also create squares with placed pieces:
 ```go
@@ -134,7 +133,7 @@ squares, err := SquaresFromPlacement(edgePosition, map[chess.Position]Piece{
 })
 ```
 
-... or you can place a piece on the existed field:
+... or you can place a piece on an existing field:
 ```go
 err := squares.PlacePiece(piece, chess.PositionFromString("g3"))
 ```
@@ -148,7 +147,7 @@ if piece != nil {
     // The piece is found
 }
 ```
-... or you can find them using different ways:
+... or you can find them in different ways:
 ```go
 var pieceNotation = "K"
 var pieceSide = chess.SideWhite
@@ -168,7 +167,7 @@ var pieces chess.Piece[] = squares.GetPieces(pieceNotation, pieceSide)
 pieces = squares.GetAllPieces(pieceSide)
 ```
 
-And vice versa you can get the position by the piece placed on it:
+Conversely, you can get the position of a piece placed on it:
 ```go
 pos := squares.GetByPiece(piece)
 if !pos.IsNull() {
@@ -177,17 +176,17 @@ if !pos.IsNull() {
 
 ```
 
-### Pieces moving
+### Moving pieces
 
 You can move a piece from one position to another:
 ```go
 capturedPiece, err := squares.MovePiece(chess.PositionFromString("c3"), chess.PositionFromString("h8"))
 if capturedPiece != nil {
-    // If it is true, then there was a piece on the "h8" square
+    // If true, then there was a piece on the "h8" square.
 }
 ```
 
-... or you can move the piece, call the callback, then return to the original position of the board:
+... or you can move the piece, call a callback, and then return the board to its original position:
 ```go
 err := squares.MovePiece(chess.PositionFromString("c3"), chess.PositionFromString("h8"), func () {
     // Do things within this new temporary position
@@ -196,24 +195,23 @@ err := squares.MovePiece(chess.PositionFromString("c3"), chess.PositionFromStrin
 
 ### Iteration over squares
 
-You have different ways to iterate over squares. All this methods are built on the go standard package `iter`. Here is one of them, which goes through all the squares starting from the very first one
-and ending with the **edge square**:
+There are different ways to iterate over squares. All these methods are built on the Go standard package `iter`. Here is one of them, which goes through all the squares starting from the very first one and ending with the **edge square**:
 ```go
 for pos, piece := range square.Iter() {
     if piece != nil {
-        // There is a piece on the position
+        // There is a piece at that position
     }
 }
 ```
 
-... or you can iterate over rows :
+... or you can iterate over rows:
 ```go
 // Switch the iteration direction
 backwards = false
 for rank, row := range square.Iter(backwards) {
     for file, piece := range row {
         if piece != nil {
-            // There is an existed piece
+            // There is a piece
         }
 
         pos := chess.NewPosition(file, rank)
@@ -223,15 +221,15 @@ for rank, row := range square.Iter(backwards) {
 
 ... or iterate over squares in a given direction:
 ```go
-// Go through squares on the same file and the next rank
+// Traverse squares on the same file and the next rank
 dir1 := chess.DirectionTop
-// Go through squares on the previous file and the same rank
+// Traverse squares on the previous file and the same rank
 dir2 := chess.DirectionBottom
-// Go through diagonally down and to the right of the squares
+// Traverse diagonally down and to the right
 dir3 := chess.DirectionTopRight
-// Go through diagonally up and to the left of the squares
+// Traverse diagonally up and to the left
 dir4 := chess.DirectionBottomLeft
-// Go through your own direction
+// Use a custom direction
 dir5 := position.New(chess.File(2), chess.Rank(1))
 // and so on...
 
@@ -243,23 +241,23 @@ for pos, piece := range square.IterByDirection(fromPos, dir1) {
 }
 ```
 
-## Positions, files, ranks
+### Positions, files, ranks
 
-There is the `chess.Position` structure for working with positions. It contains two fields: `File` and `Rank`.
+The `chess.Position` structure is used for working with positions. It contains two fields: `File` and `Rank`.
 The fields correspond to types `chess.File` and `chess.Rank` respectively.
-A file can be in the range between the values ​​of `chess.FileNull` and `chess.FileMax`.
-A rank can be in the range between the values ​​of `chess.RankNull` and `chess.RankMax`.
-The engine doesn't expect you to use values out this ranges.
+A file can range between `chess.FileNull` and `chess.FileMax`.
+A rank can range between `chess.RankNull` and `chess.RankMax`.
+The engine doesn't expect you to use values outside these ranges.
 
-### Files
+#### Files
 
-There is a special type for the files representation:
+There is a special type for file representation:
 ```go
 type File int8
 ```
 
-Also there are several built-in file constants which you should to use: `chess.FileNull`, `chess.FileMin` which equals to `chess.FileA`, `chess.FileB` ..., `chess.FileP` which equals to `chess.FileMax`.
-`chess.FileNull` means zero value and doesn't mean it is invalid.
+There are several built-in file constants that you should use: `chess.FileNull`, `chess.FileMin` which equals `chess.FileA`, `chess.FileB` ..., `chess.FileP` which equals `chess.FileMax`.
+`chess.FileNull` is the zero value and does not necessarily mean it is invalid.
 
 You can check if the file has zero value:
 ```go
@@ -282,15 +280,15 @@ fileStr := file.String()
 ```
 > An empty string for zero value or invalid files, and letters for other files (`chess.FileA.String() == "A"`, `chess.FileG.String() == "G"` etc.)
 
-### Ranks
+#### Ranks
 
-There is a special type for the ranks representation:
+There is a special type for rank representation:
 ```go
 type Rank int8
 ```
 
-Also there are several built-in rank constants which you should to use: `chess.RankNull`, `chess.RankMin` which equals to `chess.Rank1`, `chess.Rank2` ..., `chess.Rank16` which equals to `chess.RankMax`.
-`chess.RankNull` means zero value and doesn't mean it is invalid.
+There are several built-in rank constants that you should use: `chess.RankNull`, `chess.RankMin` which equals `chess.Rank1`, `chess.Rank2` ..., `chess.Rank16` which equals `chess.RankMax`.
+`chess.RankNull` is the zero value and does not necessarily mean it is invalid.
 
 You can check if the rank has zero value:
 ```go
@@ -313,13 +311,13 @@ rankStr := rank.String()
 ```
 > An empty string for zero value or invalid ranks, and numbers for other ranks (`chess.Rank1.String() == "1"`, `chess.Rank10.String() == "10"` etc.)
 
-### Positions
+#### Positions
 
-Create position in any way convenient for you:
+Create a position in any way convenient for you:
 ```go
 // Create empty position: 
 pos := chess.Position{}
-pos = chess.NewEmptyPosition()
+pos = chess.NewPositionEmpty()
 pos = chess.NewPosition(chess.FileNull, chess.RankNull)
 pos = chess.PositionFromString("")
 
@@ -343,28 +341,28 @@ chess.NewPosition(chess.FileNull, chess.Rank7) == "7"
 chess.NewPosition(chess.FileJ, chess.Rank3) == "j3"
 ```
 
-Position may has several states:
+A position may have several states:
 ```go
 chess.PositionFromString("j3").IsFull() == true
-chess.NewEmptyPosition().IsEmpty() == true
+chess.NewPositionEmpty().IsEmpty() == true
 chess.PositionFromString("g").IsValid() == true // It is not empty and full but still valid
 chess.PositionFromString("z22").IsValid() == false // Invalid
 ```
 
-## Pieces
+### Pieces
 
-You can get the piece side:
+You can get a piece's side:
 ```go
 var piece chess.Piece
 side := piece.Side()
 ```
 
-... or get it notation:
+... or its notation:
 ```go
 var notation string = piece.Notation()
 ```
 
-... or it weight which evaluates the piece's value on the board:
+... or its weight, which evaluates the piece's value on the board:
 ```go
 var pieceWeight uint8 = piece.Weight()
 ```
@@ -389,20 +387,19 @@ piecePosition := squares.GetByPiece(piece)
 var pseudoMoves chess.PositionSet = piece.PseudoMoves(piecePosition, squares)
 ```
 
-## States, state types
+### States, state types
 
-There are 3 board state types: `chess.StateTypeClear`, `chess.StateTypeThreat`, `chess.StateTypeTerminal`.
+There are three board state types: `chess.StateTypeClear`, `chess.StateTypeThreat`, `chess.StateTypeTerminal`.
 
-`chess.StateTypeClear` indicates that the chess board is in a clear state,
-meaning there are no threats or special conditions affecting the game. This is the default state of the board.
+`chess.StateTypeClear` indicates that the chess board is in a clear state, meaning there are no threats or special conditions affecting the game. This is the default state of the board.
 
-`chess.StateTypeThreat` indicates that there is a threat on the chess board, which is useful for indicating check or other conditions where a piece is under threat. 
+`chess.StateTypeThreat` indicates that there is a threat on the chess board, which is useful for indicating check or other conditions where a piece is under threat.
 
 `chess.StateTypeTerminal` indicates that the game has reached a terminal state, such as checkmate or stalemate,
 where no further moves can be made. This state is used to signify the end of the game.
 
-There are **states** which built on **state types**. There is the `chess.State` interface which has string representation and contains a state type.
-The difference between the **state** and the **state type** is **state type** is more abstract while **state** represents a concrete case of the board state.
+There are **states** which are built on **state types**. The `chess.State` interface provides a string representation and includes a state type.
+The difference between a **state** and a **state type** is that a state type is more abstract, while a state represents a concrete case of the board state.
 
 You can create your own states for various cases:
 ```go
@@ -413,7 +410,7 @@ var (
 )
 ```
 
-Also there is the only one built in engine state `chess.StateClear` with state type `chess.StateTypeClear`.
+Also, there is a single built-in engine state, `chess.StateClear`, with the state type `chess.StateTypeClear`.
 
 Note that boards contain states:
 ```go
@@ -423,11 +420,11 @@ state := board.State(board.Turn())
 
 ... which can be changed during the process of working with the board
 
-## Metrics
+### Metrics
 
-**Metrics** show meta information about the board. There are **metric functions** which returns **metrics**.
+**Metrics** show meta information about the board. There are **metric functions** which return **metrics**.
 
-Use this built in metric functions for getting the metrics:
+Use these built-in metric functions to get metrics:
 ```go
 // The number of half-moves made in the game
 metr = metric.HalfmoveCounter(board)
@@ -449,9 +446,9 @@ func TurnMetric(board chess.Board) Metric {
     return metric.New("Turn", board.Turn())
 }
 ```
-> Note that a **metric func** should implement the `metric.MetricFunc` type
+> Note that a metric function should implement the `metric.MetricFunc` type
 
-## Visualizer
+### Visualizer
 
 Use the `visualizer` package for displaying your board in the ascii format.
 It's very useful for debugging your code.
@@ -483,9 +480,13 @@ var vis visualizer.Visualizer{
 var board chess.Board
 
 // It will show the board in the terminal
-vis.Visualize(board, os.Stdout)
+vis.Fprintln(board, os.Stdout)
 ```
 
-# License
+## Contributing
+
+Bug reports and contributions are welcome. Please open issues or pull requests against this repository. Keep changes small and add tests for new behavior.
+
+## License
 
 The GNU General Public License

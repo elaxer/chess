@@ -14,7 +14,7 @@ import (
 // It can return nil if the metric is not applicable for the current position.
 type MetricFunc func(board chess.Board) Metric
 
-// Metric represents a named metric value produced from a board (for debugging or display).
+// Metric represents a named metric value produced from a board.
 // It provides a human-readable name and the underlying value.
 type Metric interface {
 	// Name returns the human-readable name of the metric.
@@ -23,7 +23,6 @@ type Metric interface {
 	Value() any
 }
 
-// metric is an internal implementation of the Metric interface.
 type metric struct {
 	name  string
 	value any
