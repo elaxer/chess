@@ -22,8 +22,8 @@ type Piece interface {
 	// IsMoved returns true if the piece has been moved.
 	// This is can be used to determine if the piece can perform castling or en passant.
 	IsMoved() bool
-	// MarkMoved marks the piece as moved.
-	MarkMoved()
+	// SetIsMoved marks the piece as moved or not.
+	SetIsMoved(isMoved bool)
 	// PseudoMoves returns all pseudo-legal moves for the piece from the given position.
 	// Pseudo-move is a move that does not check for checks or other game rules,
 	// but only considers the piece's movement capabilities.

@@ -25,8 +25,8 @@ func (m *PieceMock) IsMoved() bool {
 	return m.IsMovedValue
 }
 
-func (m *PieceMock) MarkMoved() {
-	m.IsMovedValue = true
+func (m *PieceMock) SetIsMoved(isMoved bool) {
+	m.IsMovedValue = isMoved
 }
 
 func (m *PieceMock) PseudoMoves(from chess.Position, squares *chess.Squares) chess.PositionSet {

@@ -19,7 +19,7 @@ func NewPiece(str string) chess.Piece {
 // The case of the character determines the side: uppercase for white, lowercase for black.
 func NewPieceM(str string) chess.Piece {
 	piece := NewPiece(str)
-	piece.MarkMoved()
+	piece.SetIsMoved(true)
 
 	return piece
 }
