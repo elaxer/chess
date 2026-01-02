@@ -3,12 +3,7 @@
 // and provides methods to create, validate, and manipulate positions.
 package position
 
-import (
-	"encoding/json"
-	"fmt"
-
-	validation "github.com/go-ozzo/ozzo-validation"
-)
+import "encoding/json"
 
 // Position represents the coordinates of a square on a chessboard.
 //
@@ -30,14 +25,21 @@ func (p Position) IsEmpty() bool {
 
 // Validate checks if the position contains both File and Rank values not exceeding their maximum limits.
 func (p Position) Validate() error {
-	return validation.ValidateStruct(&p, validation.Field(&p.File), validation.Field(&p.Rank))
+	if err := p.File.Validate(); err != nil {
+		return err
+	}
+	if err := p.Rank.Validate(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // String returns the string representation of the position.
 // If the position is empty, it returns an empty string.
 // For example, Position{FileE, Rank4} will be converted to "e4".
 func (p Position) String() string {
-	return fmt.Sprintf("%s%s", p.File, p.Rank)
+	return p.File.String() + p.Rank.String()
 }
 
 func (p *Position) UnmarshalJSON(data []byte) error {

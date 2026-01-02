@@ -1,10 +1,6 @@
 package chess
 
-import (
-	"fmt"
-
-	validation "github.com/go-ozzo/ozzo-validation"
-)
+import "fmt"
 
 // Move represents a chess input move which used to make a move on the chessboard.
 // It is an interface that can be implemented by different types of moves,
@@ -13,7 +9,6 @@ import (
 // and a Validate method for validation purposes.
 type Move interface {
 	fmt.Stringer
-	validation.Validatable
 }
 
 // StringMove is a simple implementation of the Move interface

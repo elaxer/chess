@@ -75,15 +75,15 @@ var moveHistory []chess.MoveResult = board.MoveHistory()
 
 You can easily get available or potential moves on the board:
 ```go
-var availableMoves chess.PositionSet = board.Moves(board.Turn())
-var potentialMoves chess.PositionSet = board.Moves(!board.Turn())
+var availableMoves []chess.Position = board.Moves(board.Turn())
+var potentialMoves []chess.Position = board.Moves(!board.Turn())
 ```
 > The `board.Moves` method returns the set of positions to which the pieces of a given side can move. Each piece has a method `PseudoMoves`, so `board.Moves` returns a filtered set of the pieces' moves.
 
 You can also get a filtered set of moves for a specific piece:
 ```go
 var piece chess.Piece = board.Squares().FindByPosition(chess.PositionFromString("e2"))
-var pieceLegalMoves chess.PositionSet = board.LegalMoves(piece)
+var pieceLegalMoves []chess.Position = board.LegalMoves(piece)
 ```
 
 Here the question arises: what do **legal** and **pseudo** moves mean?
@@ -384,7 +384,7 @@ piece.IsMove() == true
 ```go
 piecePosition := squares.GetByPiece(piece)
 
-var pseudoMoves chess.PositionSet = piece.PseudoMoves(piecePosition, squares)
+var pseudoMoves []chess.Position = piece.PseudoMoves(piecePosition, squares)
 ```
 
 ### States, state types

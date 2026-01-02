@@ -1,9 +1,8 @@
 package position
 
 import (
+	"errors"
 	"strings"
-
-	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 const (
@@ -34,6 +33,8 @@ const (
 
 const files = "abcdefghijklmnop"
 
+var errFileInvalid = errors.New("the file is invalid")
+
 type File int8
 
 // FileFromString returns a File from the specified string.
@@ -62,13 +63,11 @@ func (f File) IsNull() bool {
 // Returns an error if the value is invalid; otherwise returns nil.
 // FileNull is considered valid.
 func (f File) Validate() error {
-	return validation.Errors{
-		"file": validation.Validate(
-			int8(f),
-			validation.Min(int8(FileNull)),
-			validation.Max(int8(FileMax)),
-		),
-	}.Filter()
+	if f < FileNull || f > FileMax {
+		return errFileInvalid
+	}
+
+	return nil
 }
 
 // String returns the string representation of the file.

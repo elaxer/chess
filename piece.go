@@ -28,5 +28,5 @@ type Piece interface {
 	// Pseudo-move is a move that does not check for checks or other game rules,
 	// but only considers the piece's movement capabilities.
 	// It returns a set of positions that the piece can move to from the given position.
-	PseudoMoves(from Position, squares *Squares) PositionSet
+	PseudoMoves(from Position, squares *Squares) []Position
 }

@@ -1,7 +1,6 @@
 package chesstest
 
 import (
-	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess"
 )
 
@@ -10,7 +9,7 @@ type BoardMock struct {
 	TurnValue         chess.Side
 	StateFunc         func(side chess.Side) chess.State
 	MovesHistoryValue []chess.MoveResult
-	LegalMovesMap     map[chess.Piece]chess.PositionSet
+	LegalMovesMap     map[chess.Piece][]chess.Position
 	MakeMoveFunc      func(move chess.Move) (chess.MoveResult, error)
 	UndoLastMoveFunc  func() (chess.MoveResult, error)
 }
@@ -35,18 +34,18 @@ func (s *BoardMock) MoveHistory() []chess.MoveResult {
 	return s.MovesHistoryValue
 }
 
-func (s *BoardMock) Moves(side chess.Side) chess.PositionSet {
-	moves := mapset.NewSet[chess.Position]()
+func (s *BoardMock) Moves(side chess.Side) []chess.Position {
+	moves := make([]chess.Position, 0, 128)
 	for _, piece := range s.Squares().GetAllPieces(side) {
-		moves.Union(s.LegalMoves(piece))
+		moves = append(moves, s.LegalMoves(piece)...)
 	}
 
 	return moves
 }
 
-func (s *BoardMock) LegalMoves(piece chess.Piece) chess.PositionSet {
+func (s *BoardMock) LegalMoves(piece chess.Piece) []chess.Position {
 	if piece == nil {
-		return mapset.NewSet[chess.Position]()
+		return make([]chess.Position, 0, 16)
 	}
 
 	return piece.PseudoMoves(s.Squares().GetByPiece(piece), s.Squares())

@@ -1,9 +1,8 @@
 package position
 
 import (
+	"errors"
 	"strconv"
-
-	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 const (
@@ -32,6 +31,8 @@ const (
 	RankMax = Rank16
 )
 
+var errRankInvalid = errors.New("the rank is invalid")
+
 type Rank int8
 
 // IsNull reports whether the rank is RankNull.
@@ -39,13 +40,15 @@ func (r Rank) IsNull() bool {
 	return r == RankNull
 }
 
-// Validate checks whether the rank value is within the range from Rank1 to RankMax.
+// Validate checks whether the rank value is within the range from RankNull to RankMax.
 // Returns an error if the value is invalid; otherwise returns nil.
 // RankNull is considered valid.
 func (r Rank) Validate() error {
-	return validation.Errors{
-		"rank": validation.Validate(int8(r), validation.Max(int8(RankMax))),
-	}.Filter()
+	if r < RankNull || r > RankMax {
+		return errRankInvalid
+	}
+
+	return nil
 }
 
 // String returns the string representation of the rank.

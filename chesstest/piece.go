@@ -4,7 +4,6 @@ package chesstest
 import (
 	"strings"
 
-	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess"
 )
 
@@ -14,7 +13,7 @@ type PieceMock struct {
 	NotationValue    string
 	WeightValue      uint8
 	StringValue      string
-	PseudoMovesValue chess.PositionSet
+	PseudoMovesValue []chess.Position
 }
 
 func (m *PieceMock) Side() chess.Side {
@@ -29,9 +28,9 @@ func (m *PieceMock) SetIsMoved(isMoved bool) {
 	m.IsMovedValue = isMoved
 }
 
-func (m *PieceMock) PseudoMoves(from chess.Position, squares *chess.Squares) chess.PositionSet {
+func (m *PieceMock) PseudoMoves(from chess.Position, squares *chess.Squares) []chess.Position {
 	if m.PseudoMovesValue == nil {
-		m.PseudoMovesValue = mapset.NewSet[chess.Position]()
+		m.PseudoMovesValue = make([]chess.Position, 0)
 	}
 
 	return m.PseudoMovesValue

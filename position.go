@@ -3,10 +3,9 @@ package chess
 import (
 	"regexp"
 	"strconv"
+	"unicode"
 
-	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/elaxer/chess/internal/position"
-	"github.com/elaxer/rgx"
 )
 
 const (
@@ -103,11 +102,6 @@ type File = position.File
 // A rank may be valid or invalid.
 type Rank = position.Rank
 
-// PositionSet is a set of chess positions.
-// It is implemented using the mapset package, which provides a set data structure.
-// The Set type is used to store unique positions on the chessboard.
-type PositionSet = mapset.Set[Position]
-
 func NewPosition(file File, rank Rank) Position {
 	return Position{File: file, Rank: rank}
 }
@@ -121,24 +115,49 @@ func NewPositionEmpty() Position {
 // PositionFromString creates a new position from chess notation.
 // If the string is invalid or it's empty, it returns an empty position.
 func PositionFromString(str string) Position {
-	data, err := rgx.Group(regexpPosition, str)
+	if len(str) == 0 || len(str) > 3 {
+		return NewPositionEmpty()
+	}
+
+	file := FileNull
+	rank := RankNull
+
+	rankShift := 0
+
+	if unicode.IsLetter(rune(str[0])) {
+		file = position.FileFromString(string(str[0]))
+		rankShift = 1
+
+		if err := file.Validate(); err != nil {
+			return NewPositionEmpty()
+		}
+	}
+
+	if len(str) == 0+rankShift {
+		return NewPosition(file, rank)
+	}
+
+	rankStr := ""
+	rankStr += string(str[0+rankShift])
+
+	if len(str) == 2+rankShift {
+		rankStr += string(str[1+rankShift])
+	}
+
+	rankInt, err := strconv.Atoi(rankStr)
 	if err != nil {
 		return NewPositionEmpty()
 	}
 
-	file := position.FileFromString(data["file"])
-	rank := RankNull
-
-	rankInt, _ := strconv.Atoi(data["rank"])
-	if rankInt >= int(RankMin) && rankInt <= int(RankMax) {
-		rank = Rank(rankInt)
+	rank = Rank(rankInt)
+	if err := rank.Validate(); err != nil {
+		return NewPositionEmpty()
 	}
 
 	return NewPosition(file, rank)
 }
 
 // ValidationRulePositionIsEmpty checks if the position is empty.
-// It implements validation rule for ozzo-validation.
 func ValidationRulePositionIsEmpty(pos any) error {
 	return position.ValidationRuleIsEmpty(pos)
 }

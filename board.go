@@ -25,10 +25,10 @@ type Board interface {
 	// It returns a slice of MoveResult, which contains the details of each move.
 	MoveHistory() []MoveResult
 	// Moves returns a set of legal moves for the specified side.
-	Moves(side Side) PositionSet
+	Moves(side Side) []Position
 	// LegalMoves returns a set of legal moves for the specified piece.
 	// If the piece is nil or not found, it returns an empty set.
-	LegalMoves(piece Piece) PositionSet
+	LegalMoves(piece Piece) []Position
 	// MakeMove applies a move to the board and returns the result of the move.
 	// It returns a MoveResult which contains the details of the move made.
 	// If the move is invalid or cannot be made, it returns an error.

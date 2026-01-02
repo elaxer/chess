@@ -1,10 +1,6 @@
 package chess
 
-import (
-	"fmt"
-
-	validation "github.com/go-ozzo/ozzo-validation"
-)
+import "fmt"
 
 // MoveResult is an interface that represents the result of a move made on the chessboard.
 // It includes additional methods for retrieving the move itself and validating the result.
@@ -15,7 +11,6 @@ import (
 // a Validate method for validation purposes, and a Move method to retrieve the move that was made.
 type MoveResult interface {
 	fmt.Stringer
-	validation.Validatable
 	// Move returns the Move that was made.
 	// This method is used to retrieve the move that resulted in this MoveResult.
 	Move() Move
