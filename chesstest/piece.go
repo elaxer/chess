@@ -8,7 +8,7 @@ import (
 )
 
 type PieceMock struct {
-	SideValue        chess.Side
+	ColorValue       chess.Color
 	IsMovedValue     bool
 	NotationValue    string
 	WeightValue      uint8
@@ -16,8 +16,8 @@ type PieceMock struct {
 	PseudoMovesValue []chess.Position
 }
 
-func (m *PieceMock) Side() chess.Side {
-	return m.SideValue
+func (m *PieceMock) Color() chess.Color {
+	return m.ColorValue
 }
 
 func (m *PieceMock) IsMoved() bool {
@@ -51,7 +51,7 @@ func (m *PieceMock) String() string {
 
 	notation := m.NotationValue
 
-	if m.SideValue == chess.SideBlack {
+	if m.ColorValue == chess.ColorBlack {
 		notation = strings.ToLower(notation)
 	}
 

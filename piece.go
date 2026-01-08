@@ -1,9 +1,11 @@
 package chess
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Piece interface describes a chess piece.
-// It provides methods to get the piece's side, check if it has been moved,
+// It provides methods to get the piece's color, check if it has been moved,
 // get pseudo-legal moves, and retrieve its notation and weight.
 // It is used to represent different types of chess pieces such as pawns, knights, bishops, etc.
 // Each piece implements this interface to provide its specific behavior and properties.
@@ -11,8 +13,8 @@ import "fmt"
 // while still respecting the unique movement and rules associated with each type of piece.
 type Piece interface {
 	fmt.Stringer
-	// Side returns the side of the piece.
-	Side() Side
+	// Color returns the color of the piece.
+	Color() Color
 	// Notation returns the algebraic notation of the piece.
 	// For example, for a pawn it could returns "", for a knight it returns "N", etc.
 	Notation() string

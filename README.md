@@ -57,14 +57,12 @@ You can retrieve information stored in the board. See examples below:
 Get the current turn:
 ```go
 var board chess.Board
-var turn chess.Side = board.Turn()
+var turn chess.Color = board.Turn()
 ```
-Get the current board state for the current turn:
+Get the current board state:
 ```go
-var state chess.State = board.State(board.Turn())
+var state chess.State = board.State()
 
-// ... or get the board state for the opposite side:
-var oppositeState chess.State = board.State(!board.Turn())
 ```
 Get a list of executed moves on the board:
 ```go
@@ -73,12 +71,11 @@ var moveHistory []chess.MoveResult = board.MoveHistory()
 
 ### Moves
 
-You can easily get available or potential moves on the board:
+You can easily get available moves on the board:
 ```go
-var availableMoves []chess.Position = board.Moves(board.Turn())
-var potentialMoves []chess.Position = board.Moves(!board.Turn())
+var availableMoves []chess.Position = board.Moves()
 ```
-> The `board.Moves` method returns the set of positions to which the pieces of a given side can move. Each piece has a method `PseudoMoves`, so `board.Moves` returns a filtered set of the pieces' moves.
+> The `board.Moves` method returns the set of positions to which the pieces can move. Each piece has a method `PseudoMoves`, so `board.Moves` returns a filtered set of the pieces' moves.
 
 You can also get a filtered set of moves for a specific piece:
 ```go
@@ -150,21 +147,22 @@ if piece != nil {
 ... or you can find them in different ways:
 ```go
 var pieceNotation = "K"
-var pieceSide = chess.SideWhite
+var pieceColor = chess.ColorWhite
 
 // Also it finds the position:
-piece, position := squares.FindPiece(pieceNotation, pieceSide)
+piece, position := squares.FindPiece(pieceNotation, pieceColor)
 if piece != nil {
     // The piece is found
 }
 
 // ... or you can find several pieces with the same notation and the same side:
-var pieces chess.Piece[] = squares.GetPieces(pieceNotation, pieceSide)
+// todo:
+var pieces chess.Piece[] = squares.GetPieces(pieceNotation, pieceColor)
 ```
 
-... or you can get all the pieces for the specified side:
+... or you can get all the pieces of a certain color:
 ```go
-pieces = squares.GetAllPieces(pieceSide)
+pieces = squares.GetAllPieces(pieceColor)
 ```
 
 Conversely, you can get the position of a piece placed on it:
@@ -354,7 +352,7 @@ chess.PositionFromString("z22").IsValid() == false // Invalid
 You can get a piece's side:
 ```go
 var piece chess.Piece
-side := piece.Side()
+side := piece.Color()
 ```
 
 ... or its notation:
@@ -415,7 +413,10 @@ Also, there is a single built-in engine state, `chess.StateClear`, with the stat
 Note that boards contain states:
 ```go
 var board chess.Board
-state := board.State(board.Turn())
+var state chess.State = board.State()
+if !state.Type().IsTerminal() {
+    // The game is over
+}
 ```
 
 ... which can be changed during the process of working with the board

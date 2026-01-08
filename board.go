@@ -14,18 +14,20 @@ type Board interface {
 	Squares() *Squares
 	// Turn returns the current turn of the board.
 	// It indicates which side (white or black) is to move next.
-	Turn() Side
-	// State returns the current state of the board for the specified side.
+	Turn() Color
+	// State returns the current state of the board.
 	// Returns chess.StateClear if the board is in a clear state.
 	// Should not return nil.
-	State(side Side) State
+	State() State
 	// CapturedPieces returns a slice of pieces that have been captured on the board.
 	CapturedPieces() []Piece
 	// MoveHistory returns the history of moves made on the board.
 	// It returns a slice of MoveResult, which contains the details of each move.
 	MoveHistory() []MoveResult
-	// Moves returns a set of legal moves for the specified side.
-	Moves(side Side) []Position
+	// Moves returns a set of available legal moves.
+	Moves() []Position
+	// IsSquareAttacked checks whether a square is attacked by enemy pieces.
+	IsSquareAttacked(position Position) bool
 	// LegalMoves returns a set of legal moves for the specified piece.
 	// If the piece is nil or not found, it returns an empty set.
 	LegalMoves(piece Piece) []Position

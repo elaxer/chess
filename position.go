@@ -1,7 +1,6 @@
 package chess
 
 import (
-	"regexp"
 	"strconv"
 	"unicode"
 
@@ -74,11 +73,6 @@ var (
 	DirectionBottomRight = NewPosition(File(1), Rank(-1))
 )
 
-// regexpPosition is a regular expression pattern used to parse chess positions.
-// It matches a string that represents a position on the chessboard,
-// such as "e4", "a1", or "h8". The pattern captures the file (a-h) and rank (1-8 or 10-16).
-var regexpPosition = regexp.MustCompile("^(?P<file>[a-p])?(?P<rank>1[0-6]|[1-9])?$")
-
 // Position represents the coordinates of a square on a chessboard.
 // Position consists of File and Rank.
 // Positions can have different states:
@@ -149,15 +143,11 @@ func PositionFromString(str string) Position {
 		return NewPositionEmpty()
 	}
 
+	//nolint:gosec
 	rank = Rank(rankInt)
 	if err := rank.Validate(); err != nil {
 		return NewPositionEmpty()
 	}
 
 	return NewPosition(file, rank)
-}
-
-// ValidationRulePositionIsEmpty checks if the position is empty.
-func ValidationRulePositionIsEmpty(pos any) error {
-	return position.ValidationRuleIsEmpty(pos)
 }

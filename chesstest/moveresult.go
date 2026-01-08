@@ -8,7 +8,7 @@ import (
 
 type MoveResultMock struct {
 	MoveValue          chess.Move
-	SideValue          chess.Side
+	TurnValue          chess.Color
 	CapturedPieceValue chess.Piece
 	BoardNewStateValue chess.State
 	StringValue        string
@@ -19,12 +19,16 @@ func (m *MoveResultMock) Move() chess.Move {
 	return m.MoveValue
 }
 
-func (m *MoveResultMock) Side() chess.Side {
-	return m.SideValue
+func (m *MoveResultMock) Side() chess.Color {
+	return m.TurnValue
 }
 
 func (m *MoveResultMock) CapturedPiece() chess.Piece {
 	return m.CapturedPieceValue
+}
+
+func (m *MoveResultMock) SetBoardNewState(state chess.State) {
+	m.BoardNewStateValue = state
 }
 
 func (m *MoveResultMock) BoardNewState() chess.State {
@@ -39,7 +43,7 @@ func (m *MoveResultMock) String() string {
 	return fmt.Sprintf(
 		"Move: %v, Side: %v, Captured piece: %v, State: %v",
 		m.MoveValue,
-		m.SideValue,
+		m.TurnValue,
 		m.CapturedPieceValue,
 		m.BoardNewStateValue,
 	)

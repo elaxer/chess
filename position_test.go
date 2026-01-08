@@ -70,6 +70,16 @@ func TestPositionFromString(t *testing.T) {
 			args{"foo223"},
 			Position{},
 		},
+		{
+			"utf8",
+			args{"ж3"},
+			Position{},
+		},
+		{
+			"emoji",
+			args{"🇰🇿8"},
+			Position{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

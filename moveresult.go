@@ -16,9 +16,11 @@ type MoveResult interface {
 	Move() Move
 	// Side returns the Side that made the move.
 	// This method is used to determine which side (white or black) made the move.
-	Side() Side
-	// CapturedPiece returns the captured piece as a result of the move
+	Side() Color
+	// CapturedPiece returns the captured piece as a result of the move.
 	CapturedPiece() Piece
 	// BoardNewState returns the new state of the board after the move.
 	BoardNewState() State
+	// SetBoardNewState sets a value ​​of the new board state as a result of a move.
+	SetBoardNewState(state State)
 }

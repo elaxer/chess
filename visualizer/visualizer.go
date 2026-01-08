@@ -21,7 +21,7 @@ type Visualizer struct {
 // The output format depends on the Visualizer Options (orientation, positions display and metrics).
 func (v *Visualizer) Fprint(writer io.Writer, board chess.Board) {
 	backward := (v.Options.Orientation == OptionOrientationDefault) ||
-		(v.Options.Orientation == OptionOrientationByTurn && board.Turn() == chess.SideWhite)
+		(v.Options.Orientation == OptionOrientationByTurn && board.Turn() == chess.ColorWhite)
 
 	for rank, row := range board.Squares().IterOverRows(backward) {
 		if v.Options.DisplayPositions {

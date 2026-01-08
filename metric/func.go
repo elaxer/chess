@@ -33,16 +33,16 @@ func LastMove(board chess.Board) Metric {
 
 // Material returns a Metric with material values for White and Black as a slice [white, black].
 func Material(board chess.Board) Metric {
-	callback := func(side chess.Side) int {
+	callback := func(color chess.Color) int {
 		var weight int
-		for _, piece := range board.Squares().GetAllPieces(side) {
+		for piece := range board.Squares().GetAllPieces(color) {
 			weight += int(piece.Weight())
 		}
 
 		return weight
 	}
 
-	return New("Material value", []int{callback(chess.SideWhite), callback(chess.SideBlack)})
+	return New("Material value", []int{callback(chess.ColorWhite), callback(chess.ColorBlack)})
 }
 
 // MaterialDifference returns a Metric representing the material advantage (white - black).
