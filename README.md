@@ -1,5 +1,8 @@
 # chess - core chess primitives
 
+[![godoc](https://godoc.org/github.com/elaxer/chess?status.svg)](https://godoc.org/github.com/elaxer/chess)
+[![go report card](https://goreportcard.com/badge/elaxer/chess)](https://goreportcard.com/report/elaxer/chess)
+
 A small, well-tested Go library that implements core chess primitives: board and square management, pieces and moves, position handling, simple metrics and a textual visualizer.
 
 ## Requirements
