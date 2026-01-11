@@ -155,9 +155,8 @@ if piece != nil {
     // The piece is found
 }
 
-// ... or you can find several pieces with the same notation and the same side:
-// todo:
-var pieces chess.Piece[] = squares.GetPieces(pieceNotation, pieceColor)
+// ... or you can find several pieces with the same notation and the same color:
+var piecesIter iter.Seq[Piece] = squares.GetPieces(pieceNotation, pieceColor)
 ```
 
 ... or you can get all the pieces of a certain color:
@@ -349,10 +348,10 @@ chess.PositionFromString("z22").IsValid() == false // Invalid
 
 ### Pieces
 
-You can get a piece's side:
+You can get a piece's color:
 ```go
 var piece chess.Piece
-side := piece.Color()
+color := piece.Color()
 ```
 
 ... or its notation:
