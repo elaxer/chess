@@ -6,9 +6,12 @@
 // It is intended for use in chess applications, engines, and libraries that require chess logic.
 package chess
 
+import "encoding/json"
+
 // Board represents a chessboard with its squares, pieces, and board state.
 // It provides methods to access the current turn, state of the board, and to make moves.
 type Board interface {
+	json.Marshaler
 	// Squares returns a reference to the squares on the board.
 	// It allows access to the individual squares and their pieces.
 	Squares() *Squares
