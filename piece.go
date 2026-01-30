@@ -20,7 +20,7 @@ type Piece interface {
 	Notation() string
 	// Weight returns the weight of the piece.
 	// The weight is used to evaluate the piece's value in the game.
-	Weight() uint8
+	Weight() uint16
 	// IsMoved returns true if the piece has been moved.
 	// This is can be used to determine if the piece can perform castling or en passant.
 	IsMoved() bool

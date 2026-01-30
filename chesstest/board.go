@@ -12,7 +12,6 @@ type BoardMock struct {
 	StateFunc           func() chess.State
 	MovesHistoryValue   []chess.MoveResult
 	CapturedPiecesValue []chess.Piece
-	LegalMovesMap       map[chess.Piece][]chess.Position
 	MakeMoveFunc        func(move chess.Move) (chess.MoveResult, error)
 	UndoLastMoveFunc    func() (chess.MoveResult, error)
 }
@@ -37,17 +36,6 @@ func (s *BoardMock) CapturedPieces() []chess.Piece {
 	return s.CapturedPiecesValue
 }
 
-func (s *BoardMock) IsSquareAttacked(position chess.Position) bool {
-	for piece := range s.Squares().GetAllPieces(!s.TurnValue) {
-		from := s.SquaresValue.GetByPiece(piece)
-		if slices.Contains(piece.PseudoMoves(from, s.SquaresValue), position) {
-			return true
-		}
-	}
-
-	return false
-}
-
 func (s *BoardMock) MoveHistory() []chess.MoveResult {
 	return s.MovesHistoryValue
 }
@@ -61,9 +49,20 @@ func (s *BoardMock) Moves() []chess.Position {
 	return moves
 }
 
+func (s *BoardMock) IsSquareAttacked(position chess.Position) bool {
+	for piece := range s.Squares().GetAllPieces(!s.TurnValue) {
+		from := s.SquaresValue.GetByPiece(piece)
+		if slices.Contains(piece.PseudoMoves(from, s.SquaresValue), position) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (s *BoardMock) LegalMoves(piece chess.Piece) []chess.Position {
 	if piece == nil {
-		return make([]chess.Position, 0, 16)
+		return make([]chess.Position, 0)
 	}
 
 	return piece.PseudoMoves(s.Squares().GetByPiece(piece), s.Squares())
@@ -96,4 +95,8 @@ func (s *BoardMock) UndoLastMove() (chess.MoveResult, error) {
 	}
 
 	return s.MovesHistoryValue[len(s.MovesHistoryValue)-1], nil
+}
+
+func (s *BoardMock) MarshalJSON() ([]byte, error) {
+	return make([]byte, 0), nil
 }

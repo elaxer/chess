@@ -20,9 +20,3 @@ type StringMove string
 func (m StringMove) String() string {
 	return string(m)
 }
-
-// Validate implements the validation.Validatable interface for StringMove.
-// It does not perform any validation and always returns nil.
-func (m StringMove) Validate() error {
-	return nil
-}

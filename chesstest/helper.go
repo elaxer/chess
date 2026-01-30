@@ -23,6 +23,15 @@ func NewPiece(str string) chess.Piece {
 	return &PieceMock{NotationValue: strings.ToUpper(str), ColorValue: color, StringValue: str}
 }
 
+func MustSquaresFromPlacement(edgePosition chess.Position, placement map[chess.Position]chess.Piece) *chess.Squares {
+	squares, err := chess.SquaresFromPlacement(edgePosition, placement)
+	if err != nil {
+		panic(err)
+	}
+
+	return squares
+}
+
 // MoveStrings converts a list of move strings into a slice of chess.Move instances.
 func MoveStrings(moveStrings ...string) []chess.Move {
 	moves := make([]chess.Move, 0, len(moveStrings))

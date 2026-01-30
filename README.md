@@ -19,10 +19,7 @@ go get github.com/elaxer/chess
 
 ### What this library is NOT
 
-This library is not:
-- A ready-to-play chess game with UI
-- A full-featured chess engine with AI, evaluation, or search algorithms
-- A beginner-friendly “learn chess by coding” toolkit
+This library is not a ready-to-play chess game with UI or a full-featured chess engine with AI, evaluation, or search algorithms.
 
 There is no GUI, no bots, no minimax, no magic. This package focuses strictly on core chess primitives and rules infrastructure.
 
@@ -65,7 +62,6 @@ var turn chess.Color = board.Turn()
 Get the current board state:
 ```go
 var state chess.State = board.State()
-
 ```
 Get a list of executed moves on the board:
 ```go
@@ -82,7 +78,12 @@ var availableMoves []chess.Position = board.Moves()
 
 You can also get a filtered set of moves for a specific piece:
 ```go
-var piece chess.Piece = board.Squares().FindByPosition(chess.PositionFromString("e2"))
+var piece chess.Piece
+
+piece, err := board.Squares().FindByPosition(chess.PositionFromString("e2"))
+if piece == nil {
+    // Piece is not found
+}
 var pieceLegalMoves []chess.Position = board.LegalMoves(piece)
 ```
 
@@ -97,7 +98,7 @@ You can make moves:
 var move chess.Move = chess.StringMove("Bc5")
 var moveResult chess.MoveResult
 
-moveResult, err := board.MakeMove(move)
+moveResult, err = board.MakeMove(move)
 ```
 The method returns a `chess.MoveResult` and an `error`. `MoveResult` contains the input move (`MoveResult.Move`) and provides methods to get the captured piece (if any) via `MoveResult.CapturedPiece`, the side that made the move (`MoveResult.Side`), and the new board state after the move (`MoveResult.BoardNewState`). The `error` is non‑nil if the move was incorrect or impossible.
 
@@ -105,14 +106,14 @@ You can also undo the last move:
 ```go
 var lastMoveResult chess.MoveResult
 
-lastMoveResult, err := board.UndoMove()
+lastMoveResult, err := board.UndoLastMove()
 ```
 
 ### Working with squares
 
 Operations on chess squares and piece arrangement are encapsulated in the `chess.Square` structure. Your board contains it:
 ```go
-var squares *chess.Square = board.Squares()
+var squares *chess.Squares = board.Squares()
 ```
 ... or you can create your own:
 ```go
@@ -128,7 +129,7 @@ You can also create squares with placed pieces:
 ```go
 // Here should be your implementation of the piece
 var piece chess.Piece
-squares, err := SquaresFromPlacement(edgePosition, map[chess.Position]Piece{
+squares, err := chess.SquaresFromPlacement(edgePosition, map[chess.Position]chess.Piece{
     chess.PositionFromString("g3"): piece,
 })
 ```
@@ -159,7 +160,7 @@ if piece != nil {
 }
 
 // ... or you can find several pieces with the same notation and the same color:
-var piecesIter iter.Seq[Piece] = squares.GetPieces(pieceNotation, pieceColor)
+var piecesIter iter.Seq[chess.Piece] = squares.GetPieces(pieceNotation, pieceColor)
 ```
 
 ... or you can get all the pieces of a certain color:
@@ -170,10 +171,9 @@ pieces = squares.GetAllPieces(pieceColor)
 Conversely, you can get the position of a piece placed on it:
 ```go
 pos := squares.GetByPiece(piece)
-if !pos.IsNull() {
+if !pos.IsEmpty() {
     // Position is found
 }
-
 ```
 
 ### Moving pieces
@@ -188,7 +188,7 @@ if capturedPiece != nil {
 
 ... or you can move the piece, call a callback, and then return the board to its original position:
 ```go
-err := squares.MovePiece(chess.PositionFromString("c3"), chess.PositionFromString("h8"), func () {
+err := squares.MovePieceTemporarily(chess.PositionFromString("c3"), chess.PositionFromString("h8"), func () {
     // Do things within this new temporary position
 })
 ```
@@ -197,7 +197,7 @@ err := squares.MovePiece(chess.PositionFromString("c3"), chess.PositionFromStrin
 
 There are different ways to iterate over squares. All these methods are built on the Go standard package `iter`. Here is one of them, which goes through all the squares starting from the very first one and ending with the **edge square**:
 ```go
-for pos, piece := range square.Iter() {
+for pos, piece := range squares.Iter() {
     if piece != nil {
         // There is a piece at that position
     }
@@ -207,8 +207,8 @@ for pos, piece := range square.Iter() {
 ... or you can iterate over rows:
 ```go
 // Switch the iteration direction
-backwards = false
-for rank, row := range square.Iter(backwards) {
+backwards := false
+for rank, row := range squares.IterOverRows(backwards) {
     for file, piece := range row {
         if piece != nil {
             // There is a piece
@@ -230,11 +230,11 @@ dir3 := chess.DirectionTopRight
 // Traverse diagonally up and to the left
 dir4 := chess.DirectionBottomLeft
 // Use a custom direction
-dir5 := position.New(chess.File(2), chess.Rank(1))
+dir5 := chess.NewPosition(chess.File(2), chess.Rank(1))
 // and so on...
 
 fromPos := chess.PositionFromString("d4")
-for pos, piece := range square.IterByDirection(fromPos, dir1) {
+for pos, piece := range squares.IterByDirection(fromPos, dir1) {
     if piece != nil {
         // There is a piece on the position
     }
@@ -335,18 +335,18 @@ pos = chess.PositionFromString("j3")
 
 Get the string representation of the position:
 ```go
-chess.NewPosition(chess.FileNull, chess.RankNull) == ""
-chess.NewPosition(chess.FileG, chess.RankNull) == "g"
-chess.NewPosition(chess.FileNull, chess.Rank7) == "7"
-chess.NewPosition(chess.FileJ, chess.Rank3) == "j3"
+chess.NewPosition(chess.FileNull, chess.RankNull).String() // ""
+chess.NewPosition(chess.FileG, chess.RankNull).String() // "g"
+chess.NewPosition(chess.FileNull, chess.Rank7).String() // "7"
+chess.NewPosition(chess.FileJ, chess.Rank3).String() // "j3"
 ```
 
 A position may have several states:
 ```go
-chess.PositionFromString("j3").IsFull() == true
-chess.NewPositionEmpty().IsEmpty() == true
-chess.PositionFromString("g").IsValid() == true // It is not empty and full but still valid
-chess.PositionFromString("z22").IsValid() == false // Invalid
+chess.PositionFromString("j3").IsFull() // true
+chess.NewPositionEmpty().IsEmpty() // true
+chess.PositionFromString("g").IsValid() // true because it is not empty and full but still valid
+chess.PositionFromString("z22").IsValid() // false because it's invalid
 ```
 
 ### Pieces
@@ -364,7 +364,7 @@ var notation string = piece.Notation()
 
 ... or its weight, which evaluates the piece's value on the board:
 ```go
-var pieceWeight uint8 = piece.Weight()
+var pieceWeight uint16 = piece.Weight()
 ```
 
 ... or check if the piece has moved:
@@ -374,10 +374,13 @@ if piece.IsMoved() {
 }
 ```
 
-... or mark it as moved:
+... or mark/unmark it as moved:
 ```go
-piece.MarkMoved()
-piece.IsMove() == true 
+piece.SetIsMoved(true)
+piece.IsMoved() // true
+
+piece.SetIsMoved(false)
+piece.IsMoved() // false
 ```
 
 ... or get pseudo moves which the piece generates:
@@ -430,7 +433,7 @@ if !state.Type().IsTerminal() {
 Use these built-in metric functions to get metrics:
 ```go
 // The number of half-moves made in the game
-metr = metric.HalfmoveCounter(board)
+metr := metric.HalfmoveCounter(board)
 // The number of full moves made in the game
 metr = metric.FullmoveCounter(board)
 // The last move made, or nil if no moves exist
@@ -457,7 +460,6 @@ Use the `visualizer` package for displaying your board in the ascii format.
 It's very useful for debugging your code.
 Here is a quick example:
 ```go
-
 // Thus the white side will be at the bottom and the black side at the top
 var orientation visualizer.OptionOrientation = visualizer.OptionOrientationDefault
 // The black side will be at the bottom and the white side at the top
@@ -466,24 +468,24 @@ orientation = visualizer.OptionOrientationReversed
 // otherwise the black side will be at the bottom
 orientation = visualizer.OptionOrientationByTurn
 
-var vis visualizer.Visualizer{
+vis := &visualizer.Visualizer{
     Options: visualizer.Options{
         Orientation: orientation,
         // If it is true then the visualizer will show ranks at the left and files at the bottom
         DisplayPositions: true,
-        // Metric funcs for displaying the board metrics 
-        MetricFuncs: [
-            metric.HalfmoveCounterFunc,
+        // Metric funcs for displaying the board metrics
+        MetricFuncs: []metric.MetricFunc{
+            metric.HalfmoveCounter,
             metric.LastMove,
             metric.MaterialDifference,
-        ],
-    }
+        },
+    },
 }
 
 var board chess.Board
 
 // It will show the board in the terminal
-vis.Fprintln(board, os.Stdout)
+vis.Fprintln(os.Stdout, board)
 ```
 
 ## Contributing
