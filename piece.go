@@ -1,8 +1,6 @@
 package chess
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // Piece interface describes a chess piece.
 // It provides methods to get the piece's color, check if it has been moved,

@@ -19,22 +19,22 @@ func TestHalfmoveCounter(t *testing.T) {
 	}{
 		{
 			"zero",
-			&chesstest.BoardMock{MovesHistoryValue: []chess.MoveResult{}},
+			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{}},
 			0,
 		},
 		{
 			"one",
-			&chesstest.BoardMock{MovesHistoryValue: []chess.MoveResult{nil}},
+			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{nil}},
 			1,
 		},
 		{
 			"odd",
-			&chesstest.BoardMock{MovesHistoryValue: []chess.MoveResult{nil, nil, nil, nil, nil}},
+			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{nil, nil, nil, nil, nil}},
 			5,
 		},
 		{
 			"even",
-			&chesstest.BoardMock{MovesHistoryValue: []chess.MoveResult{nil, nil, nil, nil, nil, nil}},
+			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{nil, nil, nil, nil, nil, nil}},
 			6,
 		},
 	}
@@ -55,22 +55,22 @@ func TestFullmoveCounter(t *testing.T) {
 	}{
 		{
 			"zero",
-			&chesstest.BoardMock{MovesHistoryValue: []chess.MoveResult{}},
+			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{}},
 			0,
 		},
 		{
 			"one",
-			&chesstest.BoardMock{MovesHistoryValue: []chess.MoveResult{nil}},
+			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{nil}},
 			1,
 		},
 		{
 			"odd",
-			&chesstest.BoardMock{MovesHistoryValue: []chess.MoveResult{nil, nil, nil, nil, nil}},
+			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{nil, nil, nil, nil, nil}},
 			3,
 		},
 		{
 			"even",
-			&chesstest.BoardMock{MovesHistoryValue: []chess.MoveResult{nil, nil, nil, nil, nil, nil}},
+			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{nil, nil, nil, nil, nil, nil}},
 			3,
 		},
 	}
@@ -87,25 +87,25 @@ func TestLastMove(t *testing.T) {
 		name string // description of this test case
 		// Named input parameters for target function.
 		board   chess.Board
-		want    chess.MoveResult
+		want    chess.Move
 		wantNil bool
 	}{
 		{
 			"zero",
-			&chesstest.BoardMock{MovesHistoryValue: []chess.MoveResult{}},
+			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{}},
 			nil,
 			true,
 		},
 		{
 			"A",
-			&chesstest.BoardMock{MovesHistoryValue: []chess.MoveResult{&chesstest.MoveResultMock{StringValue: "A"}}},
+			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{&chesstest.MoveResultMock{StringValue: "A"}}},
 			&chesstest.MoveResultMock{StringValue: "A"},
 			false,
 		},
 		{
 			"C",
 			&chesstest.BoardMock{
-				MovesHistoryValue: []chess.MoveResult{
+				MovesHistoryValue: []chess.Move{
 					&chesstest.MoveResultMock{StringValue: "A"},
 					&chesstest.MoveResultMock{StringValue: "B"},
 					&chesstest.MoveResultMock{StringValue: "C"},

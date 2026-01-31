@@ -31,13 +31,3 @@ func MustSquaresFromPlacement(edgePosition chess.Position, placement map[chess.P
 
 	return squares
 }
-
-// MoveStrings converts a list of move strings into a slice of chess.Move instances.
-func MoveStrings(moveStrings ...string) []chess.Move {
-	moves := make([]chess.Move, 0, len(moveStrings))
-	for _, move := range moveStrings {
-		moves = append(moves, chess.StringMove(move))
-	}
-
-	return moves
-}

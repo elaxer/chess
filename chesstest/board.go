@@ -10,10 +10,10 @@ type BoardMock struct {
 	SquaresValue        *chess.Squares
 	TurnValue           chess.Color
 	StateFunc           func() chess.State
-	MovesHistoryValue   []chess.MoveResult
+	MovesHistoryValue   []chess.Move
 	CapturedPiecesValue []chess.Piece
-	MakeMoveFunc        func(move chess.Move) (chess.MoveResult, error)
-	UndoLastMoveFunc    func() (chess.MoveResult, error)
+	MakeMoveFunc        func(move string) (chess.Move, error)
+	UndoLastMoveFunc    func() (chess.Move, error)
 }
 
 func (s *BoardMock) Squares() *chess.Squares {
@@ -36,7 +36,7 @@ func (s *BoardMock) CapturedPieces() []chess.Piece {
 	return s.CapturedPiecesValue
 }
 
-func (s *BoardMock) MoveHistory() []chess.MoveResult {
+func (s *BoardMock) MoveHistory() []chess.Move {
 	return s.MovesHistoryValue
 }
 
@@ -68,16 +68,16 @@ func (s *BoardMock) LegalMoves(piece chess.Piece) []chess.Position {
 	return piece.PseudoMoves(s.Squares().GetByPiece(piece), s.Squares())
 }
 
-func (s *BoardMock) MakeMove(move chess.Move) (chess.MoveResult, error) {
+func (s *BoardMock) MakeMove(move string) (chess.Move, error) {
 	if s.MakeMoveFunc != nil {
 		return s.MakeMoveFunc(move)
 	}
 
 	result := &MoveResultMock{
-		MoveValue:          move,
+		InputValue:         move,
 		TurnValue:          s.TurnValue,
 		BoardNewStateValue: s.State(),
-		StringValue:        move.String(),
+		StringValue:        move,
 	}
 	s.MovesHistoryValue = append(s.MovesHistoryValue, result)
 	s.TurnValue = !s.TurnValue
@@ -85,7 +85,7 @@ func (s *BoardMock) MakeMove(move chess.Move) (chess.MoveResult, error) {
 	return result, nil
 }
 
-func (s *BoardMock) UndoLastMove() (chess.MoveResult, error) {
+func (s *BoardMock) UndoLastMove() (chess.Move, error) {
 	if s.UndoLastMoveFunc != nil {
 		return s.UndoLastMoveFunc()
 	}
@@ -95,8 +95,4 @@ func (s *BoardMock) UndoLastMove() (chess.MoveResult, error) {
 	}
 
 	return s.MovesHistoryValue[len(s.MovesHistoryValue)-1], nil
-}
-
-func (s *BoardMock) MarshalJSON() ([]byte, error) {
-	return make([]byte, 0), nil
 }

@@ -2,21 +2,25 @@ package chess
 
 import "fmt"
 
-// Move represents a chess input move which used to make a move on the chessboard.
-// It is an interface that can be implemented by different types of moves,
-// such as Normal move or Castling and so on.
-// The Move interface requires a String method for string representation
-// and a Validate method for validation purposes.
+// Move is an interface that represents the result of a move made on the chessboard.
+// It includes additional methods for retrieving the move itself and validating the result.
+// It is used to encapsulate the details of a move, including the side that made the move,
+// the new state of the board after the move,
+// and can includes any additional information such as captured pieces or castling details.
+// The Move interface requires a String method for string representation,
+// a Validate method for validation purposes, and a Move method to retrieve the move that was made.
 type Move interface {
 	fmt.Stringer
-}
-
-// StringMove is a simple implementation of the Move interface
-// that represents a move as a string.
-// It is used for cases where the move can be represented as a string,
-// such as in standard chess notation.
-type StringMove string
-
-func (m StringMove) String() string {
-	return string(m)
+	// Input returns the input that was made.
+	// This method is used to retrieve the move that resulted in this MoveResult.
+	Input() string
+	// Side returns the Side that made the move.
+	// This method is used to determine which side (white or black) made the move.
+	Side() Color
+	// CapturedPiece returns the captured piece as a result of the move.
+	CapturedPiece() Piece
+	// BoardNewState returns the new state of the board after the move.
+	BoardNewState() State
+	// SetBoardNewState sets a value ​​of the new board state as a result of a move.
+	SetBoardNewState(state State)
 }

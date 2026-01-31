@@ -6,12 +6,9 @@
 // It is intended for use in chess applications, engines, and libraries that require chess logic.
 package chess
 
-import "encoding/json"
-
 // Board represents a chessboard with its squares, pieces, and board state.
 // It provides methods to access the current turn, state of the board, and to make moves.
 type Board interface {
-	json.Marshaler
 	// Squares returns a reference to the squares on the board.
 	// It allows access to the individual squares and their pieces.
 	Squares() *Squares
@@ -26,7 +23,7 @@ type Board interface {
 	CapturedPieces() []Piece
 	// MoveHistory returns the history of moves made on the board.
 	// It returns a slice of MoveResult, which contains the details of each move.
-	MoveHistory() []MoveResult
+	MoveHistory() []Move
 	// Moves returns a set of available legal moves.
 	Moves() []Position
 	// IsSquareAttacked checks whether a square is attacked by enemy pieces.
@@ -37,9 +34,9 @@ type Board interface {
 	// MakeMove applies a move to the board and returns the result of the move.
 	// It returns a MoveResult which contains the details of the move made.
 	// If the move is invalid or cannot be made, it returns an error.
-	MakeMove(move Move) (MoveResult, error)
+	MakeMove(move string) (Move, error)
 	// UndoLastMove undoes the last move made on the board and returns it.
 	// It returns an error if the undo operation fails.
 	// Returns nil, nil if there are no moves to undo.
-	UndoLastMove() (MoveResult, error)
+	UndoLastMove() (Move, error)
 }

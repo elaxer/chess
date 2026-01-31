@@ -7,7 +7,7 @@ import (
 )
 
 type MoveResultMock struct {
-	MoveValue          chess.Move
+	InputValue         string
 	TurnValue          chess.Color
 	CapturedPieceValue chess.Piece
 	BoardNewStateValue chess.State
@@ -15,8 +15,8 @@ type MoveResultMock struct {
 	ValidateFunc       func() error
 }
 
-func (m *MoveResultMock) Move() chess.Move {
-	return m.MoveValue
+func (m *MoveResultMock) Input() string {
+	return m.InputValue
 }
 
 func (m *MoveResultMock) Side() chess.Color {
@@ -42,7 +42,7 @@ func (m *MoveResultMock) String() string {
 
 	return fmt.Sprintf(
 		"Move: %v, Side: %v, Captured piece: %v, State: %v",
-		m.MoveValue,
+		m.InputValue,
 		m.TurnValue,
 		m.CapturedPieceValue,
 		m.BoardNewStateValue,
