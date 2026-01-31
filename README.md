@@ -65,7 +65,7 @@ var state chess.State = board.State()
 ```
 Get a list of executed moves on the board:
 ```go
-var moveHistory []chess.MoveResult = board.MoveHistory()
+var moveHistory []chess.Move = board.MoveHistory()
 ```
 
 ### Moves
@@ -95,16 +95,14 @@ Legal moves are moves that can be made without breaking the board's rules. Pseud
 
 You can make moves:
 ```go
-var move chess.Move = chess.StringMove("Bc5")
-var moveResult chess.MoveResult
-
-moveResult, err = board.MakeMove(move)
+var moveResult chess.Move
+moveResult, err = board.MakeMove("Bc5")
 ```
-The method returns a `chess.MoveResult` and an `error`. `MoveResult` contains the input move (`MoveResult.Move`) and provides methods to get the captured piece (if any) via `MoveResult.CapturedPiece`, the side that made the move (`MoveResult.Side`), and the new board state after the move (`MoveResult.BoardNewState`). The `error` is non‑nil if the move was incorrect or impossible.
+The method returns a `chess.Move` and an `error`. `Move` contains the input move (`"Bc5"` in our example) and provides methods to get the captured piece (if any) via `moveResult.CapturedPiece()`, the side that made the move (`moveResult.Side()`), and the new board state after the move (`moveResult.BoardNewState()`). The `error` is non‑nil if the move was incorrect or impossible.
 
 You can also undo the last move:
 ```go
-var lastMoveResult chess.MoveResult
+var lastMoveResult chess.Move
 
 lastMoveResult, err := board.UndoLastMove()
 ```
