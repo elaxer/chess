@@ -49,5 +49,5 @@ func Material(board chess.Board) Metric {
 func MaterialDifference(board chess.Board) Metric {
 	material := Material(board).Value().([]uint16)
 
-	return New("Material advantage difference", int(material[0])-int(material[1]))
+	return New("Material diff", int(material[0])-int(material[1]))
 }

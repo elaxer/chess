@@ -345,7 +345,7 @@ A position may have several states:
 ```go
 chess.PositionFromString("j3").IsFull() // true
 chess.NewPositionEmpty().IsEmpty() // true
-chess.PositionFromString("g").IsValid() // true because it is not empty and full but still valid
+chess.PositionFromString("g").IsValid() // true because it's not empty and full but still valid
 chess.PositionFromString("z22").IsValid() // false because it's invalid
 ```
 

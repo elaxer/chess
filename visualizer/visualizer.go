@@ -28,25 +28,32 @@ func (v *Visualizer) Fprint(writer io.Writer, board chess.Board) {
 			//nolint:errcheck
 			fmt.Fprintf(writer, "%d ", rank)
 		}
-		for _, piece := range row {
+		for file, piece := range row {
 			if piece == nil {
 				//nolint:errcheck
-				fmt.Fprint(writer, ". ")
+				fmt.Fprint(writer, ".")
 			} else {
 				//nolint:errcheck
-				fmt.Fprintf(writer, "%s ", piece)
+				fmt.Fprintf(writer, "%s", piece)
+			}
+
+			if file != board.Squares().EdgePosition().File {
+				//nolint:errcheck
+				fmt.Fprint(writer, " ")
 			}
 		}
 
-		//nolint:errcheck
-		fmt.Fprintln(writer)
+		if rank != v.edgeRank(board.Squares(), backward) {
+			//nolint:errcheck
+			fmt.Fprintln(writer)
+		}
 	}
 
 	if v.Options.DisplayPositions {
-		v.displayFilePositions(board, writer)
+		v.displayFilePositions(writer, board)
 	}
 
-	v.displayMetrics(board, writer)
+	v.displayMetrics(writer, board)
 }
 
 // Fprintln is like Fprint but adds a newline after the board representation.
@@ -56,20 +63,34 @@ func (v *Visualizer) Fprintln(writer io.Writer, board chess.Board) {
 	fmt.Fprintln(writer)
 }
 
-func (v *Visualizer) displayFilePositions(board chess.Board, writer io.Writer) {
+func (v *Visualizer) displayFilePositions(writer io.Writer, board chess.Board) {
 	//nolint:errcheck
-	fmt.Fprintf(writer, "  ")
+	fmt.Fprint(writer, "\n  ")
 	for file := range board.Squares().EdgePosition().File {
+		f := file + 1
 		//nolint:errcheck
-		fmt.Fprintf(writer, "%s ", file+1)
+		fmt.Fprint(writer, f.String())
+		if f != board.Squares().EdgePosition().File {
+			//nolint:errcheck
+			fmt.Fprint(writer, " ")
+		}
 	}
 }
 
-func (v *Visualizer) displayMetrics(board chess.Board, writer io.Writer) {
+func (v *Visualizer) displayMetrics(writer io.Writer, board chess.Board) {
 	for _, metricFunc := range v.Options.MetricFuncs {
 		if metric := metricFunc(board); metric != nil {
 			//nolint:errcheck
 			fmt.Fprintf(writer, "\n%s", metric)
 		}
 	}
+}
+
+func (v *Visualizer) edgeRank(squares *chess.Squares, backward bool) chess.Rank {
+	if backward {
+		return chess.Rank1
+
+	}
+
+	return squares.EdgePosition().Rank
 }
