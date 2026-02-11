@@ -388,41 +388,49 @@ piecePosition := squares.GetByPiece(piece)
 var pseudoMoves []chess.Position = piece.PseudoMoves(piecePosition, squares)
 ```
 
-### States, state types
+### States
 
-There are three board state types: `chess.StateTypeClear`, `chess.StateTypeThreat`, `chess.StateTypeTerminal`.
+States are used to categorize the current state of the chess board.
+States are implemented with the `chess.State` interface which has two methods:
+`Name() string` and `IsTerminal() bool`. The first returns the name,
+the second indicates whether the board has reached a terminal state,
+where no further moves can be made.
+State can be changed during the process of working with the board.
 
-`chess.StateTypeClear` indicates that the chess board is in a clear state, meaning there are no threats or special conditions affecting the game. This is the default state of the board.
+There is a single built-in engine state `chess.StateClear`.
+It's used to indicate that the board does not have any other state at the moment:
+```go
+if board.State() == chess.StateClear {
+    // nothing special on the board
+}
+```
 
-`chess.StateTypeThreat` indicates that there is a threat on the chess board, which is useful for indicating check or other conditions where a piece is under threat.
-
-`chess.StateTypeTerminal` indicates that the game has reached a terminal state, such as checkmate or stalemate,
-where no further moves can be made. This state is used to signify the end of the game.
-
-There are **states** which are built on **state types**. The `chess.State` interface provides a string representation and includes a state type.
-The difference between a **state** and a **state type** is that a state type is more abstract, while a state represents a concrete case of the board state.
-
-You can create your own states for various cases:
+Also you can create your own states for various cases:
 ```go
 var (
-    StateCheck = chess.NewState("check", chess.StateTypeThreat)
-    StateCheckmate = chess.NewState("checkmate", chess.StateTypeTerminal)
+    StateThreefoldRepetition = chess.NewState("threefold", false)
+    StateCheckmate = chess.NewState("checkmate", true)
     // etc.
 )
 ```
 
-Also, there is a single built-in engine state, `chess.StateClear`, with the state type `chess.StateTypeClear`.
-
-Note that boards contain states:
+Then check the board state:
 ```go
 var board chess.Board
 var state chess.State = board.State()
-if !state.Type().IsTerminal() {
-    // The game is over
+
+switch state {
+    case chess.StateClear:
+        // ...
+    case StateCheckmate:
+        // ...
+}
+
+// ... or just check if the state is terminal:
+if state.IsTerminal() {
+    // ...
 }
 ```
-
-... which can be changed during the process of working with the board
 
 ### Metrics
 

@@ -11,7 +11,7 @@ var StateClear = NewState("clear", false)
 type State interface {
 	// Name returns the name of the state.
 	Name() string
-	// IsTerminal indicates that the game has reached a terminal state,
+	// IsTerminal indicates that the board has reached a terminal state,
 	// where no further moves can be made.
 	IsTerminal() bool
 }
@@ -21,7 +21,7 @@ type state struct {
 	isTerminal bool
 }
 
-// NewState is used to create a new state that can be used in the chess game.
+// NewState is used to create a new state that can be used in the chess board.
 // It allows for the creation of custom states which can be useful
 // for representing different conditions on the chess board.
 func NewState(name string, isTerminal bool) State {

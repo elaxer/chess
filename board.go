@@ -17,7 +17,6 @@ type Board interface {
 	Turn() Color
 	// State returns the current state of the board.
 	// Returns chess.StateClear if the board is in a clear state.
-	// Should not return nil.
 	State() State
 	// CapturedPieces returns a slice of pieces that have been captured on the board.
 	CapturedPieces() []Piece
