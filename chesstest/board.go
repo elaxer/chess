@@ -73,7 +73,7 @@ func (s *BoardMock) MakeMove(move string) (chess.Move, error) {
 		return s.MakeMoveFunc(move)
 	}
 
-	result := &MoveResultMock{
+	result := &MoveMock{
 		InputValue:         move,
 		TurnValue:          s.TurnValue,
 		BoardNewStateValue: s.State(),

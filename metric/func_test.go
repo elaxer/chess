@@ -98,20 +98,20 @@ func TestLastMove(t *testing.T) {
 		},
 		{
 			"A",
-			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{&chesstest.MoveResultMock{StringValue: "A"}}},
-			&chesstest.MoveResultMock{StringValue: "A"},
+			&chesstest.BoardMock{MovesHistoryValue: []chess.Move{&chesstest.MoveMock{StringValue: "A"}}},
+			&chesstest.MoveMock{StringValue: "A"},
 			false,
 		},
 		{
 			"C",
 			&chesstest.BoardMock{
 				MovesHistoryValue: []chess.Move{
-					&chesstest.MoveResultMock{StringValue: "A"},
-					&chesstest.MoveResultMock{StringValue: "B"},
-					&chesstest.MoveResultMock{StringValue: "C"},
+					&chesstest.MoveMock{StringValue: "A"},
+					&chesstest.MoveMock{StringValue: "B"},
+					&chesstest.MoveMock{StringValue: "C"},
 				},
 			},
-			&chesstest.MoveResultMock{StringValue: "C"},
+			&chesstest.MoveMock{StringValue: "C"},
 			false,
 		},
 	}

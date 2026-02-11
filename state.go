@@ -1,57 +1,48 @@
 package chess
 
-import (
-	"encoding/json"
-	"fmt"
-)
+import "encoding/json"
 
-var (
-	// StateClear represents a clear state of the chess board.
-	// This state indicates that there are no threats or special conditions on the board.
-	StateClear = NewState("clear", StateTypeClear)
-)
+// StateClear represents a clear state of the chess board.
+// This state indicates that there are no threats or special conditions on the board.
+var StateClear = NewState("clear", false)
 
 // State represents the type of a board state.
 // It is used to categorize the state of the chess board.
 type State interface {
-	fmt.Stringer
-	// Type returns the type of the state.
-	// The type can be one of the predefined StateType values,
-	// such as StateTypeClear, StateTypeThreat or StateTypeTerminal.
-	Type() StateType
+	// Name returns the name of the state.
+	Name() string
+	// IsTerminal indicates that the game has reached a terminal state,
+	// where no further moves can be made.
+	IsTerminal() bool
 }
 
 type state struct {
-	name      string
-	stateType StateType
+	name       string
+	isTerminal bool
 }
 
-// NewState creates a new State with the given name and type.
-// The name is a string representation of the state,
-// and the stateType is one of the predefined StateType values.
-// This function is used to create a new state that can be used in the chess game.
-// It allows for the creation of custom states with specific names and types,
-// which can be useful for representing different conditions on the chess board.
-func NewState(name string, stateType StateType) State {
-	return &state{
-		name:      name,
-		stateType: stateType,
-	}
+// NewState is used to create a new state that can be used in the chess game.
+// It allows for the creation of custom states which can be useful
+// for representing different conditions on the chess board.
+func NewState(name string, isTerminal bool) State {
+	return &state{name, isTerminal}
 }
 
-// Type returns the type of the state.
-func (s *state) Type() StateType {
-	return s.stateType
+func (s *state) Name() string {
+	return s.name
 }
 
-// String returns the name of the state.
+func (s *state) IsTerminal() bool {
+	return s.isTerminal
+}
+
 func (s *state) String() string {
 	return s.name
 }
 
 func (s *state) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]any{
-		"name": s.name,
-		"type": s.stateType,
+		"name":        s.name,
+		"is_terminal": s.isTerminal,
 	})
 }

@@ -143,9 +143,9 @@ R . . . . . . .`,
 				}),
 				TurnValue: chess.ColorBlack,
 				MovesHistoryValue: []chess.Move{
-					&chesstest.MoveResultMock{},
-					&chesstest.MoveResultMock{},
-					&chesstest.MoveResultMock{StringValue: "Kd4"},
+					&chesstest.MoveMock{},
+					&chesstest.MoveMock{},
+					&chesstest.MoveMock{StringValue: "Kd4"},
 				},
 			},
 			`1 . . R . . . . .
